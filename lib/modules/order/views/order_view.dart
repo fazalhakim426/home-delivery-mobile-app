@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/models/todo_model.dart';
-import 'package:simpl/modules/todo/controllers/todo_controller.dart';
+import 'package:simpl/data/models/order_model.dart';
+import 'package:simpl/modules/order/controllers/order_controller.dart';
 import 'package:intl/intl.dart';
-class TodoView extends GetView<TodoController> {
-  const TodoView({super.key});
+class OrderView extends GetView<OrderController> {
+  const OrderView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +15,13 @@ class TodoView extends GetView<TodoController> {
         foregroundColor: Colors.white,
       ),
       body: Obx(() {
-        if (controller.isLoading.value && controller.todos.isEmpty) {
+        if (controller.isLoading.value && controller.orders.isEmpty) {
           return const Center(
             child: CircularProgressIndicator(color: Colors.indigo),
           );
         }
 
-        if (controller.todos.isEmpty) {
+        if (controller.orders.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -36,7 +36,7 @@ class TodoView extends GetView<TodoController> {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.add),
                   label: const Text('Add New Task'),
-                  onPressed: () => _showAddEditTodoDialog(context),
+                  onPressed: () => _showAddEditOrderDialog(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.indigo,
                     foregroundColor: Colors.white, //
@@ -49,15 +49,15 @@ class TodoView extends GetView<TodoController> {
 
         return ListView.builder(
           padding: const EdgeInsets.all(8),
-          itemCount: controller.todos.length,
+          itemCount: controller.orders.length,
           itemBuilder: (context, index) {
-            final todo = controller.todos[index];
-            return _buildTodoItem(context, todo);
+            final order = controller.orders[index];
+            return _buildOrderItem(context, order);
           },
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddEditTodoDialog(context),
+        onPressed: () => _showAddEditOrderDialog(context),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
@@ -65,7 +65,7 @@ class TodoView extends GetView<TodoController> {
     );
   }
 
-  Widget _buildTodoItem(BuildContext context, Todo todo) {
+  Widget _buildOrderItem(BuildContext context, Order order) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       elevation: 2,
@@ -80,7 +80,7 @@ class TodoView extends GetView<TodoController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Order #${todo.warehouseNumber}",
+                  "Order #${order.warehouseNumber}",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -90,13 +90,13 @@ class TodoView extends GetView<TodoController> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: todo.isShipped ? Colors.green[100] : Colors.orange[100],
+                    color: order.isShipped ? Colors.green[100] : Colors.orange[100],
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    todo.isShipped ? "Shipped" : "Not Shipped",
+                    order.isShipped ? "Shipped" : "Not Shipped",
                     style: TextStyle(
-                      color: todo.isShipped ? Colors.green[800] : Colors.orange[800],
+                      color: order.isShipped ? Colors.green[800] : Colors.orange[800],
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -110,23 +110,23 @@ class TodoView extends GetView<TodoController> {
             Table(
               columnWidths: const {0: FlexColumnWidth(1.5), 1: FlexColumnWidth(2)},
               children: [
-                _buildTableRow("Service:", todo.shippingServiceName),
-                // _buildTableRow("Carrier:", todo.carrier ?? "Unknown"),
-                _buildTableRow("Order Date:", DateFormat('MMM dd, yyyy').format(todo.orderDate)),
-                _buildTableRow("Weight:", "${todo.weight} kg"),
-                _buildTableRow("Order Value:", "\$${todo.orderValue.toStringAsFixed(2)}"),
-                // _buildTableRow("Shipping Cost:", "\$${todo.shippingValue.toStringAsFixed(2)}"),
-                _buildTableRow("Total:", "\$${todo.total.toStringAsFixed(2)}"),
-                _buildTableRow("Recipient:", "${todo.recipient.firstName} ${todo.recipient.lastName}"),
-                _buildTableRow("Country:", todo.recipient.countryIsoCode),
-                _buildTableRow("Address:", todo.recipient.address),
+                _buildTableRow("Service:", order.shippingServiceName),
+                // _buildTableRow("Carrier:", order.carrier ?? "Unknown"),
+                _buildTableRow("Order Date:", DateFormat('MMM dd, yyyy').format(order.orderDate)),
+                _buildTableRow("Weight:", "${order.weight} kg"),
+                _buildTableRow("Order Value:", "\$${order.orderValue.toStringAsFixed(2)}"),
+                // _buildTableRow("Shipping Cost:", "\$${order.shippingValue.toStringAsFixed(2)}"),
+                _buildTableRow("Total:", "\$${order.total.toStringAsFixed(2)}"),
+                _buildTableRow("Recipient:", "${order.recipient.firstName} ${order.recipient.lastName}"),
+                _buildTableRow("Country:", order.recipient.countryIsoCode),
+                _buildTableRow("Address:", order.recipient.address),
               ],
             ),
 
             // Products section
             const SizedBox(height: 12),
             const Text("Products:", style: TextStyle(fontWeight: FontWeight.bold)),
-            ...todo.products.map((product) => Padding(
+            ...order.products.map((product) => Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(
                 "- ${product.description} (Qty: ${product.quantity}, \$${product.value.toStringAsFixed(2)})",
@@ -141,15 +141,15 @@ class TodoView extends GetView<TodoController> {
               children: [
                 // IconButton(
                 //   icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
-                //   onPressed: () => controller.viewTodo(todo.id!),
+                //   onPressed: () => controller.viewOrder(order.id!),
                 // ),
                 // IconButton(
                 //   icon: const Icon(Icons.edit, color: Colors.blue),
-                //   onPressed: () =>controller.editTodo(todo.id!),
+                //   onPressed: () =>controller.editOrder(order.id!),
                 // ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => controller.deleteTodo(todo.id!),
+                  onPressed: () => _showDeleteConfirmation(context,order),
                 ),
               ],
             ),
@@ -173,12 +173,21 @@ class TodoView extends GetView<TodoController> {
       ],
     );
   }
-  void _showAddEditTodoDialog(BuildContext context, {bool isEditing = false}) {
+  void _showAddEditOrderDialog(BuildContext context, {bool isEditing = false}) {
     // Initialize controllers with default values if not editing
     if (!isEditing) {
       controller.clearForm();
       // Set default values
+      controller.titleController.text = 'title';
+      controller.descriptionController.text = 'description';
       controller.weightController.text = '1.0';
+      controller.trackingIdController.text = 'mobile-';
+      controller.customerReferenceController.text = 'mobile-';
+      controller.recipientPhoneController.text = '+5511937293951';
+      controller.recipientEmailController.text = 'reciepint@gami.com';
+      controller.recipientNameController.text = 'reciepint';
+      controller.senderNameController.text = 'sender';
+      controller.senderEmailController.text = 'snder@gami.com';
       controller.shipmentValueController.text = '10.0';
       controller.lengthController.text = '30.0';
       controller.widthController.text = '20.0';
@@ -409,17 +418,17 @@ class TodoView extends GetView<TodoController> {
       ),
     );
   }
-  void _showDeleteConfirmation(BuildContext context, Todo todo) {
+  void _showDeleteConfirmation(BuildContext context, Order order) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Delete Task'),
-        content: const Text('Are you sure you want to delete this task?'),
+        title: const Text('Delete order'),
+        content: const Text('Are you sure you want to delete this order?'),
         actions: [
           TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
-              controller.deleteTodo(todo.id!);
+              controller.deleteOrder(order.id!);
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),

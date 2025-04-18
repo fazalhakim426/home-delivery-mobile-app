@@ -1,10 +1,10 @@
-class Todo {
+class Order {
   final int? id;
   final String title;
   final String description;
   final bool isShipped;
   final DateTime? createdAt;
-  final String trackingCode;
+  final String? trackingCode;
   final Service service;
   final String? merchant;
   final String? carrier;
@@ -20,8 +20,8 @@ class Todo {
   final String? warehouseNumber;
   final double orderValue;
   final String shippingServiceName;
-  final double shippingValue;
-  final int prohibitedGoods;
+  final double? shippingValue;
+  final int? prohibitedGoods;
   final double total;
   final double discount;
   final double grossTotal;
@@ -30,7 +30,7 @@ class Todo {
   final Recipient recipient;
   final List<Product> products;
 
-  Todo({
+  Order({
     this.id,
     required this.title,
     required this.description,
@@ -62,46 +62,86 @@ class Todo {
     required this.recipient,
     required this.products,
   });
+  // factory Order.fromJson(Map<String, dynamic> json) {
+  //   return Order(
+  //     id: json['id'],
+  //     title: json['title'] ?? '',
+  //     description: json['description'] ?? '',
+  //     isShipped: json['is_shipped'] ?? false,
+  //     createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
+  //     trackingCode: json['tracking_code'] ?? '',
+  //     service: Service.fromJson(json['service'] ?? {}),
+  //     merchant: json['merchant'],
+  //     carrier: json['carrier'],
+  //     customerReference: json['customer_reference'],
+  //     measurementUnit: json['measurement_unit'],
+  //     weight: double.tryParse(json['weight'].toString()) ?? 0,
+  //     volumetricWeight: json['volumetric_weight'] != null ? double.tryParse(json['volumetric_weight'].toString()) : null,
+  //     length: json['length'] != null ? double.tryParse(json['length'].toString()) : null,
+  //     width: json['width'] != null ? double.tryParse(json['width'].toString()) : null,
+  //     height: json['height'] != null ? double.tryParse(json['height'].toString()) : null,
+  //     orderDate: json['order_date'] != null ? DateTime.tryParse(json['order_date']) ?? DateTime.now() : DateTime.now(),
+  //     sender: Sender.fromJson(json['sender'] ?? {}),
+  //     warehouseNumber: json['warehouse_number'],
+  //     orderValue: double.tryParse(json['order_value'].toString()) ?? 0,
+  //     shippingServiceName: json['shipping_service_name'] ?? '',
+  //     shippingValue: double.tryParse(json['shipping_value'].toString()) ?? 0,
+  //     prohibitedGoods: 0,
+  //     total: double.tryParse(json['total'].toString()) ?? 0,
+  //     discount: double.tryParse(json['discount'].toString()) ?? 0,
+  //     grossTotal: double.tryParse(json['gross_total'].toString()) ?? 0,
+  //     taxAndDuty: double.tryParse(json['tax_and_duty'].toString()) ?? 0,
+  //     feeForTaxAndDuty: double.tryParse(json['fee_for_tax_and_duty'].toString()) ?? 0,
+  //     recipient: Recipient.fromJson(json['recipient'] ?? {}),
+  //     products: (json['products'] as List<dynamic>? ?? []).map((p) => Product.fromJson(p)).toList(),
+  //   );
+  // }
 
-  factory Todo.fromJson(Map<String, dynamic> json) {
-    return Todo(
-      id: json['id'],
-      title: json['title'] ?? 'No Title',
-      description: json['description'] ?? 'No Description',
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'] as int?,
+      title: json['customer_reference'] ?? '', // Use customer_reference as title?
+      description: json['shipping_service_name'] ?? '', // Use shipping_service_name as description?
       isShipped: json['is_shipped'] ?? false,
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
-          : null,
-      trackingCode: json['tracking_code'] ?? 'N/A',
+      createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at']) : null,
+      trackingCode: json['tracking_code'],
       service: Service.fromJson(json['service'] ?? {}),
       merchant: json['merchant'],
       carrier: json['carrier'],
       customerReference: json['customer_reference'],
       measurementUnit: json['measurement_unit'],
-      weight: (json['weight'] ?? 0).toDouble(),
-      volumetricWeight: (json['Volumetric_weight'] ?? 0).toDouble(),
-      length: (json['length'] ?? 0).toDouble(),
-      width: (json['width'] ?? 0).toDouble(),
-      height: (json['height'] ?? 0).toDouble(),
-      orderDate: DateTime.parse(json['order_date']),
+      weight: double.tryParse(json['weight']?.toString() ?? '0') ?? 0,
+      volumetricWeight: json['Volumetric_weight'] != null
+          ? double.tryParse(json['Volumetric_weight'].toString())
+          : null,
+      length: json['length'] != null
+          ? double.tryParse(json['length'].toString())
+          : null,
+      width: json['width'] != null
+          ? double.tryParse(json['width'].toString())
+          : null,
+      height: json['height'] != null
+          ? double.tryParse(json['height'].toString())
+          : null,
+      orderDate: DateTime.parse(json['order_date']), // Ensure this is non-null
       sender: Sender.fromJson(json['sender'] ?? {}),
       warehouseNumber: json['warehouse_number'],
-      orderValue: (json['order_value'] ?? 0).toDouble(),
-      shippingServiceName: json['shipping_service_name'] ?? 'Unknown Service',
-      shippingValue: (json['shipping_value'] ?? 0).toDouble(),
-      prohibitedGoods: json['prohibited_goods'] ?? 0,
-      total: (json['total'] ?? 0).toDouble(),
-      discount: (json['discount'] ?? 0).toDouble(),
-      grossTotal: (json['gross_total'] ?? 0).toDouble(),
-      taxAndDuty: (json['tax_and_duty'] ?? 0).toDouble(),
-      feeForTaxAndDuty: (json['fee_for_tax_and_duty'] ?? 0).toDouble(),
+      orderValue: double.tryParse(json['order_value']?.toString() ?? '0') ?? 0,
+      shippingServiceName: json['shipping_service_name'] ?? '',
+      shippingValue: json['shipping_value']?.toDouble() ?? 0,
+      prohibitedGoods: int.tryParse(json['prohibited_goods']?.toString() ?? '0') ?? 0, // Fix: Parse String to int
+      total: json['total']?.toDouble() ?? 0,
+      discount: double.tryParse(json['discount']?.toString() ?? '0') ?? 0,
+      grossTotal: json['gross_total']?.toDouble() ?? 0,
+      taxAndDuty: double.tryParse(json['tax_and_duty']?.toString() ?? '0') ?? 0,
+      feeForTaxAndDuty: double.tryParse(json['fee_for_tax_and_duty']?.toString() ?? '0') ?? 0,
       recipient: Recipient.fromJson(json['recipient'] ?? {}),
-      products: (json['products'] as List?)
-          ?.map((product) => Product.fromJson(product))
-          .toList() ?? [],
+      products: (json['products'] as List<dynamic>? ?? [])
+          .map((p) => Product.fromJson(p))
+          .toList(),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -116,7 +156,7 @@ class Todo {
       'customer_reference': customerReference,
       'measurement_unit': measurementUnit,
       'weight': weight,
-      'Volumetric_weight': volumetricWeight,
+      'volumetric_weight': volumetricWeight,
       'length': length,
       'width': width,
       'height': height,
@@ -137,7 +177,7 @@ class Todo {
     };
   }
 
-  Todo copyWith({
+  Order copyWith({
     int? id,
     String? title,
     String? description,
@@ -169,7 +209,7 @@ class Todo {
     Recipient? recipient,
     List<Product>? products,
   }) {
-    return Todo(
+    return Order(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -206,7 +246,7 @@ class Todo {
 
 class Service {
   final int id;
-  final String name;
+  final String? name;
 
   Service({required this.id, required this.name});
 
@@ -226,19 +266,19 @@ class Service {
 }
 
 class Recipient {
-  final String stateIsoCode;
+  final String? stateIsoCode;
   final String countryIsoCode;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String phone;
-  final String city;
-  final String streetNo;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? phone;
+  final String? city;
+  final String? streetNo;
   final String address;
-  final String address2;
-  final String accountType;
-  final String taxId;
-  final String zipcode;
+  final String? address2;
+  final String? accountType;
+  final String? taxId;
+  final String? zipcode;
 
   Recipient({
     required this.stateIsoCode,
@@ -294,9 +334,9 @@ class Recipient {
 }
 
 class Sender {
-  final String firstName;
-  final String lastName;
-  final String email;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
   final String? taxId;
 
   Sender({
@@ -324,10 +364,9 @@ class Sender {
     };
   }
 }
-
 class Product {
   final int shCode;
-  final String description;
+  final String? description;
   final String? madeIn;
   final int quantity;
   final double value;
@@ -343,16 +382,15 @@ class Product {
     required this.isBattery,
     required this.isPerfume,
   });
-
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      shCode: json['sh_code'] ?? 0,
+      shCode: int.tryParse(json['sh_code']?.toString() ?? '0') ?? 0, // Fix: Parse String to int
       description: json['description'] ?? '',
       madeIn: json['made_in'],
-      quantity: json['quantity'] ?? 0,
-      value: (json['value'] ?? 0).toDouble(),
-      isBattery: json['is_battery'] ?? 0,
-      isPerfume: json['is_perfume'] ?? 0,
+      quantity: int.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
+      value: double.tryParse(json['value']?.toString() ?? '0') ?? 0,
+      isBattery: int.tryParse(json['is_battery']?.toString() ?? '0') ?? 0,
+      isPerfume: int.tryParse(json['is_perfume']?.toString() ?? '0') ?? 0,
     );
   }
 

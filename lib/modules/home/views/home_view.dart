@@ -44,7 +44,7 @@ class HomeView extends GetView<AuthController> {
                 'Order list',
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: () => Get.toNamed(Routes.TODO),
+              onPressed: () => Get.toNamed(Routes.ORDERS),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.indigo,
                 foregroundColor: Colors.white, // Sets text/icon color if not overridden

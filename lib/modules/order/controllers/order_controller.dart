@@ -1,42 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/models/todo_model.dart';
-import 'package:simpl/data/repositories/todo_repository.dart';
+import 'package:simpl/data/models/order_model.dart';
+import 'package:simpl/data/repositories/order_repository.dart';
 
-class TodoController extends GetxController {
-  final TodoRepository _todoRepository;
+class OrderController extends GetxController {
+  final OrderRepository _orderRepository;
 
-  TodoController({required TodoRepository todoRepository})
-    : _todoRepository = todoRepository;
+  OrderController({required OrderRepository orderRepository})
+    : _orderRepository = orderRepository;
 
   final isLoading = false.obs;
-  final todos = <Todo>[].obs;
+  final orders = <Order>[].obs;
 
-  // Text controllers for adding/editing todos
+  // Text controllers for adding/editing orders
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
   // Selected todo for editing
-  final selectedTodo = Rxn<Todo>();
+  final selectedOrder = Rxn<Order>();
 
   @override
   void onInit() {
     super.onInit();
-    fetchTodos();
+    fetchOrders();
   }
 
 
-  // Fetch all todos
-  Future<void> fetchTodos() async {
+  // Fetch all orders
+  Future<void> fetchOrders() async {
     isLoading.value = true;
     try {
-      final todoList = await _todoRepository.getAllTodos();
-      todos.assignAll(todoList);
+      final todoList = await _orderRepository.getAllOrders();
+      orders.assignAll(todoList);
     } catch (e) {
       print(e.toString());
       Get.snackbar(
         'Error',
-        'Failed to fetch todos: ${e.toString()}',
+        'Failed to fetch orders: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -45,7 +45,7 @@ class TodoController extends GetxController {
   }
 
   // Add new todo
-  Future<void> addTodo() async {
+  Future<void> addOrder() async {
     if (titleController.text.isEmpty || descriptionController.text.isEmpty) {
       Get.snackbar(
         'Error',
@@ -57,19 +57,19 @@ class TodoController extends GetxController {
 
     isLoading.value = true;
     try {
-      // final newTodo =
-      // Todo(
+      // final newOrder =
+      // Order(
       //   title: titleController.text,
       //   description: descriptionController.text,
       // );
       //
-      // final createdTodo = await _todoRepository.createTodo(newTodo);
-      // todos.add(createdTodo);
+      // final createdOrder = await _orderRepository.createOrder(newOrder);
+      // orders.add(createdOrder);
       // clearForm();
       // Get.back(); // Close the add todo dialog/screen
       // Get.snackbar(
       //   'Success',
-      //   'Todo added successfully',
+      //   'Order added successfully',
       //   snackPosition: SnackPosition.BOTTOM,
       // );
     } catch (e) {
@@ -84,8 +84,8 @@ class TodoController extends GetxController {
   }
 
   // Update todo
-  Future<void> updateTodo() async {
-    if (selectedTodo.value == null) {
+  Future<void> updateOrder() async {
+    if (selectedOrder.value == null) {
       Get.snackbar(
         'Error',
         'No todo selected for update',
@@ -105,17 +105,17 @@ class TodoController extends GetxController {
 
     isLoading.value = true;
     try {
-      final updatedTodo = selectedTodo.value!.copyWith(
+      final updatedOrder = selectedOrder.value!.copyWith(
         title: titleController.text,
         description: descriptionController.text,
       );
 
-      final result = await _todoRepository.updateTodo(updatedTodo);
+      final result = await _orderRepository.updateOrder(updatedOrder);
 
       // Update todo in the list
-      final index = todos.indexWhere((todo) => todo.id == result.id);
+      final index = orders.indexWhere((todo) => todo.id == result.id);
       if (index != -1) {
-        todos[index] = result;
+        orders[index] = result;
       }
 
       clearForm();
@@ -123,7 +123,7 @@ class TodoController extends GetxController {
       Get.back(); // Close the edit todo dialog/screen
       Get.snackbar(
         'Success',
-        'Todo updated successfully',
+        'Order updated successfully',
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
@@ -134,21 +134,21 @@ class TodoController extends GetxController {
       );
     } finally {
       isLoading.value = false;
-      selectedTodo.value = null;
+      selectedOrder.value = null;
     }
   }
 
   // Delete todo
-  Future<void> deleteTodo(int id) async {
+  Future<void> deleteOrder(int id) async {
     isLoading.value = true;
     try {
-      final success = await _todoRepository.deleteTodo(id);
+      final success = await _orderRepository.deleteOrder(id);
 
       if (success) {
-        todos.removeWhere((todo) => todo.id == id);
+        orders.removeWhere((todo) => todo.id == id);
         Get.snackbar(
           'Success',
-          'Todo deleted successfully',
+          'Order deleted successfully',
           snackPosition: SnackPosition.BOTTOM,
         );
       }
@@ -164,14 +164,14 @@ class TodoController extends GetxController {
   }
 
   // Toggle todo completion
-  Future<void> toggleTodoCompletion(Todo todo) async {
+  Future<void> toggleOrderCompletion(Order todo) async {
     try {
-      final updatedTodo = await _todoRepository.toggleTodoCompletion(todo);
+      final updatedOrder = await _orderRepository.toggleOrderCompletion(todo);
 
       // Update todo in the list
-      final index = todos.indexWhere((t) => t.id == updatedTodo.id);
+      final index = orders.indexWhere((t) => t.id == updatedOrder.id);
       if (index != -1) {
-        todos[index] = updatedTodo;
+        orders[index] = updatedOrder;
       }
     } catch (e) {
       Get.snackbar(
@@ -183,8 +183,8 @@ class TodoController extends GetxController {
   }
 
   // Set selected todo for editing
-  void selectTodoForEdit(Todo todo) {
-    selectedTodo.value = todo;
+  void selectOrderForEdit(Order todo) {
+    selectedOrder.value = todo;
     titleController.text = todo.title;
     descriptionController.text = todo.description;
   }
@@ -225,81 +225,81 @@ class TodoController extends GetxController {
   }
 
   Future<void> createOrder() async {
-  if (titleController.text.isEmpty || trackingIdController.text.isEmpty) {
-  Get.snackbar('Error', 'Required fields are missing');
-  return;
-  }
-
-
-  isLoading.value = true;
-  try {
-  final orderData = {
-  "parcel": {
-  "service_id": 1,
-  "merchant": "John",
-  "carrier": "Carrier",
-  "tracking_id": trackingIdController.text,
-  "customer_reference": customerReferenceController.text,
-  "measurement_unit": "kg/cm",
-  "weight": weightController.text,
-  "length": lengthController.text,
-  "width": widthController.text,
-  "height": heightController.text,
-  "tax_modality": "DDU",
-  "shipment_value": shipmentValueController.text,
-  },
-  "sender": {
-  "sender_first_name": senderNameController.text.split(' ').first,
-  "sender_last_name": senderNameController.text.split(' ').length > 1
-  ? senderNameController.text.split(' ').last
-      : '',
-  "sender_email": senderEmailController.text,
-  "sender_taxId": "32786897807",
-  "sender_country_id": "US",
-  "sender_website": "https://dev.homedeliverybr.com"
-  },
-  "recipient": {
-  "first_name": recipientNameController.text.split(' ').first,
-  "last_name": recipientNameController.text.split(' ').length > 1
-  ? recipientNameController.text.split(' ').last
-        : '',
-    "email": recipientEmailController.text,
-    "phone": recipientPhoneController.text,
-    "tax_id": "73489158172",
-    "city": "Brasilia",
-    "street_no": "0",
-    "address": "Sample Address",
-    "address2": "",
-    "account_type": "individual",
-    "zipcode": "71680389",
-    "state_id": "509",
-    "country_id": 30
-  },
-    "products": [
-      {
-        "sh_code": "61019090",
-        "description": titleController.text,
-        "quantity": 1,
-        "value": shipmentValueController.text,
-        "is_battery": 0,
-        "is_perfume": 0,
-        "is_flameable": 0
+      if (titleController.text.isEmpty || trackingIdController.text.isEmpty) {
+        Get.snackbar('Error', 'Required fields are missing');
+        return;
       }
-    ]
-  };
 
-  // Call your API to create the order
-  final response = await _todoRepository.createOrder(orderData);
-  // Handle response
 
-  Get.back();
-  Get.snackbar('Success', 'Order created successfully');
-  fetchTodos();
-  } catch (e) {
-  Get.snackbar('Error', 'Failed to create order: ${e.toString()}');
-  } finally {
-  isLoading.value = false;
-  }
+      isLoading.value = true;
+      try {
+      final orderData = {
+      "parcel": {
+      "service_id": 1,
+      "merchant": "John",
+      "carrier": "Carrier",
+      "tracking_id": trackingIdController.text,
+      "customer_reference": customerReferenceController.text,
+      "measurement_unit": "kg/cm",
+      "weight": weightController.text,
+      "length": lengthController.text,
+      "width": widthController.text,
+      "height": heightController.text,
+      "tax_modality": "DDU",
+      "shipment_value": shipmentValueController.text,
+      },
+      "sender": {
+      "sender_first_name": senderNameController.text.split(' ').first,
+      "sender_last_name": senderNameController.text.split(' ').length > 1
+      ? senderNameController.text.split(' ').last
+          : '',
+      "sender_email": senderEmailController.text,
+      "sender_taxId": "32786897807",
+      "sender_country_id": "US",
+      "sender_website": "https://dev.homedeliverybr.com"
+      },
+      "recipient": {
+      "first_name": recipientNameController.text.split(' ').first,
+      "last_name": recipientNameController.text.split(' ').length > 1
+      ? recipientNameController.text.split(' ').last
+            : '',
+        "email": recipientEmailController.text,
+        "phone": recipientPhoneController.text,
+        "tax_id": "73489158172",
+        "city": "Brasilia",
+        "street_no": "0",
+        "address": "Sample Address",
+        "address2": "",
+        "account_type": "individual",
+        "zipcode": "71680389",
+        "state_id": "509",
+        "country_id": 30
+      },
+        "products": [
+          {
+            "sh_code": "61019090",
+            "description": titleController.text,
+            "quantity": 1,
+            "value": shipmentValueController.text,
+            "is_battery": 0,
+            "is_perfume": 0,
+            "is_flameable": 0
+          }
+        ]
+      };
+
+      // Call your API to create the order
+      final response = await _orderRepository.createOrder(orderData);
+      // Handle response
+
+      Get.back();
+      Get.snackbar('Success', 'Order created successfully');
+      fetchOrders();
+      } catch (e) {
+      Get.snackbar('Error', 'Failed to create order: ${e.toString()}');
+      } finally {
+      isLoading.value = false;
+      }
   }
 
   void clearForm() {
@@ -317,6 +317,6 @@ class TodoController extends GetxController {
   recipientNameController.clear();
   recipientEmailController.clear();
   recipientPhoneController.clear();
-  selectedTodo.value = null;
+  selectedOrder.value = null;
   }
 }

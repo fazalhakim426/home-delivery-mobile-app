@@ -1,11 +1,11 @@
 class Constants {
   // API URLs
-  static const String baseUrl = 'http://hd-v2.test/api/';
+  static const String baseUrl = 'https://dev.homedeliverybr.com/api/';
   // API Endpoints
   static const String login = 'login';
   static const String register = '/register';
   static const String verify = '/auth/verify';
-  static const String todos = 'orders';
+  static const String orders = 'orders';
   static const String parcels = 'v1/parcels';
   // Storage Keys
   static const String userToken = 'user_token';
