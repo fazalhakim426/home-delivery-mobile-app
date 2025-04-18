@@ -90,13 +90,13 @@ class TodoView extends GetView<TodoController> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: todo.isCompleted ? Colors.green[100] : Colors.orange[100],
+                    color: todo.isShipped ? Colors.green[100] : Colors.orange[100],
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    todo.isCompleted ? "Shipped" : "Not Shipped",
+                    todo.isShipped ? "Shipped" : "Not Shipped",
                     style: TextStyle(
-                      color: todo.isCompleted ? Colors.green[800] : Colors.orange[800],
+                      color: todo.isShipped ? Colors.green[800] : Colors.orange[800],
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -139,14 +139,14 @@ class TodoView extends GetView<TodoController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
-                  onPressed: () => controller.deleteTodo(todo.id!),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () =>controller.deleteTodo(todo.id!),
-                ),
+                // IconButton(
+                //   icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
+                //   onPressed: () => controller.viewTodo(todo.id!),
+                // ),
+                // IconButton(
+                //   icon: const Icon(Icons.edit, color: Colors.blue),
+                //   onPressed: () =>controller.editTodo(todo.id!),
+                // ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => controller.deleteTodo(todo.id!),
@@ -174,21 +174,28 @@ class TodoView extends GetView<TodoController> {
     );
   }
   void _showAddEditTodoDialog(BuildContext context, {bool isEditing = false}) {
+    // Initialize controllers with default values if not editing
     if (!isEditing) {
       controller.clearForm();
+      // Set default values
+      controller.weightController.text = '1.0';
+      controller.shipmentValueController.text = '10.0';
+      controller.lengthController.text = '30.0';
+      controller.widthController.text = '20.0';
+      controller.heightController.text = '10.0';
     }
 
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Container(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                isEditing ? 'Edit Order' : 'Place Order',
+                isEditing ? 'Edit Order' : 'Create Order',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -197,17 +204,21 @@ class TodoView extends GetView<TodoController> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
+
+              // Basic Information Section
+              const Text('Basic Information', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
               TextField(
                 controller: controller.titleController,
                 decoration: const InputDecoration(
-                  labelText: 'Title',
+                  labelText: 'Order Title*',
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.indigo, width: 2),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               TextField(
                 controller: controller.descriptionController,
                 decoration: const InputDecoration(
@@ -217,8 +228,153 @@ class TodoView extends GetView<TodoController> {
                     borderSide: BorderSide(color: Colors.indigo, width: 2),
                   ),
                 ),
-                maxLines: 3,
+                maxLines: 2,
               ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller.trackingIdController,
+                decoration: const InputDecoration(
+                  labelText: 'Tracking ID*',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., 54105_001234',
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller.customerReferenceController,
+                decoration: const InputDecoration(
+                  labelText: 'Customer Reference',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., 54105_001343',
+                ),
+              ),
+
+              // Parcel Details Section
+              const SizedBox(height: 16),
+              const Text('Parcel Details', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller.weightController,
+                      decoration: const InputDecoration(
+                        labelText: 'Weight (kg)*',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: controller.shipmentValueController,
+                      decoration: const InputDecoration(
+                        labelText: 'Value (\$)*',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              const Text('Dimensions (cm)', style: TextStyle(fontSize: 14)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller.lengthController,
+                      decoration: const InputDecoration(
+                        labelText: 'Length',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: controller.widthController,
+                      decoration: const InputDecoration(
+                        labelText: 'Width',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: controller.heightController,
+                      decoration: const InputDecoration(
+                        labelText: 'Height',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+
+              // Sender Information Section
+              const SizedBox(height: 16),
+              const Text('Sender Information', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: controller.senderNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name*',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., Thomaz Marques',
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller.senderEmailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email*',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., contato@babylicio.us',
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+
+              // Recipient Information Section
+              const SizedBox(height: 16),
+              const Text('Recipient Information', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: controller.recipientNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name*',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., Alex Hoyos',
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller.recipientEmailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., test@hd.com',
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller.recipientPhoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., +5511937293951',
+                ),
+                keyboardType: TextInputType.phone,
+              ),
+
+              // Action Buttons
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -233,16 +389,17 @@ class TodoView extends GetView<TodoController> {
                   ElevatedButton(
                     onPressed: () {
                       if (isEditing) {
-                        controller.updateTodo();
+                        // controller.updateOrder();
                       } else {
-                        controller.addTodo();
+                        controller.createOrder();
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.indigo,
-                      foregroundColor: Colors.white
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     ),
-                    child: Text(isEditing ? 'Update' : 'Add'),
+                    child: Text(isEditing ? 'Update Order' : 'Create Order'),
                   ),
                 ],
               ),
@@ -252,7 +409,6 @@ class TodoView extends GetView<TodoController> {
       ),
     );
   }
-
   void _showDeleteConfirmation(BuildContext context, Todo todo) {
     Get.dialog(
       AlertDialog(

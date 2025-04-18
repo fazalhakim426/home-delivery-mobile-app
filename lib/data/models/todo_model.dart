@@ -2,7 +2,7 @@ class Todo {
   final int? id;
   final String title;
   final String description;
-  final bool isCompleted;
+  final bool isShipped;
   final DateTime? createdAt;
   final String trackingCode;
   final Service service;
@@ -34,7 +34,7 @@ class Todo {
     this.id,
     required this.title,
     required this.description,
-    required this.isCompleted,
+    required this.isShipped,
     this.createdAt,
     required this.trackingCode,
     required this.service,
@@ -68,7 +68,7 @@ class Todo {
       id: json['id'],
       title: json['title'] ?? 'No Title',
       description: json['description'] ?? 'No Description',
-      isCompleted: json['is_shipped'] ?? false,
+      isShipped: json['is_shipped'] ?? false,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,
@@ -107,7 +107,7 @@ class Todo {
       'id': id,
       'title': title,
       'description': description,
-      'isCompleted': isCompleted,
+      'isShipped': isShipped,
       'createdAt': createdAt?.toIso8601String(),
       'tracking_code': trackingCode,
       'service': service.toJson(),
@@ -141,7 +141,7 @@ class Todo {
     int? id,
     String? title,
     String? description,
-    bool? isCompleted,
+    bool? isShipped,
     DateTime? createdAt,
     String? trackingCode,
     Service? service,
@@ -173,7 +173,7 @@ class Todo {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
-      isCompleted: isCompleted ?? this.isCompleted,
+      isShipped: isShipped ?? this.isShipped,
       createdAt: createdAt ?? this.createdAt,
       trackingCode: trackingCode ?? this.trackingCode,
       service: service ?? this.service,

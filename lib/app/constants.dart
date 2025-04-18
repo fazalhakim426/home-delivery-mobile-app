@@ -6,7 +6,7 @@ class Constants {
   static const String register = '/register';
   static const String verify = '/auth/verify';
   static const String todos = 'orders';
-
+  static const String parcels = 'v1/parcels';
   // Storage Keys
   static const String userToken = 'user_token';
   static const String userData = 'user_data';

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:simpl/app/constants.dart';
 import 'package:simpl/data/models/todo_model.dart';
@@ -43,21 +46,10 @@ class TodoRepository {
   }
 
   // Create todo
-  Future<Todo> createTodo(Todo todo) async {
-    // if (useDummyData) {
-    //   // final dummyList = await _generateDummyTodos();
-    //   // final newId = (dummyList.last.id ?? 0) + 1;
-    //   return todo.copyWith(
-    //     id: newId,
-    //     trackingCode: 'TRK${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}',
-    //     orderDate: DateTime.now(),
-    //     createdAt: DateTime.now(),
-    //   );
-    // }
-
+  Future<Todo> createOrder(todo) async {
     try {
       final response = await _apiProvider.post(
-        Constants.todos,
+        Constants.parcels,
         data: todo.toJson(),
       );
       return Todo.fromJson(response.data);
@@ -104,7 +96,7 @@ class TodoRepository {
   // Toggle todo completion
   Future<Todo> toggleTodoCompletion(Todo todo) async {
     if (useDummyData) {
-      return todo.copyWith(isCompleted: !todo.isCompleted);
+      return todo.copyWith(isShipped: !todo.isShipped);
     }
 
     try {
@@ -112,7 +104,7 @@ class TodoRepository {
         throw Exception('Todo ID is required');
       }
 
-      Todo updatedTodo = todo.copyWith(isCompleted: !todo.isCompleted);
+      Todo updatedTodo = todo.copyWith(isShipped: !todo.isShipped);
       final response = await _apiProvider.put(
         '${Constants.todos}/${todo.id}',
         data: updatedTodo.toJson(),
@@ -146,7 +138,7 @@ class TodoRepository {
   //       id: index + 1,
   //       title: 'Order ${index + 1001}',
   //       description: 'Package containing ${['electronics', 'clothing', 'books', 'documents'][random % 4]}',
-  //       isCompleted: random % 5 == 0,
+  //       isShipped: random % 5 == 0,
   //       createdAt: now.subtract(Duration(days: daysAgo)),
   //       trackingCode: 'TRK${(now.millisecondsSinceEpoch + index).toString().substring(5)}',
   //       serviceName: services[random % services.length],
