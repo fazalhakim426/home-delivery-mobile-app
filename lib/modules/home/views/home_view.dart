@@ -54,7 +54,6 @@ class HomeView extends GetView<AuthController> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
             ElevatedButton.icon(
               icon: const Icon(Icons.local_shipping, color: Colors.white),
@@ -62,7 +61,7 @@ class HomeView extends GetView<AuthController> {
                 'Order Tracking',
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: () => (),
+              onPressed: () => Get.toNamed(Routes.TRACKINGS),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.indigo,
                 foregroundColor: Colors.white, // Sets text/icon color if not overridden
@@ -72,7 +71,6 @@ class HomeView extends GetView<AuthController> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
             const Divider(),
             const SizedBox(height: 16),

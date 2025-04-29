@@ -8,24 +8,19 @@ class OrderController extends GetxController {
 
   OrderController({required OrderRepository orderRepository})
     : _orderRepository = orderRepository;
-
   final isLoading = false.obs;
   final orders = <Order>[].obs;
-
   // Text controllers for adding/editing orders
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
   // Selected todo for editing
   final selectedOrder = Rxn<Order>();
-
   @override
   void onInit() {
     super.onInit();
     fetchOrders();
   }
-
-
   // Fetch all orders
   Future<void> fetchOrders() async {
     isLoading.value = true;

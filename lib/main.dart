@@ -11,7 +11,7 @@ void main() async {
 
   runApp(
     GetMaterialApp(
-      title: 'Simpl Todo App',
+      title: 'HomeDelivery BR',
       theme: ThemeData(
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,

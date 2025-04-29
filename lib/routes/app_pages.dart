@@ -7,6 +7,8 @@ import 'package:simpl/modules/home/bindings/home_binding.dart';
 import 'package:simpl/modules/home/views/home_view.dart';
 import 'package:simpl/modules/order/bindings/order_binding.dart';
 import 'package:simpl/modules/order/views/order_view.dart';
+import 'package:simpl/modules/tracking/bindings/tracking_binding.dart';
+import 'package:simpl/modules/tracking/views/tracking_view.dart';
 
 part 'app_routes.dart';
 
@@ -40,6 +42,11 @@ class AppPages {
       name: Routes.ORDERS,
       page: () => const OrderView(),
       binding: OrderBinding(),
+    ),
+    GetPage(
+      name: Routes.TRACKINGS,
+      page: () => const TrackingView(),
+      binding: TrackingBinding(),
     ),
   ];
 }

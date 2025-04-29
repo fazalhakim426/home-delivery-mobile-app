@@ -8,4 +8,5 @@ abstract class Routes {
   static const VERIFICATION = '/verification';
   static const HOME = '/home';
   static const ORDERS = '/orders';
+  static const TRACKINGS = '/trackings';
 }
