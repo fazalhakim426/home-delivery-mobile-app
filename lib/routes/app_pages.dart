@@ -5,8 +5,8 @@ import 'package:simpl/modules/auth/views/register_view.dart';
 import 'package:simpl/modules/auth/views/verification_view.dart';
 import 'package:simpl/modules/home/bindings/home_binding.dart';
 import 'package:simpl/modules/home/views/home_view.dart';
-import 'package:simpl/modules/todo/bindings/todo_binding.dart';
-import 'package:simpl/modules/todo/views/todo_view.dart';
+import 'package:simpl/modules/order/bindings/order_binding.dart';
+import 'package:simpl/modules/order/views/order_view.dart';
 
 part 'app_routes.dart';
 
@@ -37,9 +37,9 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
-      name: Routes.TODO,
-      page: () => const TodoView(),
-      binding: TodoBinding(),
+      name: Routes.ORDERS,
+      page: () => const OrderView(),
+      binding: OrderBinding(),
     ),
   ];
 }
