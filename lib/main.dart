@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simpl/data/providers/api_provider.dart';
+import 'package:simpl/data/services/form_persistence_service.dart';
 import 'package:simpl/routes/app_pages.dart';
 
 void main() async {
@@ -8,6 +9,10 @@ void main() async {
 
   // Initialize API Provider
   await Get.putAsync(() => ApiProvider().init());
+
+  // Initialize FormPersistenceService
+  final formService = await FormPersistenceService.init();
+  Get.put(formService);
 
   runApp(
     GetMaterialApp(

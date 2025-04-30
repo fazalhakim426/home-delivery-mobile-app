@@ -51,20 +51,24 @@ class OrderRepository {
         Constants.parcels,
         data: order,
       );
-      return Order.fromJson(response.data);
+      print('resposne data');
+      print(response.data['data']);
+      return Order.fromJson(response.data['data']);
     } catch (e) {
       if (e is DioException && e.response?.statusCode == 422) {
         final errors = e.response?.data['errors'] ?? {};
-        print("❌ Validation errors:");
+        final formattedErrors = <String, String>{};
         errors.forEach((key, value) {
-          print("🔹 $key: ${(value as List).join(', ')}");
+          formattedErrors[key] = (value as List).join(', ');
         });
+
+        throw formattedErrors;
       } else {
         print("🚨 General error: ${e.toString()}");
+        throw Exception('Failed to create order: ${e.toString()}');
       }
-
-      throw Exception('Failed to create order: ${e.toString()}');
     }
+
   }
 
   // Update order

@@ -54,6 +54,7 @@ class HomeView extends GetView<AuthController> {
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
             ElevatedButton.icon(
               icon: const Icon(Icons.local_shipping, color: Colors.white),
@@ -71,6 +72,7 @@ class HomeView extends GetView<AuthController> {
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
             const Divider(),
             const SizedBox(height: 16),

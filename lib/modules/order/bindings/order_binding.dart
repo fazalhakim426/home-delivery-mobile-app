@@ -6,9 +6,9 @@ class OrderBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<OrderRepository>(() => OrderRepository());
-
-    Get.lazyPut<OrderController>(
-      () => OrderController(orderRepository: Get.find()),
+    Get.put<OrderController>(
+      OrderController(orderRepository: Get.find()),
+      permanent: true, // Keep controller instance alive
     );
   }
 }
