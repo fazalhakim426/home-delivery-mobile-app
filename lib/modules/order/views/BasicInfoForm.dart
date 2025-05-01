@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simpl/modules/order/controllers/order_controller.dart';
+import 'package:simpl/modules/order/controllers/validators/order_validators.dart';
 
 class BasicInfoForm extends GetView<OrderController> {
   @override
@@ -17,40 +17,43 @@ class BasicInfoForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 8),
 
-          Obx(() => TextFormField(
-            controller: controller.trackingIdController,
-            onChanged: (_) => controller.fieldErrors.remove('parcel.tracking_id'),
+          // Remove Obx since we're not observing any reactive variables here
+          TextFormField(
+            controller: controller.parcelController.trackingIdController,
             decoration: InputDecoration(
               labelText: 'Tracking/Customer ID*',
               border: const OutlineInputBorder(),
+              // If you need to show errors from the controller
               errorText: controller.fieldErrors['parcel.tracking_id'],
             ),
-            validator: controller.validateRequired,
-          )),
+            validator: OrderValidators.validateRequired,
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: controller.weightController,
-                  decoration: const InputDecoration(
+                  controller: controller.parcelController.weightController,
+                  decoration: InputDecoration(
                     labelText: 'Weight (kg)*',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    errorText: controller.fieldErrors['parcel.weight'],
                   ),
                   keyboardType: TextInputType.number,
-                  validator: controller.validateNumber,
+                  validator: OrderValidators.validateNumber,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: TextFormField(
-                  controller: controller.shipmentValueController,
-                  decoration: const InputDecoration(
+                  controller: controller.parcelController.shipmentValueController,
+                  decoration: InputDecoration(
                     labelText: 'Shipment value (\$)*',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    errorText: controller.fieldErrors['parcel.shipment_value'],
                   ),
                   keyboardType: TextInputType.number,
-                  validator: controller.validateNumber,
+                  validator: OrderValidators.validateNumber,
                 ),
               ),
             ],
@@ -63,37 +66,40 @@ class BasicInfoForm extends GetView<OrderController> {
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: controller.lengthController,
-                  decoration: const InputDecoration(
+                  controller: controller.parcelController.lengthController,
+                  decoration: InputDecoration(
                     labelText: 'Length',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    errorText: controller.fieldErrors['parcel.length'],
                   ),
                   keyboardType: TextInputType.number,
-                  validator: controller.validateNumber,
+                  validator: OrderValidators.validateNumber,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: TextFormField(
-                  controller: controller.widthController,
-                  decoration: const InputDecoration(
+                  controller: controller.parcelController.widthController,
+                  decoration: InputDecoration(
                     labelText: 'Width',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    errorText: controller.fieldErrors['parcel.width'],
                   ),
                   keyboardType: TextInputType.number,
-                  validator: controller.validateNumber,
+                  validator: OrderValidators.validateNumber,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: TextFormField(
-                  controller: controller.heightController,
-                  decoration: const InputDecoration(
+                  controller: controller.parcelController.heightController,
+                  decoration: InputDecoration(
                     labelText: 'Height',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    errorText: controller.fieldErrors['parcel.height'],
                   ),
                   keyboardType: TextInputType.number,
-                  validator: controller.validateNumber,
+                  validator: OrderValidators.validateNumber,
                 ),
               ),
             ],
@@ -103,4 +109,3 @@ class BasicInfoForm extends GetView<OrderController> {
     );
   }
 }
-

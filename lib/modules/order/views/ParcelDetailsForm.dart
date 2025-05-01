@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simpl/modules/order/controllers/order_controller.dart';
+import 'package:simpl/modules/order/controllers/validators/order_validators.dart';
 
 class ParcelDetailsForm extends GetView<OrderController> {
   @override
@@ -20,13 +21,14 @@ class ParcelDetailsForm extends GetView<OrderController> {
 
             // Service ID Dropdown
             DropdownButtonFormField<int>(
-              value: controller.selectedServiceId.value,
-              onChanged: (value) => controller.selectedServiceId.value = value!,
-              decoration: const InputDecoration(
+              value: controller.parcelController.selectedServiceId.value,
+              onChanged: (value) => controller.parcelController.selectedServiceId.value = value!,
+              decoration: InputDecoration(
                 labelText: 'Service',
                 border: OutlineInputBorder(),
+                errorText: controller.fieldErrors["parcel.service_id"],
               ),
-              items: controller.services
+              items: controller.parcelController.services
                   .map((service) => DropdownMenuItem(
                 value: service.id,
                 child: Text(service.name),
@@ -39,11 +41,12 @@ class ParcelDetailsForm extends GetView<OrderController> {
 
             // Tax Modality Dropdown
             DropdownButtonFormField<String>(
-              value: controller.taxModality.value,
-              onChanged: (value) => controller.taxModality.value = value!,
-              decoration: const InputDecoration(
+              value: controller.parcelController.taxModality.value,
+              onChanged: (value) => controller.parcelController.taxModality.value = value!,
+              decoration: InputDecoration(
                 labelText: 'Tax Modality',
                 border: OutlineInputBorder(),
+                errorText: controller.getFieldError('parcel.tax_modality'), // Add this line
               ),
               items: const [
                 DropdownMenuItem(value: 'DDU', child: Text('DDU')),
@@ -56,20 +59,41 @@ class ParcelDetailsForm extends GetView<OrderController> {
 
             const Text('Products', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-
             Obx(() {
-              if (controller.products.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Text('No products added yet', textAlign: TextAlign.center),
-                );
+              if (controller.productController.products.isEmpty) {
+                final productsError = controller.getFieldError('products');
+
+                if (productsError != null && productsError.isNotEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      productsError, // Display the actual error message from controller
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.red), // Make error text red
+                    ),
+                  );
+                } else {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      'No products added yet',
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
               }
               return ListView.builder(
-                itemCount: controller.products.length,
+                itemCount: controller.productController.products.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (_, index) {
-                  final product = controller.products[index];
+                  final product = controller.productController.products[index];
+                  // Get errors for this specific product index
+                  final shCodeError = controller.getFieldError('products.$index.sh_code');
+                  final descriptionError = controller.getFieldError('products.$index.description');
+                  final valueError = controller.getFieldError('products.$index.value');
+                  final quantityError = controller.getFieldError('products.$index.quantity');
+
                   return Card(
                     margin: const EdgeInsets.only(bottom: 12),
                     child: Padding(
@@ -79,10 +103,14 @@ class ParcelDetailsForm extends GetView<OrderController> {
                         children: [
                           DropdownButtonFormField<int>(
                             value: product.selectedShCode.value,
-                            onChanged: (value) => product.selectedShCode.value = value!,
-                            decoration: const InputDecoration(
+                            onChanged: (value) {
+                              product.selectedShCode.value = value!;
+                              controller.clearFieldError('products.$index.sh_code');
+                            },
+                            decoration: InputDecoration(
                               labelText: 'Sh Code',
                               border: OutlineInputBorder(),
+                              errorText: shCodeError, // Display error if exists
                             ),
                             items: product.shCodes
                                 .map((shCode) => DropdownMenuItem(
@@ -90,18 +118,21 @@ class ParcelDetailsForm extends GetView<OrderController> {
                               child: Text(shCode.description),
                             ))
                                 .toList(),
-                            validator: (value) =>
-                            value == null ? 'Please select sh code' : null,
+                            validator: (value) => value == null ? 'Please select sh code' : null,
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: product.descriptionController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Description',
                               border: OutlineInputBorder(),
                               isDense: true,
+                              errorText: descriptionError, // Display error if exists
                             ),
-                            validator: controller.validateRequired,
+                            onChanged: (value) {
+                              controller.clearFieldError('products.$index.description');
+                            },
+                            validator: OrderValidators.validateRequired,
                           ),
                           const SizedBox(height: 8),
                           Row(
@@ -109,26 +140,34 @@ class ParcelDetailsForm extends GetView<OrderController> {
                               Expanded(
                                 child: TextFormField(
                                   controller: product.quantityController,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     labelText: 'Quantity',
                                     border: OutlineInputBorder(),
                                     isDense: true,
+                                    errorText: quantityError, // Display error if exists
                                   ),
                                   keyboardType: TextInputType.number,
-                                  validator: controller.validateNumber,
+                                  onChanged: (value) {
+                                    controller.clearFieldError('products.$index.quantity');
+                                  },
+                                  validator: OrderValidators.validateNumber,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: TextFormField(
                                   controller: product.valueController,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     labelText: 'Value (\$)',
                                     border: OutlineInputBorder(),
                                     isDense: true,
+                                    errorText: valueError, // Display error if exists
                                   ),
                                   keyboardType: TextInputType.number,
-                                  validator: controller.validateNumber,
+                                  onChanged: (value) {
+                                    controller.clearFieldError('products.$index.value');
+                                  },
+                                  validator: OrderValidators.validateNumber,
                                 ),
                               ),
                             ],
@@ -164,7 +203,7 @@ class ParcelDetailsForm extends GetView<OrderController> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton.icon(
-                              onPressed: () => controller.removeProduct(index),
+                              onPressed: () => controller.productController.removeProduct(index),
                               icon: const Icon(Icons.delete, color: Colors.red),
                               label: const Text('Remove',
                                   style: TextStyle(color: Colors.red)),
@@ -176,13 +215,15 @@ class ParcelDetailsForm extends GetView<OrderController> {
                   );
                 },
               );
-            }),
+
+
+             }),
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  controller.addProduct();
+                  controller.productController.addProduct();
                   // Scroll to bottom when new product is added
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     Scrollable.ensureVisible(

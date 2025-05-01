@@ -2,9 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simpl/modules/order/controllers/order_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:simpl/modules/order/controllers/order_controller.dart';
+import 'package:simpl/modules/order/controllers/validators/order_validators.dart';
 
 class SenderRecipientForm extends GetView<OrderController> {
   @override
@@ -17,58 +15,58 @@ class SenderRecipientForm extends GetView<OrderController> {
           const Text('Sender Information', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           TextFormField(
-            controller: controller.senderFirstNameController,
+            controller: controller.senderController.firstNameController,
             decoration: const InputDecoration(
               labelText: 'First Name*',
               border: OutlineInputBorder(),
               hintText: 'e.g., Thomaz',
             ),
-            validator: controller.validateRequired,
+            validator: OrderValidators.validateRequired,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.senderLastNameController,
+            controller: controller.senderController.lastNameController,
             decoration: const InputDecoration(
               labelText: 'Last Name*',
               border: OutlineInputBorder(),
               hintText: 'e.g., Marques',
             ),
-            validator: controller.validateRequired,
+            validator: OrderValidators.validateRequired,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.senderEmailController,
+            controller: controller.senderController.emailController,
             decoration: const InputDecoration(
               labelText: 'Email*',
               border: OutlineInputBorder(),
               hintText: 'e.g., contato@babylicio.us',
             ),
             keyboardType: TextInputType.emailAddress,
-            validator: controller.validateEmail,
+            validator: OrderValidators.validateEmail,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.senderTaxIdController,
+            controller: controller.senderController.taxIdController,
             decoration: const InputDecoration(
               labelText: 'Tax ID*',
               border: OutlineInputBorder(),
               hintText: 'e.g., 32786897807',
             ),
-            validator: controller.validateRequired,
+            validator: OrderValidators.validateRequired,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.senderCountryIdController,
+            controller: controller.senderController.countryIdController,
             decoration: const InputDecoration(
               labelText: 'Country ID*',
               border: OutlineInputBorder(),
               hintText: 'e.g., US',
             ),
-            validator: controller.validateRequired,
+            validator: OrderValidators.validateRequired,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.senderWebsiteController,
+            controller: controller.senderController.websiteController,
             decoration: const InputDecoration(
               labelText: 'Website',
               border: OutlineInputBorder(),
@@ -80,49 +78,48 @@ class SenderRecipientForm extends GetView<OrderController> {
           const Text('Recipient Information', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           TextFormField(
-            controller: controller.recipientFirstNameController,
+            controller: controller.recipientController.firstNameController,
             decoration: const InputDecoration(
               labelText: 'First Name*',
               border: OutlineInputBorder(),
               hintText: 'e.g., Alex',
             ),
-            validator: controller.validateRequired,
+            validator: OrderValidators.validateRequired,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientLastNameController,
+            controller: controller.recipientController.lastNameController,
             decoration: const InputDecoration(
               labelText: 'Last Name*',
               border: OutlineInputBorder(),
               hintText: 'e.g., Hoyos',
             ),
-            validator: controller.validateRequired,
+            validator: OrderValidators.validateRequired,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientEmailController,
+            controller: controller.recipientController.emailController,
             decoration: const InputDecoration(
               labelText: 'Email*',
               border: OutlineInputBorder(),
               hintText: 'e.g., test@hd.com',
             ),
             keyboardType: TextInputType.emailAddress,
-            validator: controller.validateEmail,
+            validator: OrderValidators.validateEmail,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientPhoneController,
+            controller: controller.recipientController.phoneController,
             decoration: const InputDecoration(
               labelText: 'Phone*',
               border: OutlineInputBorder(),
               hintText: 'e.g., +5511937293951',
             ),
             keyboardType: TextInputType.phone,
-            validator: controller.validateRequired,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientTaxIdController,
+            controller: controller.recipientController.taxIdController,
             decoration: const InputDecoration(
               labelText: 'Tax ID',
               border: OutlineInputBorder(),
@@ -131,7 +128,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientCityController,
+            controller: controller.recipientController.cityController,
             decoration: const InputDecoration(
               labelText: 'City',
               border: OutlineInputBorder(),
@@ -140,7 +137,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientStreetNoController,
+            controller: controller.recipientController.streetNoController,
             decoration: const InputDecoration(
               labelText: 'Street No',
               border: OutlineInputBorder(),
@@ -149,7 +146,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientAddressController,
+            controller: controller.recipientController.addressController,
             decoration: const InputDecoration(
               labelText: 'Address',
               border: OutlineInputBorder(),
@@ -158,7 +155,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientAddress2Controller,
+            controller: controller.recipientController.address2Controller,
             decoration: const InputDecoration(
               labelText: 'Address Line 2',
               border: OutlineInputBorder(),
@@ -167,7 +164,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientAccountTypeController,
+            controller: controller.recipientController.accountTypeController,
             decoration: const InputDecoration(
               labelText: 'Account Type',
               border: OutlineInputBorder(),
@@ -176,7 +173,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientZipCodeController,
+            controller: controller.recipientController.zipCodeController,
             decoration: const InputDecoration(
               labelText: 'Zipcode',
               border: OutlineInputBorder(),
@@ -185,7 +182,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientStateIdController,
+            controller: controller.recipientController.stateIdController,
             decoration: const InputDecoration(
               labelText: 'State ID',
               border: OutlineInputBorder(),
@@ -194,7 +191,7 @@ class SenderRecipientForm extends GetView<OrderController> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            controller: controller.recipientCountryIdController,
+            controller: controller.recipientController.countryIdController,
             decoration: const InputDecoration(
               labelText: 'Country ID',
               border: OutlineInputBorder(),
