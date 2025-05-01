@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simpl/data/models/ServiceModel.dart';
 import 'package:simpl/data/models/order_model.dart';
 import 'package:simpl/data/repositories/order_repository.dart';
 import 'package:simpl/data/services/form_persistence_service.dart';
+import 'package:simpl/modules/order/controllers/ProductFormModel.dart';
 
 class OrderController extends GetxController {
   final RxList<ProductFormModel> products = <ProductFormModel>[].obs;
@@ -17,6 +19,12 @@ class OrderController extends GetxController {
     _setupControllerListeners();
   }
 
+  final senderLastNameController = TextEditingController();
+  final senderEmailController = TextEditingController();
+  final senderFirstNameController = TextEditingController();
+  final senderTaxIdController = TextEditingController();
+  final senderCountryIdController = TextEditingController();
+  final senderWebsiteController = TextEditingController();
   // Add step management
   final currentStep = 0.obs;
   final basicInfoFormKey = GlobalKey<FormState>();
@@ -25,13 +33,9 @@ class OrderController extends GetxController {
   final isLoading = false.obs;
   final orders = <Order>[].obs;
   final fieldErrors = RxMap<String, String>({});
-  final RxnString taxModality = RxnString(); // Nullable String observable
-
+  final RxnString taxModality = RxnString();
   final RxnInt selectedServiceId = RxnInt();
-  // Text controllers for adding/editing orders
   final serviceController = TextEditingController();
-  final titleController = TextEditingController();
-  final descriptionController = TextEditingController();
   final trackingIdController = TextEditingController();
   final customerReferenceController = TextEditingController();
   final weightController = TextEditingController();
@@ -39,10 +43,18 @@ class OrderController extends GetxController {
   final lengthController = TextEditingController();
   final widthController = TextEditingController();
   final heightController = TextEditingController();
-  final senderNameController = TextEditingController();
-  final senderEmailController = TextEditingController();
-  final recipientNameController = TextEditingController();
+  final recipientFirstNameController = TextEditingController();
+  final recipientLastNameController = TextEditingController();
+  final recipientCityController = TextEditingController();
+  final recipientTaxIdController = TextEditingController();
   final recipientEmailController = TextEditingController();
+  final recipientStreetNoController = TextEditingController();
+  final recipientAddressController = TextEditingController();
+  final recipientAddress2Controller = TextEditingController();
+  final recipientAccountTypeController = TextEditingController();
+  final recipientStateIdController = TextEditingController();
+  final recipientCountryIdController = TextEditingController();
+  final recipientZipCodeController = TextEditingController();
   final recipientPhoneController = TextEditingController();
   final List<Service> services = [
     Service(id: 1, name: 'Standard  '),
@@ -54,7 +66,6 @@ class OrderController extends GetxController {
   final selectedOrder = Rxn<Order>();
 
   void _setupControllerListeners() {
-    // Remove existing listeners first to avoid duplicates
     _removeListeners();
 
     trackingIdController.addListener(_debouncedSaveForm);
@@ -64,9 +75,11 @@ class OrderController extends GetxController {
     lengthController.addListener(_debouncedSaveForm);
     widthController.addListener(_debouncedSaveForm);
     heightController.addListener(_debouncedSaveForm);
-    senderNameController.addListener(_debouncedSaveForm);
+    senderFirstNameController.addListener(_debouncedSaveForm);
+    senderLastNameController.addListener(_debouncedSaveForm);
     senderEmailController.addListener(_debouncedSaveForm);
-    recipientNameController.addListener(_debouncedSaveForm);
+    recipientFirstNameController.addListener(_debouncedSaveForm);
+    recipientLastNameController.addListener(_debouncedSaveForm);
     recipientEmailController.addListener(_debouncedSaveForm);
     recipientPhoneController.addListener(_debouncedSaveForm);
   }
@@ -87,9 +100,11 @@ class OrderController extends GetxController {
     lengthController.removeListener(_debouncedSaveForm);
     widthController.removeListener(_debouncedSaveForm);
     heightController.removeListener(_debouncedSaveForm);
-    senderNameController.removeListener(_debouncedSaveForm);
+    senderFirstNameController.removeListener(_debouncedSaveForm);
+    senderLastNameController.removeListener(_debouncedSaveForm);
     senderEmailController.removeListener(_debouncedSaveForm);
-    recipientNameController.removeListener(_debouncedSaveForm);
+    recipientFirstNameController.removeListener(_debouncedSaveForm);
+    recipientLastNameController.removeListener(_debouncedSaveForm);
     recipientEmailController.removeListener(_debouncedSaveForm);
     recipientPhoneController.removeListener(_debouncedSaveForm);
   }
@@ -104,52 +119,26 @@ class OrderController extends GetxController {
     if (services.isNotEmpty) {
       selectedServiceId.value = services.first.id;
     }
-
     taxModality.value = 'DDU';
   }
 
   void _loadSavedFormData() {
     final savedData = _formService.getOrderFormData();
     if (savedData != null) {
-      // Only set text if the field is currently empty
-
-
-      if (trackingIdController.text.isEmpty) {
-        trackingIdController.text = savedData['trackingId'] ?? '';
-      }
-      if (customerReferenceController.text.isEmpty) {
-        customerReferenceController.text = savedData['customerReference'] ?? '';
-      }
-      if (weightController.text.isEmpty) {
-        weightController.text = savedData['weight'] ?? '';
-      }
-      if (shipmentValueController.text.isEmpty) {
-        shipmentValueController.text = savedData['shipmentValue'] ?? '';
-      }
-      if (lengthController.text.isEmpty) {
-        lengthController.text = savedData['length'] ?? '';
-      }
-      if (widthController.text.isEmpty) {
-        widthController.text = savedData['width'] ?? '';
-      }
-      if (heightController.text.isEmpty) {
-        heightController.text = savedData['height'] ?? '';
-      }
-      if (senderNameController.text.isEmpty) {
-        senderNameController.text = savedData['senderName'] ?? '';
-      }
-      if (senderEmailController.text.isEmpty) {
-        senderEmailController.text = savedData['senderEmail'] ?? '';
-      }
-      if (recipientNameController.text.isEmpty) {
-        recipientNameController.text = savedData['recipientName'] ?? '';
-      }
-      if (recipientEmailController.text.isEmpty) {
-        recipientEmailController.text = savedData['recipientEmail'] ?? '';
-      }
-      if (recipientPhoneController.text.isEmpty) {
-        recipientPhoneController.text = savedData['recipientPhone'] ?? '';
-      }
+      trackingIdController.text = savedData['trackingId'] ?? '';
+      customerReferenceController.text = savedData['customerReference'] ?? '';
+      weightController.text = savedData['weight'] ?? '';
+      shipmentValueController.text = savedData['shipmentValue'] ?? '';
+      lengthController.text = savedData['length'] ?? '';
+      widthController.text = savedData['width'] ?? '';
+      heightController.text = savedData['height'] ?? '';
+      senderFirstNameController.text = savedData['senderFirstName'] ?? '';
+      senderLastNameController.text = savedData['senderLastName'] ?? '';
+      senderEmailController.text = savedData['senderEmail'] ?? '';
+      recipientFirstNameController.text = savedData['recipientFirstName'] ?? '';
+      recipientLastNameController.text = savedData['recipientLastName'] ?? '';
+      recipientEmailController.text = savedData['recipientEmail'] ?? '';
+      recipientPhoneController.text = savedData['recipientPhone'] ?? '';
     }
   }
 
@@ -162,14 +151,17 @@ class OrderController extends GetxController {
       'length': lengthController.text,
       'width': widthController.text,
       'height': heightController.text,
-      'senderName': senderNameController.text,
+      'senderFirstName': senderFirstNameController.text,
+      'senderLastName': senderLastNameController.text,
       'senderEmail': senderEmailController.text,
-      'recipientName': recipientNameController.text,
+      'recipientFirstName': recipientFirstNameController.text,
+      'recipientLastName': recipientLastNameController.text,
       'recipientEmail': recipientEmailController.text,
       'recipientPhone': recipientPhoneController.text,
     };
     await _formService.saveOrderFormData(formData);
   }
+
 
   // Fetch all orders
   Future<void> fetchOrders() async {
@@ -197,7 +189,7 @@ class OrderController extends GetxController {
       final orderData = {
         "parcel": {
           "service_id": selectedServiceId.value,
-          "merchant": senderNameController.text,
+          "merchant": recipientFirstNameController.text,
           "carrier": "Carrier",
           "tracking_id": trackingIdController.text,
           "customer_reference": trackingIdController.text,
@@ -210,32 +202,29 @@ class OrderController extends GetxController {
           "shipment_value": shipmentValueController.text,
         },
         "sender": {
-          "sender_first_name": senderNameController.text.split(' ').first,
-          "sender_last_name": senderNameController.text.split(' ').length > 1
-              ? senderNameController.text.split(' ').last
-              : '',
+          "sender_first_name": senderFirstNameController.text,
+          "sender_last_name": senderLastNameController.text,
           "sender_email": senderEmailController.text,
-          "sender_taxId": "32786897807",
-          "sender_country_id": "US",
-          "sender_website": "https://dev.homedeliverybr.com"
+          "sender_taxId": senderTaxIdController.text,
+          "sender_country_id": senderCountryIdController.text,
+          "sender_website": senderWebsiteController.text,
         },
         "recipient": {
-          "first_name": recipientNameController.text.split(' ').first,
-          "last_name": recipientNameController.text.split(' ').length > 1
-              ? recipientNameController.text.split(' ').last
-              : '',
+          "first_name": recipientFirstNameController.text,
+          "last_name": recipientLastNameController.text,
           "email": recipientEmailController.text,
           "phone": recipientPhoneController.text,
-          "tax_id": "73489158172",
-          "city": "Brasilia",
-          "street_no": "0",
-          "address": "Sample Address",
-          "address2": "",
-          "account_type": "individual",
-          "zipcode": "71680389",
-          "state_id": "509",
-          "country_id": 30
+          "tax_id": recipientTaxIdController.text,
+          "city": recipientCityController.text,
+          "street_no": recipientStreetNoController.text,
+          "address": recipientAddressController.text,
+          "address2": recipientAddress2Controller.text,
+          "account_type": recipientAccountTypeController.text,
+          "zipcode": recipientZipCodeController.text,
+          "state_id": recipientStateIdController.text,
+          "country_id": recipientCountryIdController.text,
         },
+
 
         "products": products.map((p) => p.toProduct().toJson()).toList()
       };
@@ -277,21 +266,18 @@ class OrderController extends GetxController {
       return;
     }
 
-    if (titleController.text.isEmpty || descriptionController.text.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Title and description are required',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return;
-    }
+    // if (titleController.text.isEmpty || descriptionController.text.isEmpty) {
+    //   Get.snackbar(
+    //     'Error',
+    //     'Title and description are required',
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    //   return;
+    // }
 
     isLoading.value = true;
     try {
-      final updatedOrder = selectedOrder.value!.copyWith(
-        title: titleController.text,
-        description: descriptionController.text,
-      );
+      final updatedOrder = selectedOrder.value!.copyWith();
 
       final result = await _orderRepository.updateOrder(updatedOrder);
 
@@ -368,17 +354,12 @@ class OrderController extends GetxController {
   // Set selected order for editing
   void selectOrderForEdit(Order order) {
     selectedOrder.value = order;
-    titleController.text = order.title;
-    descriptionController.text = order.description;
   }
 
   @override
   void onClose() {
     _debounceTimer?.cancel();
     _removeListeners();
-    // Don't clear the form data here, just dispose the controllers
-    titleController.dispose();
-    descriptionController.dispose();
     trackingIdController.dispose();
     customerReferenceController.dispose();
     weightController.dispose();
@@ -386,9 +367,7 @@ class OrderController extends GetxController {
     lengthController.dispose();
     widthController.dispose();
     heightController.dispose();
-    senderNameController.dispose();
     senderEmailController.dispose();
-    recipientNameController.dispose();
     recipientEmailController.dispose();
     recipientPhoneController.dispose();
     super.onClose();
@@ -397,8 +376,6 @@ class OrderController extends GetxController {
   void clearForm() {
     // Only clear form data if explicitly requested
     currentStep.value = 0;
-    titleController.clear();
-    descriptionController.clear();
     trackingIdController.clear();
     customerReferenceController.clear();
     weightController.clear();
@@ -406,9 +383,7 @@ class OrderController extends GetxController {
     lengthController.clear();
     widthController.clear();
     heightController.clear();
-    senderNameController.clear();
     senderEmailController.clear();
-    recipientNameController.clear();
     recipientEmailController.clear();
     recipientPhoneController.clear();
     selectedOrder.value = null;
@@ -483,39 +458,3 @@ class OrderController extends GetxController {
   }
 }
 
-class ProductFormModel {
-  final TextEditingController shCodeController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController quantityController = TextEditingController();
-  final TextEditingController valueController = TextEditingController();
-
-  final RxBool isBattery = false.obs;
-  final RxBool isPerfume = false.obs;
-  final RxBool isFlameable = false.obs;
-
-  final RxnInt selectedShCode = RxnInt();
-  final List<ShCode> shCodes = [
-    ShCode(code: 610799, description: "jamas, roupões de ba"),
-    ShCode(code: 620590, description: "Vestuário e seus acessórios"),
-    // Add more as needed
-  ];
-
-  Product toProduct() {
-    return Product(
-      shCode: selectedShCode.value ?? 0,
-      description: descriptionController.text.trim(),
-      quantity: int.tryParse(quantityController.text.trim()) ?? 0,
-      value: double.tryParse(valueController.text.trim()) ?? 0.0,
-      isBattery: isBattery.value ? 1 : 0,
-      isPerfume: isPerfume.value ? 1 : 0,
-      isFlameable: isFlameable.value ? 1 : 0,
-    );
-  }
-
-  void dispose() {
-    shCodeController.dispose();
-    descriptionController.dispose();
-    quantityController.dispose();
-    valueController.dispose();
-  }
-}
