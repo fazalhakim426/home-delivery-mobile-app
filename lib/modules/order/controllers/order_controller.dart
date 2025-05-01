@@ -7,6 +7,8 @@ import 'package:simpl/data/repositories/order_repository.dart';
 import 'package:simpl/data/services/form_persistence_service.dart';
 
 class OrderController extends GetxController {
+  final RxList<ProductFormModel> products = <ProductFormModel>[].obs;
+
   final OrderRepository _orderRepository;
   final _formService = Get.find<FormPersistenceService>();
 
@@ -20,12 +22,14 @@ class OrderController extends GetxController {
   final basicInfoFormKey = GlobalKey<FormState>();
   final parcelDetailsFormKey = GlobalKey<FormState>();
   final senderRecipientFormKey = GlobalKey<FormState>();
-
   final isLoading = false.obs;
   final orders = <Order>[].obs;
   final fieldErrors = RxMap<String, String>({});
+  final RxnString taxModality = RxnString(); // Nullable String observable
 
+  final RxnInt selectedServiceId = RxnInt();
   // Text controllers for adding/editing orders
+  final serviceController = TextEditingController();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final trackingIdController = TextEditingController();
@@ -40,6 +44,11 @@ class OrderController extends GetxController {
   final recipientNameController = TextEditingController();
   final recipientEmailController = TextEditingController();
   final recipientPhoneController = TextEditingController();
+  final List<Service> services = [
+    Service(id: 1, name: 'Standard  '),
+    Service(id: 2, name: 'Express Delivery'),
+    // Add more as needed
+  ];
 
   // Selected order for editing
   final selectedOrder = Rxn<Order>();
@@ -48,8 +57,6 @@ class OrderController extends GetxController {
     // Remove existing listeners first to avoid duplicates
     _removeListeners();
 
-    titleController.addListener(_debouncedSaveForm);
-    descriptionController.addListener(_debouncedSaveForm);
     trackingIdController.addListener(_debouncedSaveForm);
     customerReferenceController.addListener(_debouncedSaveForm);
     weightController.addListener(_debouncedSaveForm);
@@ -73,8 +80,6 @@ class OrderController extends GetxController {
   }
 
   void _removeListeners() {
-    titleController.removeListener(_debouncedSaveForm);
-    descriptionController.removeListener(_debouncedSaveForm);
     trackingIdController.removeListener(_debouncedSaveForm);
     customerReferenceController.removeListener(_debouncedSaveForm);
     weightController.removeListener(_debouncedSaveForm);
@@ -95,18 +100,20 @@ class OrderController extends GetxController {
     // Load saved data immediately when controller is initialized
     _loadSavedFormData();
     fetchOrders();
+    // Optionally set a default selected service
+    if (services.isNotEmpty) {
+      selectedServiceId.value = services.first.id;
+    }
+
+    taxModality.value = 'DDU';
   }
 
   void _loadSavedFormData() {
     final savedData = _formService.getOrderFormData();
     if (savedData != null) {
       // Only set text if the field is currently empty
-      if (titleController.text.isEmpty) {
-        titleController.text = savedData['title'] ?? '';
-      }
-      if (descriptionController.text.isEmpty) {
-        descriptionController.text = savedData['description'] ?? '';
-      }
+
+
       if (trackingIdController.text.isEmpty) {
         trackingIdController.text = savedData['trackingId'] ?? '';
       }
@@ -148,8 +155,6 @@ class OrderController extends GetxController {
 
   Future<void> _saveFormData() async {
     final formData = {
-      'title': titleController.text,
-      'description': descriptionController.text,
       'trackingId': trackingIdController.text,
       'customerReference': customerReferenceController.text,
       'weight': weightController.text,
@@ -187,29 +192,15 @@ class OrderController extends GetxController {
   // Add new order
   Future<void> addOrder() async {
     isLoading.value = true;
-    if (titleController.text.isEmpty || descriptionController.text.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Title and description are required',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return;
-    }
 
     try {
-      // final newOrder =
-      // Order(
-      //   title: titleController.text,
-      //   description: descriptionController.text,
-      // );
-      //
       final orderData = {
         "parcel": {
-          "service_id": 1,
-          "merchant": "John",
+          "service_id": selectedServiceId.value,
+          "merchant": senderNameController.text,
           "carrier": "Carrier",
           "tracking_id": trackingIdController.text,
-          "customer_reference": customerReferenceController.text,
+          "customer_reference": trackingIdController.text,
           "measurement_unit": "kg/cm",
           "weight": weightController.text,
           "length": lengthController.text,
@@ -245,20 +236,13 @@ class OrderController extends GetxController {
           "state_id": "509",
           "country_id": 30
         },
-        "products": [
-          {
-            "sh_code": "61019090",
-            "description": titleController.text,
-            "quantity": 1,
-            "value": shipmentValueController.text,
-            "is_battery": 0,
-            "is_perfume": 0,
-            "is_flameable": 0
-          }
-        ]
+
+        "products": products.map((p) => p.toProduct().toJson()).toList()
       };
-      print('orderData sending to repo');
+
+      print('Sending to API:');
       print(orderData);
+
       final createdOrder = await _orderRepository.createOrder(orderData);
       orders.add(createdOrder);
       // clearForm();
@@ -410,89 +394,6 @@ class OrderController extends GetxController {
     super.onClose();
   }
 
-  Future<void> createOrder() async {
-    print('create order init');
-      if (titleController.text.isEmpty || trackingIdController.text.isEmpty) {
-        Get.snackbar('Error', 'Required fields are missing');
-        return;
-      }
-
-
-      isLoading.value = true;
-      try {
-      final orderData = {
-      "parcel": {
-      "service_id": 1,
-      "merchant": "John",
-      "carrier": "Carrier",
-      "tracking_id": trackingIdController.text,
-      "customer_reference": customerReferenceController.text,
-      "measurement_unit": "kg/cm",
-      "weight": weightController.text,
-      "length": lengthController.text,
-      "width": widthController.text,
-      "height": heightController.text,
-      "tax_modality": "DDU",
-      "shipment_value": shipmentValueController.text,
-      },
-      "sender": {
-      "sender_first_name": senderNameController.text.split(' ').first,
-      "sender_last_name": senderNameController.text.split(' ').length > 1
-      ? senderNameController.text.split(' ').last
-          : '',
-      "sender_email": senderEmailController.text,
-      "sender_taxId": "32786897807",
-      "sender_country_id": "US",
-      "sender_website": "https://dev.homedeliverybr.com"
-      },
-      "recipient": {
-      "first_name": recipientNameController.text.split(' ').first,
-      "last_name": recipientNameController.text.split(' ').length > 1
-      ? recipientNameController.text.split(' ').last
-            : '',
-        "email": recipientEmailController.text,
-        "phone": recipientPhoneController.text,
-        "tax_id": "73489158172",
-        "city": "Brasilia",
-        "street_no": "0",
-        "address": "Sample Address",
-        "address2": "",
-        "account_type": "individual",
-        "zipcode": "71680389",
-        "state_id": "509",
-        "country_id": 30
-      },
-        "products": [
-          {
-            "sh_code": "61019090",
-            "description": titleController.text,
-            "quantity": 1,
-            "value": shipmentValueController.text,
-            "is_battery": 0,
-            "is_perfume": 0,
-            "is_flameable": 0
-          }
-        ]
-      };
-
-      print('order data');
-      print(orderData);
-      // Call your API to create the order
-      final response = await _orderRepository.createOrder(orderData);
-      // Handle response
-      print('create order response');
-      print(response);
-
-      Get.back();
-      Get.snackbar('Success', 'Order created successfully');
-      fetchOrders();
-      } catch (e) {
-      Get.snackbar('Error', 'Failed to create order: ${e.toString()}');
-      } finally {
-      isLoading.value = false;
-      }
-  }
-
   void clearForm() {
     // Only clear form data if explicitly requested
     currentStep.value = 0;
@@ -521,10 +422,10 @@ class OrderController extends GetxController {
         isValid = basicInfoFormKey.currentState?.validate() ?? false;
         break;
       case 1:
-        isValid = parcelDetailsFormKey.currentState?.validate() ?? false;
+        isValid = senderRecipientFormKey.currentState?.validate() ?? false;
         break;
       case 2:
-        isValid = senderRecipientFormKey.currentState?.validate() ?? false;
+        isValid = parcelDetailsFormKey.currentState?.validate() ?? false;
         break;
     }
 
@@ -565,5 +466,56 @@ class OrderController extends GetxController {
       return 'Please enter a valid number';
     }
     return null;
+  }
+
+  void addProduct() {
+    final newProduct = ProductFormModel();
+    products.add(newProduct);
+    products.refresh(); // Force UI update
+  }
+
+  void removeProduct(int index) {
+    if (index >= 0 && index < products.length) {
+      products[index].dispose();
+      products.removeAt(index);
+      products.refresh(); // Force UI update
+    }
+  }
+}
+
+class ProductFormModel {
+  final TextEditingController shCodeController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
+  final TextEditingController valueController = TextEditingController();
+
+  final RxBool isBattery = false.obs;
+  final RxBool isPerfume = false.obs;
+  final RxBool isFlameable = false.obs;
+
+  final RxnInt selectedShCode = RxnInt();
+  final List<ShCode> shCodes = [
+    ShCode(code: 610799, description: "jamas, roupões de ba"),
+    ShCode(code: 620590, description: "Vestuário e seus acessórios"),
+    // Add more as needed
+  ];
+
+  Product toProduct() {
+    return Product(
+      shCode: selectedShCode.value ?? 0,
+      description: descriptionController.text.trim(),
+      quantity: int.tryParse(quantityController.text.trim()) ?? 0,
+      value: double.tryParse(valueController.text.trim()) ?? 0.0,
+      isBattery: isBattery.value ? 1 : 0,
+      isPerfume: isPerfume.value ? 1 : 0,
+      isFlameable: isFlameable.value ? 1 : 0,
+    );
+  }
+
+  void dispose() {
+    shCodeController.dispose();
+    descriptionController.dispose();
+    quantityController.dispose();
+    valueController.dispose();
   }
 }

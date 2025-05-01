@@ -243,10 +243,29 @@ class Order {
     );
   }
 }
+class ShCode{
+  final int code;
+  final String description ;
+  ShCode({
+    required this.code,required this.description
+});
+  factory ShCode.fromJson(Map<String, dynamic> json) {
+    return ShCode(
+      code: json['code'] ?? 0,
+      description: json['description'] ?? 'Unknown ShCode',
+    );
+  }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'description': description,
+    };
+  }
+}
 class Service {
   final int id;
-  final String? name;
+  final String name;
 
   Service({required this.id, required this.name});
 
@@ -372,6 +391,7 @@ class Product {
   final double value;
   final int isBattery;
   final int isPerfume;
+  final int isFlameable;
 
   Product({
     required this.shCode,
@@ -381,6 +401,8 @@ class Product {
     required this.value,
     required this.isBattery,
     required this.isPerfume,
+    required this.isFlameable,
+
   });
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
@@ -391,6 +413,7 @@ class Product {
       value: double.tryParse(json['value']?.toString() ?? '0') ?? 0,
       isBattery: int.tryParse(json['is_battery']?.toString() ?? '0') ?? 0,
       isPerfume: int.tryParse(json['is_perfume']?.toString() ?? '0') ?? 0,
+      isFlameable: int.tryParse(json['is_flameable']?.toString() ?? '0') ?? 0,
     );
   }
 
@@ -403,6 +426,7 @@ class Product {
       'value': value,
       'is_battery': isBattery,
       'is_perfume': isPerfume,
+      'is_flameable':isFlameable
     };
   }
 }
