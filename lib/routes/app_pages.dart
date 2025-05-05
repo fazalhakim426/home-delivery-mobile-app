@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
+import 'package:simpl/SplashScreen.dart';
 import 'package:simpl/modules/auth/bindings/auth_binding.dart';
 import 'package:simpl/modules/auth/views/login_view.dart';
 import 'package:simpl/modules/auth/views/register_view.dart';
 import 'package:simpl/modules/auth/views/verification_view.dart';
-import 'package:simpl/modules/home/bindings/home_binding.dart';
-import 'package:simpl/modules/home/views/home_view.dart';
 import 'package:simpl/modules/order/bindings/order_binding.dart';
 import 'package:simpl/modules/order/views/order_create_view.dart';
 import 'package:simpl/modules/order/views/order_view.dart';
@@ -16,9 +15,13 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.Splash;
 
   static final routes = [
+    GetPage(
+        name: Routes.Splash,
+        page: () => SplashScreen()
+    ),
     GetPage(
       name: Routes.LOGIN,
       page: () => const LoginView(),
@@ -35,11 +38,6 @@ class AppPages {
       binding: AuthBinding(),
     ),
     GetPage(
-      name: Routes.HOME,
-      page: () => const HomeView(),
-      binding: HomeBinding(),
-    ),
-    GetPage(
       name: Routes.TRACKINGS,
       page: () => const TrackingView(),
       binding: TrackingBinding(),
@@ -47,7 +45,10 @@ class AppPages {
     GetPage(
       name: Routes.ORDERS,
       page: () => const OrderView(),
-      binding: OrderBinding(),
+      bindings : [
+        OrderBinding(),
+        AuthBinding(),
+      ],
     ),
     GetPage(
       name: Routes.CREATE_ORDER,

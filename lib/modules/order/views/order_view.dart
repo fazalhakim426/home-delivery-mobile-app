@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:simpl/data/models/order_model.dart';
+import 'package:simpl/modules/auth/controllers/auth_controller.dart';
 import 'package:simpl/modules/order/controllers/order_controller.dart';
 import 'package:simpl/routes/app_pages.dart';
 
+import 'package:simpl/app/app_colors.dart';
 class OrderView extends GetView<OrderController> {
   const OrderView({super.key});
 
@@ -13,13 +15,22 @@ class OrderView extends GetView<OrderController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order List'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
+        actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+                onPressed: () {
+                  final authController = Get.find<AuthController>();
+                  authController.logout();
+                },
+            ),
+        ],
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.orders.isEmpty) {
           return const Center(
-            child: CircularProgressIndicator(color: Colors.indigo),
+            child: CircularProgressIndicator(color: AppColors.primary),
           );
         }
 
@@ -31,19 +42,19 @@ class OrderView extends GetView<OrderController> {
                 const Icon(Icons.list, size: 80, color: Colors.grey),
                 const SizedBox(height: 16),
                 const Text(
-                  'No tasks yet',
+                  'No order yet',
                   style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.add),
-                  label: const Text('Add New Task'),
+                  label: const Text('Place an Order'),
                   onPressed: () {
                     // controller.clearForm();
                     Get.toNamed(Routes.CREATE_ORDER);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                   ),
                 ),
@@ -66,7 +77,7 @@ class OrderView extends GetView<OrderController> {
           // controller.clearForm();
           Get.toNamed(Routes.CREATE_ORDER);
         },
-        backgroundColor: Colors.indigo,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
@@ -92,7 +103,7 @@ class OrderView extends GetView<OrderController> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.indigo,
+                    color: AppColors.primary,
                   ),
                 ),
                 Container(

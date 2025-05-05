@@ -32,6 +32,7 @@ class OrderController extends GetxController {
     _setupControllerListeners();
   }
 
+
   // Step management
   final currentStep = 0.obs;
   final basicInfoFormKey = GlobalKey<FormState>();

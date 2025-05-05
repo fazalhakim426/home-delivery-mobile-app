@@ -19,46 +19,54 @@ class ParcelDetailsForm extends GetView<OrderController> {
             ),
             const SizedBox(height: 12),
 
-            // Service ID Dropdown
-            DropdownButtonFormField<int>(
-              value: controller.parcelController.selectedServiceId.value,
-              onChanged: (value) => controller.parcelController.selectedServiceId.value = value!,
-              decoration: InputDecoration(
-                labelText: 'Service',
-                border: OutlineInputBorder(),
-                errorText: controller.fieldErrors["parcel.service_id"],
-              ),
-              items: controller.parcelController.services
-                  .map((service) => DropdownMenuItem(
-                value: service.id,
-                child: Text(service.name),
-              ))
-                  .toList(),
-              validator: (value) =>
-              value == null ? 'Please select a service' : null,
-            ),
+            Obx(() {
+              final errorText = controller.fieldErrors["parcel.service_id"];
+              return DropdownButtonFormField<int>(
+                value: controller.parcelController.selectedServiceId.value,
+                onChanged: (value) {
+                  controller.parcelController.selectedServiceId.value = value!;
+                  // Optional: Clear error when a selection is made
+                  controller.clearFieldError("parcel.service_id");
+                },
+                decoration: InputDecoration(
+                  labelText: 'Service',
+                  border: const OutlineInputBorder(),
+                  errorText: errorText, // Reactive error text
+                ),
+                items: controller.parcelController.services
+                    .map((service) => DropdownMenuItem(
+                  value: service.id,
+                  child: Text(service.name),
+                ))
+                    .toList(),
+                validator: (value) => value == null ? 'Please select a service' : null,
+              );
+            }),
             const SizedBox(height: 12),
-
-            // Tax Modality Dropdown
-            DropdownButtonFormField<String>(
-              value: controller.parcelController.taxModality.value,
-              onChanged: (value) => controller.parcelController.taxModality.value = value!,
-              decoration: InputDecoration(
-                labelText: 'Tax Modality',
-                border: OutlineInputBorder(),
-                errorText: controller.getFieldError('parcel.tax_modality'), // Add this line
-              ),
-              items: const [
-                DropdownMenuItem(value: 'DDU', child: Text('DDU')),
-                DropdownMenuItem(value: 'DDP', child: Text('DDP')),
-              ],
-              validator: (value) =>
-              value == null ? 'Please select tax modality' : null,
-            ),
+            Obx(() {
+              final errorText = controller.getFieldError('parcel.tax_modality');
+              return DropdownButtonFormField<String>(
+                value: controller.parcelController.taxModality.value,
+                onChanged: (value) {
+                  controller.parcelController.taxModality.value = value!;
+                  controller.clearFieldError("parcel.tax_modality");
+                },
+                decoration: InputDecoration(
+                  labelText: 'Tax Modality',
+                  border: OutlineInputBorder(),
+                  errorText: errorText, // Now reactive
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'DDU', child: Text('DDU')),
+                  DropdownMenuItem(value: 'DDP', child: Text('DDP')),
+                ],
+                validator: (value) => value == null ? 'Please select tax modality' : null,
+              );
+            }),
             const SizedBox(height: 16),
-
             const Text('Products', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
+
             Obx(() {
               if (controller.productController.products.isEmpty) {
                 final productsError = controller.getFieldError('products');

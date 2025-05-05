@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:simpl/modules/auth/controllers/auth_controller.dart';
 import 'package:simpl/routes/app_pages.dart';
 
+import 'package:simpl/app/app_colors.dart';
 class HomeView extends GetView<AuthController> {
   const HomeView({super.key});
 
@@ -11,7 +12,7 @@ class HomeView extends GetView<AuthController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -26,13 +27,20 @@ class HomeView extends GetView<AuthController> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Image.asset(
+              'assets/splash_logo.png',
+              height: 280,
+              errorBuilder: (context, error, stackTrace) {
+                return Text('Image failed to load');
+              },
+            ),
             Obx(
               () => Text(
                 'Welcome, ${controller.user.value?.name ?? 'User'}!',
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo,
+                  color: AppColors.primary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -46,7 +54,7 @@ class HomeView extends GetView<AuthController> {
               ),
               onPressed: () => Get.toNamed(Routes.ORDERS),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo,
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white, // Sets text/icon color if not overridden
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -64,7 +72,7 @@ class HomeView extends GetView<AuthController> {
               ),
               onPressed: () => Get.toNamed(Routes.TRACKINGS),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo,
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white, // Sets text/icon color if not overridden
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -81,7 +89,7 @@ class HomeView extends GetView<AuthController> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.indigo,
+                color: AppColors.primary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -99,7 +107,7 @@ class HomeView extends GetView<AuthController> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Icon(icon, color: Colors.indigo),
+          Icon(icon, color: AppColors.primary),
           const SizedBox(width: 16),
           Text(text, style: const TextStyle(fontSize: 16)),
         ],

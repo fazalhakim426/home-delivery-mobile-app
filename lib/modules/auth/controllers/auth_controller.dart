@@ -31,10 +31,10 @@ class AuthController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    nameController.dispose();
-    verificationCodeController.dispose();
+    // emailController.dispose();
+    // passwordController.dispose();
+    // nameController.dispose();
+    // verificationCodeController.dispose();
     super.onClose();
   }
 
@@ -77,7 +77,7 @@ class AuthController extends GetxController {
         passwordController.text,
       );
       isLoggedIn.value = true;
-      Get.offAllNamed(Routes.HOME);
+      Get.offAllNamed(Routes.ORDERS);
     } catch (e) {
       Get.snackbar(
         'Error',

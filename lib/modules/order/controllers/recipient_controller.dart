@@ -18,6 +18,11 @@ class RecipientController extends GetxController {
 
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
 
+
+  final RxnString accountType = RxnString('individual');
+  final RxnInt selectedCountryId = RxnInt();
+  final RxnInt selectedStateId = RxnInt();
+
   @override
   void onClose() {
     firstNameController.dispose();

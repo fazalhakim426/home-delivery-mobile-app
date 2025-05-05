@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simpl/data/models/CountryModel.dart';
+import 'package:simpl/data/models/CountryStateModel.dart';
 import 'package:simpl/data/models/ServiceModel.dart';
 import 'package:simpl/modules/order/controllers/recipient_controller.dart';
 
@@ -12,15 +14,23 @@ class ParcelController extends GetxController {
   final widthController = TextEditingController();
   final heightController = TextEditingController();
 
+  final List<Country> countries = [
+    Country(id: 1, name: 'Brazil',code:'BR'),
+    Country(id: 250, name: 'United State',code:'US'),
+  ];
+  final List<CountryState> states = [
+    CountryState(id: 525, name: 'São Paulo',code:'SP'),
+    CountryState(id: 526, name: 'Sergipe',code:'SE'),
+  ];
+
   final RxnString taxModality = RxnString('DDU');
   final RxnInt selectedServiceId = RxnInt();
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
 
   final List<Service> services = [
-    Service(id: 1, name: 'Standard'),
+    Service(id: 1, name: 'Standard Delivery'),
     Service(id: 2, name: 'Express Delivery'),
   ];
-
   @override
   void onInit() {
     super.onInit();
