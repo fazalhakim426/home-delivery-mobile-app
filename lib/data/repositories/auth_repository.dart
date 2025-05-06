@@ -72,6 +72,8 @@ class AuthRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(Constants.userToken);
       await prefs.remove(Constants.userData);
+      final apiProvider = Get.find<ApiProvider>();
+      await apiProvider.clearAuthToken();
     } catch (e) {
       throw Exception('Failed to logout: ${e.toString()}');
     }

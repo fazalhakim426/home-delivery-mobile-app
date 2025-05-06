@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:simpl/app/constants.dart';
+import 'package:simpl/data/models/CountryModel.dart';
+import 'package:simpl/data/models/CountryStateModel.dart';
 import 'package:simpl/data/models/order_model.dart';
 import 'package:simpl/data/providers/api_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,13 +31,55 @@ class OrderRepository {
       throw Exception('Failed to get orders: ${e.toString()}');
     }
   }
+  // Get all orders
+  Future<List<Country>> fetchCountries() async {
+    try {
+      final response = await _apiProvider.get(Constants.countries);
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is List) {
+          List<Country> countries = data
+              .map((json) => Country.fromJson(json as Map<String, dynamic>))
+              .toList();
+          return countries;
+        } else {
+          throw Exception('Expected list but got ${data.runtimeType}');
+        }
+      } else {
+        throw Exception('Failed to load countries: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get countries: ${e.toString()}');
+    }
+  }
 
   // Get order by id
-  Future<Order> getOrderById(int id) async {
-    // if (useDummyData) {
-    //   // return _generateDummyOrders().firstWhere((order) => order.id == id);
-    // }
+  Future<List<CountryState>> getStateByCountry(int id) async {
 
+    try {
+      final response = await _apiProvider.get('v1/country/$id/states');
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is List) {
+          List<CountryState> states = data
+              .map((json) => CountryState.fromJson(json as Map<String, dynamic>))
+              .toList();
+          return states;
+        } else {
+          throw Exception('Expected list but got ${data.runtimeType}');
+        }
+      } else {
+        throw Exception('Failed to load countries: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get countries: ${e.toString()}');
+    }
+
+  }
+  // Get order by id
+  Future<Order> getOrderById(int id) async {
     try {
       final response = await _apiProvider.get('${Constants.orders}/$id');
       return Order.fromJson(response.data);
@@ -124,39 +169,4 @@ class OrderRepository {
     }
   }
 
-  // Dummy data generator
-  // List<Order> _generateDummyOrders() {
-  //   final now = DateTime.now();
-  //   const services = ['Express Shipping', 'Standard Delivery', 'International Priority'];
-  //   const countries = ['US', 'UK', 'CA', 'AU', 'BR', 'DE', 'FR'];
-  //   const recipients = [
-  //     'John Smith',
-  //     'Emma Johnson',
-  //     'Michael Brown',
-  //     'Sarah Wilson',
-  //     'David Lee',
-  //     'Lisa Garcia',
-  //     'Robert Martinez'
-  //   ];
-  //
-  //   return List.generate(15, (index) {
-  //     final random = DateTime.now().millisecondsSinceEpoch + index;
-  //     final daysAgo = random % 30;
-  //
-  //     return Order(
-  //       id: index + 1,
-  //       title: 'Order ${index + 1001}',
-  //       description: 'Package containing ${['electronics', 'clothing', 'books', 'documents'][random % 4]}',
-  //       isShipped: random % 5 == 0,
-  //       createdAt: now.subtract(Duration(days: daysAgo)),
-  //       trackingCode: 'TRK${(now.millisecondsSinceEpoch + index).toString().substring(5)}',
-  //       serviceName: services[random % services.length],
-  //       weight: 0.5 + (random % 10) * 0.3,
-  //       orderDate: now.subtract(Duration(days: daysAgo + 1)),
-  //       orderValue: 10.0 + (random % 90) * 0.5,
-  //       recipientName: recipients[random % recipients.length],
-  //       recipientCountry: countries[random % countries.length],
-  //     );
-  //   });
-  // }
 }

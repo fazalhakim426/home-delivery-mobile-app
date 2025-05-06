@@ -21,6 +21,7 @@ class OrderController extends GetxController {
   late final ParcelController parcelController;
   late final ProductController productController;
 
+
   OrderController({required OrderRepository orderRepository})
     : _orderRepository = orderRepository {
     // Initialize sub-controllers
@@ -112,6 +113,7 @@ class OrderController extends GetxController {
     super.onInit();
     _loadSavedFormData();
     fetchOrders();
+    fetchCountries();
   }
 
   void _loadSavedFormData() {
@@ -210,6 +212,32 @@ class OrderController extends GetxController {
       isLoading.value = false;
     }
   }
+  Future<void> fetchCountries() async {
+    isLoading.value = true;
+    try {
+      final countryList = await _orderRepository.fetchCountries();
+      parcelController.countries.assignAll(countryList);
+    } catch (e) {
+      print(e.toString());
+      Get.snackbar('Error', 'Failed to fetch countreis: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  Future<void> fetchCountryStats(id) async {
+    print('selected id');
+    print(id);
+    isLoading.value = true;
+    try {
+      final countryStateList = await _orderRepository.getStateByCountry(id);
+      parcelController.recipientStates.assignAll(countryStateList);
+    } catch (e) {
+      print(e.toString());
+      Get.snackbar('Error', 'Failed to fetch country state: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   Future<void> addOrder() async {
     isLoading.value = true;
@@ -274,6 +302,7 @@ class OrderController extends GetxController {
       if (success) {
         orders.removeWhere((order) => order.id == id);
         Get.snackbar('Success', 'Order deleted successfully');
+        fetchOrders();
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to delete order: ${e.toString()}');

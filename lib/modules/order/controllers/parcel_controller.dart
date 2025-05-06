@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simpl/app/constants.dart';
 import 'package:simpl/data/models/CountryModel.dart';
 import 'package:simpl/data/models/CountryStateModel.dart';
 import 'package:simpl/data/models/ServiceModel.dart';
+import 'package:simpl/data/providers/api_provider.dart';
 import 'package:simpl/modules/order/controllers/recipient_controller.dart';
 
 class ParcelController extends GetxController {
+
   final trackingIdController = TextEditingController();
   final customerReferenceController = TextEditingController();
   final weightController = TextEditingController();
@@ -16,11 +19,8 @@ class ParcelController extends GetxController {
 
   final List<Country> countries = [
     Country(id: 1, name: 'Brazil',code:'BR'),
-    Country(id: 250, name: 'United State',code:'US'),
   ];
-  final List<CountryState> states = [
-    CountryState(id: 525, name: 'São Paulo',code:'SP'),
-    CountryState(id: 526, name: 'Sergipe',code:'SE'),
+  final List<CountryState> recipientStates = [
   ];
 
   final RxnString taxModality = RxnString('DDU');
@@ -61,6 +61,7 @@ class ParcelController extends GetxController {
     heightController.clear();
     fieldErrors.clear();
   }
+
 
   Map<String, dynamic> toJson() {
     return {

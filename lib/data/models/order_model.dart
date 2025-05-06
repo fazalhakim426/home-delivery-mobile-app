@@ -10,6 +10,7 @@ class Order {
   final String title;
   final String description;
   final bool isShipped;
+  final String status;
   final DateTime? createdAt;
   final String? trackingCode;
   final Service service;
@@ -42,6 +43,7 @@ class Order {
     required this.title,
     required this.description,
     required this.isShipped,
+    required this.status,
     this.createdAt,
     required this.trackingCode,
     required this.service,
@@ -75,6 +77,7 @@ class Order {
       title: json['customer_reference'] ?? '', // Use customer_reference as title?
       description: json['shipping_service_name'] ?? '', // Use shipping_service_name as description?
       isShipped: json['is_shipped'] ?? false,
+      status:  json['is_shipped']? "Shipped" : json['is_cancelled'] ? "Cancelled" : json['is_refund'] ? "Refunded" : "Order Place",
       createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at']) : null,
       trackingCode: json['tracking_code'],
       service: Service.fromJson(json['service'] ?? {}),
@@ -153,6 +156,7 @@ class Order {
     String? title,
     String? description,
     bool? isShipped,
+    String? status,
     DateTime? createdAt,
     String? trackingCode,
     Service? service,
@@ -185,7 +189,7 @@ class Order {
       title: title ?? this.title,
       description: description ?? this.description,
       isShipped: isShipped ?? this.isShipped,
-      createdAt: createdAt ?? this.createdAt,
+      status: status ?? this.status,
       trackingCode: trackingCode ?? this.trackingCode,
       service: service ?? this.service,
       merchant: merchant ?? this.merchant,
