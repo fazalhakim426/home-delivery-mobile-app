@@ -28,7 +28,7 @@ class Product {
       value: double.tryParse(json['value']?.toString() ?? '0') ?? 0,
       isBattery: int.tryParse(json['is_battery']?.toString() ?? '0') ?? 0,
       isPerfume: int.tryParse(json['is_perfume']?.toString() ?? '0') ?? 0,
-      isFlameable: int.tryParse(json['is_flameable']?.toString() ?? '0') ?? 0,
+      isFlameable: int.tryParse(json['is_flameable']??json['is_perfume']?.toString() ?? '0') ?? 0,
     );
   }
 

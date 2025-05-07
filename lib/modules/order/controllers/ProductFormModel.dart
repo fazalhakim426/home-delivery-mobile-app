@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simpl/data/models/ProductModel.dart';
 import 'package:simpl/data/models/ShCodeModel.dart';
-import 'package:simpl/data/models/order_model.dart';
 class ProductFormModel {
   final TextEditingController shCodeController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -15,11 +14,6 @@ class ProductFormModel {
   final RxBool isFlameable = false.obs;
 
   final RxnInt selectedShCode = RxnInt();
-  final List<ShCode> shCodes = [
-    ShCode(code: 610799, description: "jamas, roupões de ba"),
-    ShCode(code: 620590, description: "Vestuário e seus acessórios"),
-    // Add more as needed
-  ];
 
   Product toProduct() {
     return Product(

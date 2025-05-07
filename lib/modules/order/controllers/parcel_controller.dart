@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/app/constants.dart';
 import 'package:simpl/data/models/CountryModel.dart';
 import 'package:simpl/data/models/CountryStateModel.dart';
 import 'package:simpl/data/models/ServiceModel.dart';
-import 'package:simpl/data/providers/api_provider.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:simpl/data/models/ShCodeModel.dart';
+import 'package:simpl/data/repositories/order_repository.dart';
 import 'package:simpl/modules/order/controllers/recipient_controller.dart';
 
 class ParcelController extends GetxController {
 
+  final OrderRepository _orderRepository= new OrderRepository();
   final trackingIdController = TextEditingController();
   final customerReferenceController = TextEditingController();
   final weightController = TextEditingController();
@@ -17,26 +19,37 @@ class ParcelController extends GetxController {
   final widthController = TextEditingController();
   final heightController = TextEditingController();
 
+
+
   final List<Country> countries = [
     Country(id: 1, name: 'Brazil',code:'BR'),
   ];
   final List<CountryState> recipientStates = [
   ];
 
+  final isLoading = false.obs;
+
   final RxnString taxModality = RxnString('DDU');
   final RxnInt selectedServiceId = RxnInt();
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
 
   final List<Service> services = [
-    Service(id: 1, name: 'Standard Delivery'),
-    Service(id: 2, name: 'Express Delivery'),
+    Service(id: 1, name: 'Standard Delivery')
   ];
+  final List<ShCode> shCodes = [
+    ShCode(code: 610799, description: "jamas"),
+    ShCode(code: 620590, description: "Vestuário")
+  ];
+
   @override
   void onInit() {
     super.onInit();
     if (services.isNotEmpty) {
       selectedServiceId.value = services.first.id;
     }
+    fetchShippingServices();
+    fetchShCodes();
+
   }
 
   @override
@@ -78,5 +91,31 @@ class ParcelController extends GetxController {
       "tax_modality": taxModality.value,
       "shipment_value": shipmentValueController.text,
     };
+  }
+
+  Future<void> fetchShippingServices() async{
+    isLoading.value = true;
+    try {
+      final serviceList = await _orderRepository.getAllServices();
+      services.assignAll(serviceList);
+    } catch (e) {
+        print(e.toString());
+        Get.snackbar('Error', 'Failed to fetch orders: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
+    }
+
+  }
+  Future<void> fetchShCodes() async {
+    isLoading.value = true;
+    try {
+      final shCodesList = await _orderRepository.getAllShCodes();
+      shCodes.assignAll(shCodesList);
+    } catch (e) {
+      print(e.toString());
+        Get.snackbar('Error', 'Failed to fetch shCode: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

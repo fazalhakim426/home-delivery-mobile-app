@@ -14,6 +14,11 @@ class LoginView extends GetView<AuthController> {
         title: const Text('Login'),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(12),
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

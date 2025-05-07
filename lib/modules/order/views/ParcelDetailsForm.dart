@@ -25,7 +25,6 @@ class ParcelDetailsForm extends GetView<OrderController> {
                 value: controller.parcelController.selectedServiceId.value,
                 onChanged: (value) {
                   controller.parcelController.selectedServiceId.value = value!;
-                  // Optional: Clear error when a selection is made
                   controller.clearFieldError("parcel.service_id");
                 },
                 decoration: InputDecoration(
@@ -120,7 +119,7 @@ class ParcelDetailsForm extends GetView<OrderController> {
                               border: OutlineInputBorder(),
                               errorText: shCodeError, // Display error if exists
                             ),
-                            items: product.shCodes
+                            items: controller.parcelController.shCodes
                                 .map((shCode) => DropdownMenuItem(
                               value: shCode.code,
                               child: Text(shCode.description),

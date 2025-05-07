@@ -9,7 +9,6 @@ class Order {
   final int? id;
   final String title;
   final String description;
-  final bool isShipped;
   final String status;
   final DateTime? createdAt;
   final String? trackingCode;
@@ -24,7 +23,6 @@ class Order {
   final double? width;
   final double? height;
   final DateTime orderDate;
-  final Sender sender;
   final String? warehouseNumber;
   final double orderValue;
   final String shippingServiceName;
@@ -35,6 +33,7 @@ class Order {
   final double grossTotal;
   final double taxAndDuty;
   final double feeForTaxAndDuty;
+  final Sender sender;
   final Recipient recipient;
   final List<Product> products;
 
@@ -42,7 +41,6 @@ class Order {
     this.id,
     required this.title,
     required this.description,
-    required this.isShipped,
     required this.status,
     this.createdAt,
     required this.trackingCode,
@@ -75,9 +73,14 @@ class Order {
     return Order(
       id: json['id'] as int?,
       title: json['customer_reference'] ?? '', // Use customer_reference as title?
-      description: json['shipping_service_name'] ?? '', // Use shipping_service_name as description?
-      isShipped: json['is_shipped'] ?? false,
-      status:  json['is_shipped']? "Shipped" : json['is_cancelled'] ? "Cancelled" : json['is_refund'] ? "Refunded" : "Order Place",
+      description: json['shipping_service_name'] ?? '',
+      status: (json['is_shipped'] == true)
+          ? "Shipped"
+          : (json['is_cancelled'] == true)
+          ? "Cancelled"
+          : (json['is_refund'] == true)
+          ? "Refunded"
+          : "Order Place",
       createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at']) : null,
       trackingCode: json['tracking_code'],
       service: Service.fromJson(json['service'] ?? {}),
@@ -121,7 +124,7 @@ class Order {
       'id': id,
       'title': title,
       'description': description,
-      'isShipped': isShipped,
+      'status': status,
       'createdAt': createdAt?.toIso8601String(),
       'tracking_code': trackingCode,
       'service': service.toJson(),
@@ -155,7 +158,6 @@ class Order {
     int? id,
     String? title,
     String? description,
-    bool? isShipped,
     String? status,
     DateTime? createdAt,
     String? trackingCode,
@@ -188,7 +190,6 @@ class Order {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
-      isShipped: isShipped ?? this.isShipped,
       status: status ?? this.status,
       trackingCode: trackingCode ?? this.trackingCode,
       service: service ?? this.service,

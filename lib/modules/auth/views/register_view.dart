@@ -14,6 +14,11 @@ class RegisterView extends GetView<AuthController> {
         title: const Text('Register'),
         backgroundColor:AppColors.primary,
         foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(12),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

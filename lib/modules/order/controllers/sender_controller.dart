@@ -38,7 +38,7 @@ class SenderController extends GetxController {
       "sender_last_name": lastNameController.text,
       "sender_email": emailController.text,
       "sender_taxId": taxIdController.text,
-      "sender_country_id": countryIdController.text,
+      "sender_country_id": selectedCountryId.value,
       "sender_website": websiteController.text,
     };
   }

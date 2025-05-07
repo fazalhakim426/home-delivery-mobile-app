@@ -25,6 +25,11 @@ class OrderView extends GetView<OrderController> {
             },
           ),
         ],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(12),
+          ),
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -166,19 +171,19 @@ class OrderView extends GetView<OrderController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${order.weight} lbs",
+                  "${order.weight} kg",
                   style: const TextStyle(color: Colors.grey),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: order.isShipped ? Colors.green[50] : Colors.orange[50],
+                    color: order.status=='Shipped' ? Colors.green[50] : Colors.orange[50],
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     order.status,
                     style: TextStyle(
-                      color: order.isShipped ? Colors.green : Colors.orange,
+                      color: order.status=='Shipped'  ? Colors.green : Colors.orange,
                     ),
                   ),
                 ),
@@ -245,7 +250,7 @@ class OrderView extends GetView<OrderController> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: order.isShipped ? Colors.green[50] : Colors.orange[50],
+                  color: order.status=='Shipped' ? Colors.green[50] : Colors.orange[50],
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(order.status,

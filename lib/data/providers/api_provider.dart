@@ -22,20 +22,23 @@ class ApiProvider extends GetxService {
 
     _dio.interceptors.add(
       dio.InterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler) async {
+          // Always read token from storage before each request
+          final token = await _getTokenFromStorage();
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
           return handler.next(options);
         },
         onResponse: (response, handler) {
           return handler.next(response);
         },
-        onError: (error, handler) {
+        onError: (error, handler) async {
           String message = _handleDioError(error);
           if (error.response?.statusCode == 401) {
-            // Handle unauthorized error (token expired or invalid)
-            // You might want to:
-            // 1. Try to refresh the token
-            // 2. If refresh fails, redirect to login
-            Get.offAllNamed('/login'); // Example logout action
+            // Clear token on 401 and redirect to login
+            await clearAuthToken();
+            Get.offAllNamed('/login');
           }
           return handler.reject(
             dio.DioException(
@@ -52,7 +55,12 @@ class ApiProvider extends GetxService {
     return this;
   }
 
-  // Helper to format errors
+  // Helper to get token from storage
+  Future<String?> _getTokenFromStorage() async {
+    final prefs = await _prefs;
+    return prefs.getString('auth_token');
+  }
+
   String _handleDioError(dio.DioException error) {
     if (error.type == dio.DioExceptionType.connectionTimeout ||
         error.type == dio.DioExceptionType.receiveTimeout) {
@@ -84,7 +92,6 @@ class ApiProvider extends GetxService {
     try {
       return await _dio.post(url, data: data);
     } catch (e) {
-
       rethrow;
     }
   }
@@ -118,22 +125,11 @@ class ApiProvider extends GetxService {
   Future<void> setAuthToken(String token) async {
     final prefs = await _prefs;
     await prefs.setString('auth_token', token);
-    _dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
-  // Clear auth token (for logout)
   Future<void> clearAuthToken() async {
     final prefs = await _prefs;
     await prefs.remove('auth_token');
-    _dio.options.headers.remove('Authorization');
+    // No longer need to remove from headers here
   }
-  // Set auth token
-  // void setAuthToken(String token) {
-  //   _dio.options.headers['Authorization'] = 'Bearer $token';
-  // }
-
-  // // Clear auth token
-  // Future<void> clearAuthToken() async {
-  //   _dio.options.headers.remove('Authorization');
-  // }
 }

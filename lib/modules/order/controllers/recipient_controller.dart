@@ -69,10 +69,10 @@ class RecipientController extends GetxController {
       "street_no": streetNoController.text,
       "address": addressController.text,
       "address2": address2Controller.text,
-      "account_type": accountTypeController.text,
+      "account_type": accountType.value,
       "zipcode": zipCodeController.text,
-      "state_id": stateIdController.text,
-      "country_id": countryIdController.text,
+      "state_id": selectedStateId.value,
+      "country_id": selectedCountryId.value,
     };
   }
 }

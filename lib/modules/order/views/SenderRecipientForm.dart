@@ -59,7 +59,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Tax ID*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., 32786897807',
-              errorText: _buildErrorText("sender.tax_id"),
+              errorText: controller.getFieldError("sender.tax_id"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("sender.tax_id"),
@@ -119,7 +119,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Website*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., https://example.com',
-              errorText: _buildErrorText("sender.sender_website"),
+              errorText: controller.getFieldError("sender.sender_website"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("sender.sender_website"),
@@ -134,7 +134,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'First Name*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., Alex',
-              errorText: _buildErrorText("recipient.first_name"),
+              errorText: controller.getFieldError("recipient.first_name"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("recipient.first_name"),
@@ -146,7 +146,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Last Name*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., Hoyos',
-              errorText: _buildErrorText("recipient.last_name"),
+              errorText: controller.getFieldError("recipient.last_name"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("recipient.last_name"),
@@ -158,7 +158,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Email*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., test@hd.com',
-              errorText: _buildErrorText("recipient.email"),
+              errorText: controller.getFieldError("recipient.email"),
             ),
             keyboardType: TextInputType.emailAddress,
             validator: OrderValidators.validateEmail,
@@ -171,7 +171,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Phone*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., +5511937293951',
-              errorText: _buildErrorText("recipient.phone"),
+              errorText: controller.getFieldError("recipient.phone"),
             ),
             keyboardType: TextInputType.phone,
             validator: OrderValidators.validatePhone,
@@ -184,7 +184,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Tax ID*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., 73489158172',
-              errorText: _buildErrorText("recipient.tax_id"),
+              errorText: controller.getFieldError("recipient.tax_id"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("recipient.tax_id"),
@@ -196,7 +196,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'City*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., Brasilia',
-              errorText: _buildErrorText("recipient.city"),
+              errorText: controller.getFieldError("recipient.city"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("recipient.city"),
@@ -208,7 +208,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Street No*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., 0',
-              errorText: _buildErrorText("recipient.street_no"),
+              errorText: controller.getFieldError("recipient.street_no"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("recipient.street_no"),
@@ -220,7 +220,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Address*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., Cond Estancia...',
-              errorText: _buildErrorText("recipient.address"),
+              errorText: controller.getFieldError("recipient.address"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("recipient.address"),
@@ -263,7 +263,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               labelText: 'Zipcode*',
               border: const OutlineInputBorder(),
               hintText: 'e.g., 71680389',
-              errorText: _buildErrorText("recipient.zipcode"),
+              errorText: controller.getFieldError("recipient.zipcode"),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("recipient.zipcode"),
@@ -379,10 +379,5 @@ class SenderRecipientForm extends GetView<OrderController> {
     );
   }
 
-  String? _buildErrorText(String fieldKey) {
-    return controller.fieldErrors.containsKey(fieldKey) &&
-        controller.fieldErrors[fieldKey]!.isNotEmpty
-        ? controller.fieldErrors[fieldKey]
-        : null;
-  }
+
 }

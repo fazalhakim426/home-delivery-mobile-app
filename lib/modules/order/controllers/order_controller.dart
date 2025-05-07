@@ -15,15 +15,13 @@ class OrderController extends GetxController {
   final _formService = Get.find<FormPersistenceService>();
 
   final fieldErrors = RxMap<String, String>({});
-  // Sub-controllers
   late final SenderController senderController;
   late final RecipientController recipientController;
   late final ParcelController parcelController;
   late final ProductController productController;
 
 
-  OrderController({required OrderRepository orderRepository})
-      : _orderRepository = orderRepository {
+  OrderController({required OrderRepository orderRepository}) : _orderRepository = orderRepository {
     senderController = Get.put(SenderController());
     recipientController = Get.put(RecipientController());
     parcelController = Get.put(ParcelController());
@@ -47,7 +45,6 @@ class OrderController extends GetxController {
   void _setupControllerListeners() {
     _removeListeners();
 
-    // Add listeners to all relevant controllers
     parcelController.trackingIdController.addListener(_debouncedSaveForm);
     parcelController.customerReferenceController.addListener(
       _debouncedSaveForm,
@@ -256,9 +253,8 @@ class OrderController extends GetxController {
         "recipient": recipientController.toJson(),
         "products": productController.toJson(),
       };
-
       final createdOrder = await _orderRepository.createOrder(orderData);
-      orders.add(createdOrder);
+      // orders.add(createdOrder);
       Get.back();
       Get.snackbar('Success', 'Order added successfully');
     } catch (e) {
@@ -266,11 +262,7 @@ class OrderController extends GetxController {
         fieldErrors.assignAll(e); // update UI
       }
       print(e.toString());
-      Get.snackbar(
-        'Invalid data',
-        'Failed to add order: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Invalid data', 'Failed to add order: ${e.toString()}',snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
     }
@@ -364,6 +356,4 @@ class OrderController extends GetxController {
       currentStep.value--;
     }
   }
-
-
 }

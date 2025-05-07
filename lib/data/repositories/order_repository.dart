@@ -1,11 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:simpl/app/constants.dart';
 import 'package:simpl/data/models/CountryModel.dart';
 import 'package:simpl/data/models/CountryStateModel.dart';
+import 'package:simpl/data/models/ServiceModel.dart';
+import 'package:simpl/data/models/ShCodeModel.dart';
 import 'package:simpl/data/models/order_model.dart';
 import 'package:simpl/data/providers/api_provider.dart';
 
@@ -150,7 +150,7 @@ class OrderRepository {
         throw Exception('Order ID is required');
       }
 
-      Order updatedOrder = order.copyWith(isShipped: !order.isShipped);
+      Order updatedOrder = order.copyWith();
       final response = await _apiProvider.put(
         '${Constants.orders}/${order.id}',
         data: updatedOrder.toJson(),
@@ -158,6 +158,37 @@ class OrderRepository {
       return Order.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to toggle order: ${e.toString()}');
+    }
+  }
+
+  Future<List<Service>> getAllServices() async {
+    try {
+      final response = await _apiProvider.get(Constants.services);
+      final data = response.data['data'];
+      print('${Constants.services} output');
+      print(data);
+      List<Service> services = (data as List)
+          .map((json) => Service.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      return services;
+    } catch (e) {
+      throw Exception('Failed to get :${Constants.services} ${e.toString()}');
+    }
+  }
+
+  Future<List<ShCode>> getAllShCodes() async {
+    try {
+      final response = await _apiProvider.get(Constants.shcodes);
+      final data = response.data;
+      print('${Constants.shcodes} output');
+      print(data);
+      List<ShCode> shcodes = (data as List)
+          .map((json) => ShCode.fromJson(json as Map<String, dynamic>))
+          .toList();
+      return shcodes;
+    } catch (e) {
+      throw Exception('Failed to get :${Constants.shcodes} ${e.toString()}');
     }
   }
 
