@@ -8,6 +8,7 @@ class SenderRecipientForm extends GetView<OrderController> {
   Widget build(BuildContext context) {
     return Form(
       key: controller.senderRecipientFormKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child:
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -17,11 +18,11 @@ class SenderRecipientForm extends GetView<OrderController> {
           const SizedBox(height: 8),
           TextFormField(
             controller: controller.senderController.firstNameController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'First Name*',
-              border: const OutlineInputBorder(),
+              border: OutlineInputBorder(),
               hintText: 'e.g., Thomaz',
-              errorText: _buildErrorText("sender.first_name"),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("sender.first_name"),
@@ -29,11 +30,11 @@ class SenderRecipientForm extends GetView<OrderController> {
           const SizedBox(height: 12),
           TextFormField(
             controller: controller.senderController.lastNameController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Last Name*',
-              border: const OutlineInputBorder(),
+              border: OutlineInputBorder(),
               hintText: 'e.g., Marques',
-              errorText: _buildErrorText("sender.last_name"),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
             validator: OrderValidators.validateRequired,
             onChanged: (_) => controller.clearFieldError("sender.last_name"),
@@ -41,11 +42,11 @@ class SenderRecipientForm extends GetView<OrderController> {
           const SizedBox(height: 12),
           TextFormField(
             controller: controller.senderController.emailController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Email*',
-              border: const OutlineInputBorder(),
+              border: OutlineInputBorder(),
               hintText: 'e.g., contato@babylicio.us',
-              errorText: _buildErrorText("sender.email"),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
             keyboardType: TextInputType.emailAddress,
             validator: OrderValidators.validateEmail,
@@ -173,7 +174,7 @@ class SenderRecipientForm extends GetView<OrderController> {
               errorText: _buildErrorText("recipient.phone"),
             ),
             keyboardType: TextInputType.phone,
-            validator: OrderValidators.validateRequired,
+            validator: OrderValidators.validatePhone,
             onChanged: (_) => controller.clearFieldError("recipient.phone"),
           ),
           const SizedBox(height: 12),

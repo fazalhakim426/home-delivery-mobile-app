@@ -7,7 +7,7 @@ class Constants {
   static const String verify = '/auth/verify';
   static const String orders = 'orders';
   static const String countries = 'v1/countries';
-  static const String states = 'v1/states';
+  static const String states = 'v1/country/';
   static const String parcels = 'v1/parcels';
   // Storage Keys
   static const String userToken = 'user_token';

@@ -71,7 +71,9 @@ class OrderView extends GetView<OrderController> {
                             'Place New Order',
                             style: TextStyle(color: Colors.white),
                           ),
-                          onPressed: () => Get.toNamed(Routes.CREATE_ORDER),
+                          onPressed: () => {
+                            Get.toNamed(Routes.CREATE_ORDER)
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             padding: const EdgeInsets.symmetric(
@@ -352,7 +354,7 @@ class OrderView extends GetView<OrderController> {
               // Action Buttons
               Row(
 
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // ElevatedButton.icon(
                   //   icon: const Icon(Icons.edit, size: 18),
@@ -369,6 +371,9 @@ class OrderView extends GetView<OrderController> {
                   //     Get.toNamed(Routes.CREATE_ORDER, arguments: order);
                   //   },
                   // ),
+
+                  const SizedBox(height: 16),
+
                   ElevatedButton.icon(
                     icon: const Icon(Icons.delete, size: 22),
                     label: const Text("Delete order"),
@@ -381,6 +386,8 @@ class OrderView extends GetView<OrderController> {
                     ),
                     onPressed: () => _confirmDelete(order),
                   ),
+
+
                   if (order.trackingCode != null && order.trackingCode!.isNotEmpty)
                     ElevatedButton.icon(
                       icon: const Icon(Icons.track_changes, size: 18),
@@ -398,11 +405,13 @@ class OrderView extends GetView<OrderController> {
                       },
                     ),
 
-                  const SizedBox(height: 16),
                 ],
 
               ),
+
               const SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const Divider(),
             ],
           ),
         ),
@@ -413,7 +422,7 @@ class OrderView extends GetView<OrderController> {
 // Updated helper method to support custom text styling
   Widget _buildDetailRow(String label, dynamic value, {TextStyle? textStyle}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

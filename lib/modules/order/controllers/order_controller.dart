@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:simpl/data/models/order_model.dart';
 import 'package:simpl/data/repositories/order_repository.dart';
 import 'package:simpl/data/services/form_persistence_service.dart';
-
+import 'package:dio/dio.dart' as dio;
 import 'sender_controller.dart';
 import 'recipient_controller.dart';
 import 'parcel_controller.dart';
@@ -23,13 +23,11 @@ class OrderController extends GetxController {
 
 
   OrderController({required OrderRepository orderRepository})
-    : _orderRepository = orderRepository {
-    // Initialize sub-controllers
+      : _orderRepository = orderRepository {
     senderController = Get.put(SenderController());
     recipientController = Get.put(RecipientController());
     parcelController = Get.put(ParcelController());
     productController = Get.put(ProductController());
-
     _setupControllerListeners();
   }
 
@@ -105,7 +103,10 @@ class OrderController extends GetxController {
     return null;
   }
   void clearFieldError(String fieldPath) {
-    fieldErrors.remove(fieldPath);
+    update();
+    if (fieldErrors.containsKey(fieldPath)) {
+      fieldErrors.remove(fieldPath);
+    }
   }
 
   @override
@@ -207,11 +208,18 @@ class OrderController extends GetxController {
       orders.assignAll(orderList);
     } catch (e) {
       print(e.toString());
-      Get.snackbar('Error', 'Failed to fetch orders: ${e.toString()}');
+
+      // If it's a DioException, check the status code
+      if (e is dio.DioException && e.response?.statusCode == 401) {
+        Get.offAllNamed('/login');
+      } else {
+        Get.snackbar('Error', 'Failed to fetch orders: ${e.toString()}');
+      }
     } finally {
       isLoading.value = false;
     }
   }
+
   Future<void> fetchCountries() async {
     isLoading.value = true;
     try {

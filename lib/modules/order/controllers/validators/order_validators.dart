@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 class OrderValidators {
   static String? validateRequired(String? value) {
     if (value == null || value.isEmpty) {
@@ -10,9 +11,31 @@ class OrderValidators {
     if (value == null || value.isEmpty) {
       return 'Email is required';
     }
-    // if (!GetUtils.isEmail(value)) {
-    //   return 'Please enter a valid email';
-    // }
+    if (!GetUtils.isEmail(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  // Phone Number Validator (new)
+  static String? validatePhone(String? value, {bool isRequired = true}) {
+    if (value == null || value.isEmpty) {
+      return isRequired ? 'Phone number is required' : null;
+    }
+
+    // Remove all non-digit characters
+    final digitsOnly = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Basic validation - adjust these rules as needed
+    if (digitsOnly.length < 8) {
+      return 'Phone number too short';
+    }
+    if (digitsOnly.length > 15) {
+      return 'Phone number too long';
+    }
+    if (!GetUtils.isPhoneNumber(value)) {  // Using GetX's built-in check
+      return 'Please enter a valid phone number';
+    }
     return null;
   }
 

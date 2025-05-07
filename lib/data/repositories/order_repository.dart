@@ -8,16 +8,15 @@ import 'package:simpl/data/models/CountryModel.dart';
 import 'package:simpl/data/models/CountryStateModel.dart';
 import 'package:simpl/data/models/order_model.dart';
 import 'package:simpl/data/providers/api_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderRepository {
   final ApiProvider _apiProvider = Get.find<ApiProvider>();
-  final bool useDummyData = false; // Set to false for real API calls
 
   // Get all orders
   Future<List<Order>> getAllOrders() async {
     try {
       final response = await _apiProvider.get(Constants.orders);
+       
       final data = response.data['data'];
       print('order get successfully');
       print(data);
@@ -27,7 +26,7 @@ class OrderRepository {
           .toList();
 
       return orders;
-    } catch (e) {
+    } catch (e) { 
       throw Exception('Failed to get orders: ${e.toString()}');
     }
   }
@@ -92,6 +91,7 @@ class OrderRepository {
   Future<Order> createOrder(order) async {
     try {
       print('request sending....');
+      print(order);
       final response = await _apiProvider.post(
         Constants.parcels,
         data: order,
@@ -118,10 +118,6 @@ class OrderRepository {
 
   // Update order
   Future<Order> updateOrder(Order order) async {
-    if (useDummyData) {
-      return order;
-    }
-
     try {
       if (order.id == null) {
         throw Exception('Order ID is required for update');
@@ -149,10 +145,6 @@ class OrderRepository {
 
   // Toggle order completion
   Future<Order> toggleOrderCompletion(Order order) async {
-    if (useDummyData) {
-      return order.copyWith(isShipped: !order.isShipped);
-    }
-
     try {
       if (order.id == null) {
         throw Exception('Order ID is required');

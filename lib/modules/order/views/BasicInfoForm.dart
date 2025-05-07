@@ -4,102 +4,137 @@ import 'package:simpl/modules/order/controllers/order_controller.dart';
 import 'package:simpl/modules/order/controllers/validators/order_validators.dart';
 
 class BasicInfoForm extends GetView<OrderController> {
+  const BasicInfoForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: controller.basicInfoFormKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
+          Text(
             'Basic Information',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
 
-          // Remove Obx since we're not observing any reactive variables here
+          // Tracking ID Field
           TextFormField(
             controller: controller.parcelController.trackingIdController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Tracking/Customer ID*',
-              border: const OutlineInputBorder(),
-              // If you need to show errors from the controller
-              errorText: controller.fieldErrors['parcel.tracking_id'],
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
             validator: OrderValidators.validateRequired,
+            onChanged: (_) {
+              // Clear error when user types
+              controller.fieldErrors.remove('parcel.tracking_id');
+              controller.update();
+            },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
+
+          // Weight and Shipment Value Row
           Row(
             children: [
               Expanded(
                 child: TextFormField(
                   controller: controller.parcelController.weightController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Weight (kg)*',
-                    border: const OutlineInputBorder(),
-                    errorText: controller.fieldErrors['parcel.weight'],
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
+                  onChanged: (_) {
+                    controller.fieldErrors.remove('parcel.weight');
+                    controller.update();
+                  },
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
               Expanded(
                 child: TextFormField(
                   controller: controller.parcelController.shipmentValueController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Shipment value (\$)*',
-                    border: const OutlineInputBorder(),
-                    errorText: controller.fieldErrors['parcel.shipment_value'],
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
+                  onChanged: (_) {
+                    controller.fieldErrors.remove('parcel.shipment_value');
+                    controller.update();
+                  },
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
-          const Text('Dimensions (cm)', style: TextStyle(fontSize: 14)),
+          // Dimensions Section
+          Text(
+            'Dimensions (cm)',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
                 child: TextFormField(
                   controller: controller.parcelController.lengthController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Length',
-                    border: const OutlineInputBorder(),
-                    errorText: controller.fieldErrors['parcel.length'],
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
+                  onChanged: (_) {
+                    controller.fieldErrors.remove('parcel.length');
+                    controller.update();
+                  },
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: TextFormField(
                   controller: controller.parcelController.widthController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Width',
-                    border: const OutlineInputBorder(),
-                    errorText: controller.fieldErrors['parcel.width'],
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
+                  onChanged: (_) {
+                    controller.fieldErrors.remove('parcel.width');
+                    controller.update();
+                  },
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: TextFormField(
                   controller: controller.parcelController.heightController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Height',
-                    border: const OutlineInputBorder(),
-                    errorText: controller.fieldErrors['parcel.height'],
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
+                  onChanged: (_) {
+                    controller.fieldErrors.remove('parcel.height');
+                    controller.update();
+                  },
                 ),
               ),
             ],

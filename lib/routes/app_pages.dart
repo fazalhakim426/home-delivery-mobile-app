@@ -46,8 +46,8 @@ class AppPages {
       name: Routes.ORDERS,
       page: () => const OrderView(),
       bindings : [
-        OrderBinding(),
         AuthBinding(),
+        OrderBinding(),
       ],
     ),
     GetPage(

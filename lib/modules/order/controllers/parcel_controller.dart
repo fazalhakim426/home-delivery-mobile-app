@@ -41,13 +41,13 @@ class ParcelController extends GetxController {
 
   @override
   void onClose() {
-    trackingIdController.dispose();
-    customerReferenceController.dispose();
-    weightController.dispose();
-    shipmentValueController.dispose();
-    lengthController.dispose();
-    widthController.dispose();
-    heightController.dispose();
+    // trackingIdController.dispose();
+    // customerReferenceController.dispose();
+    // weightController.dispose();
+    // shipmentValueController.dispose();
+    // lengthController.dispose();
+    // widthController.dispose();
+    // heightController.dispose();
     super.onClose();
   }
 

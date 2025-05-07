@@ -10,9 +10,7 @@ class AuthRepository {
   // Login
   Future<User> login(String email, String password) async {
     try {
-      // In a real app, we would send actual credentials
-      // This is a dummy implementation
-      final response = await _apiProvider.post(
+      final response = await _apiProvider.postDio(
         Constants.login,
         data: {'email': email, 'password': password},
       );
@@ -32,7 +30,7 @@ class AuthRepository {
       return user;
     } catch (e) {
        print('Sending email: $email, password: $password');
-      
+
       print('Failed to login: ${e.toString()}');
       throw Exception('Failed to login: ${e.toString()}');
     }
@@ -72,8 +70,6 @@ class AuthRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(Constants.userToken);
       await prefs.remove(Constants.userData);
-      final apiProvider = Get.find<ApiProvider>();
-      await apiProvider.clearAuthToken();
     } catch (e) {
       throw Exception('Failed to logout: ${e.toString()}');
     }
