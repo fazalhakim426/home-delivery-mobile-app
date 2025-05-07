@@ -10,6 +10,8 @@ class AuthRepository {
   // Login
   Future<User> login(String email, String password) async {
     try {
+      // In a real app, we would send actual credentials
+      // This is a dummy implementation
       final response = await _apiProvider.postDio(
         Constants.login,
         data: {'email': email, 'password': password},
