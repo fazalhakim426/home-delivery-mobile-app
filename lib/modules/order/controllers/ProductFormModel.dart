@@ -28,9 +28,5 @@ class ProductFormModel {
   }
 
   void dispose() {
-    // shCodeController.dispose();
-    // descriptionController.dispose();
-    // quantityController.dispose();
-    // valueController.dispose();
   }
 }

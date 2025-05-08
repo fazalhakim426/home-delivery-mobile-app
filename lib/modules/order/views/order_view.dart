@@ -4,10 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:simpl/app/app_colors.dart';
 import 'package:simpl/data/models/order_model.dart';
 import 'package:simpl/modules/auth/controllers/auth_controller.dart';
-import 'package:simpl/modules/order/controllers/order_controller.dart';
+import 'package:simpl/modules/order/controllers/order_view_controller.dart';
 import 'package:simpl/routes/app_pages.dart';
 
-class OrderView extends GetView<OrderController> {
+class OrderView extends GetView<OrderViewController> {
   const OrderView({super.key});
 
   Widget build(BuildContext context) {

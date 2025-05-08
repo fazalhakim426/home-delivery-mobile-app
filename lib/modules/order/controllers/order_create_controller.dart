@@ -10,7 +10,7 @@ import 'recipient_controller.dart';
 import 'parcel_controller.dart';
 import 'product_controller.dart';
 
-class OrderController extends GetxController {
+class OrderCreateController extends GetxController {
   final OrderRepository _orderRepository;
   final _formService = Get.find<FormPersistenceService>();
 
@@ -21,7 +21,7 @@ class OrderController extends GetxController {
   late final ProductController productController;
 
 
-  OrderController({required OrderRepository orderRepository}) : _orderRepository = orderRepository {
+  OrderCreateController({required OrderRepository orderRepository}) : _orderRepository = orderRepository {
     senderController = Get.put(SenderController());
     recipientController = Get.put(RecipientController());
     parcelController = Get.put(ParcelController());
@@ -37,7 +37,6 @@ class OrderController extends GetxController {
   final senderRecipientFormKey = GlobalKey<FormState>();
 
   final isLoading = false.obs;
-  final orders = <Order>[].obs;
   final selectedOrder = Rxn<Order>();
 
   Timer? _debounceTimer;
@@ -110,7 +109,6 @@ class OrderController extends GetxController {
   void onInit() {
     super.onInit();
     _loadSavedFormData();
-    fetchOrders();
     fetchCountries();
   }
 
@@ -198,30 +196,11 @@ class OrderController extends GetxController {
     await _formService.saveOrderFormData(formData);
   }
 
-  Future<void> fetchOrders() async {
-    isLoading.value = true;
-    try {
-      final orderList = await _orderRepository.getAllOrders();
-      orders.assignAll(orderList);
-    } catch (e) {
-      print(e.toString());
-
-      // If it's a DioException, check the status code
-      if (e is dio.DioException && e.response?.statusCode == 401) {
-        Get.offAllNamed('/login');
-      } else {
-        Get.snackbar('Error', 'Failed to fetch orders: ${e.toString()}');
-      }
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
   Future<void> fetchCountries() async {
     isLoading.value = true;
     try {
       final countryList = await _orderRepository.fetchCountries();
-      parcelController.countries.assignAll(countryList);
+      parcelController.countries.value = countryList;
     } catch (e) {
       print(e.toString());
       Get.snackbar('Error', 'Failed to fetch countreis: ${e.toString()}');
@@ -268,52 +247,37 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<void> updateOrder() async {
-    if (selectedOrder.value == null) {
-      Get.snackbar('Error', 'No order selected for update');
-      return;
-    }
+  // Future<void> updateOrder() async {
+  //   if (selectedOrder.value == null) {
+  //     Get.snackbar('Error', 'No order selected for update');
+  //     return;
+  //   }
+  //
+  //   isLoading.value = true;
+  //   try {
+  //     final updatedOrder = selectedOrder.value!.copyWith();
+  //     final result = await _orderRepository.updateOrder(updatedOrder);
+  //
+  //     final index = orders.indexWhere((order) => order.id == result.id);
+  //     if (index != -1) {
+  //       orders[index] = result;
+  //     }
+  //
+  //     clearForm();
+  //     Get.back();
+  //     Get.snackbar('Success', 'Order updated successfully');
+  //   } catch (e) {
+  //     Get.snackbar('Error', 'Failed to update order: ${e.toString()}');
+  //   } finally {
+  //     isLoading.value = false;
+  //     selectedOrder.value = null;
+  //   }
+  // }
 
-    isLoading.value = true;
-    try {
-      final updatedOrder = selectedOrder.value!.copyWith();
-      final result = await _orderRepository.updateOrder(updatedOrder);
 
-      final index = orders.indexWhere((order) => order.id == result.id);
-      if (index != -1) {
-        orders[index] = result;
-      }
-
-      clearForm();
-      Get.back();
-      Get.snackbar('Success', 'Order updated successfully');
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to update order: ${e.toString()}');
-    } finally {
-      isLoading.value = false;
-      selectedOrder.value = null;
-    }
-  }
-
-  Future<void> deleteOrder(int id) async {
-    isLoading.value = true;
-    try {
-      final success = await _orderRepository.deleteOrder(id);
-      if (success) {
-        orders.removeWhere((order) => order.id == id);
-        Get.snackbar('Success', 'Order deleted successfully');
-        fetchOrders();
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to delete order: ${e.toString()}');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  void selectOrderForEdit(Order order) {
-    selectedOrder.value = order;
-  }
+  // void selectOrderForEdit(Order order) {
+  //   selectedOrder.value = order;
+  // }
 
   @override
   void onClose() {

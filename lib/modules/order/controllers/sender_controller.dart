@@ -13,12 +13,6 @@ class SenderController extends GetxController {
  final RxnInt selectedCountryId = RxnInt();
   @override
   void onClose() {
-    // firstNameController.dispose();
-    // lastNameController.dispose();
-    // emailController.dispose();
-    // taxIdController.dispose();
-    // countryIdController.dispose();
-    // websiteController.dispose();
     super.onClose();
   }
 

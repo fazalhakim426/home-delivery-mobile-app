@@ -4,7 +4,8 @@ import 'package:simpl/modules/auth/bindings/auth_binding.dart';
 import 'package:simpl/modules/auth/views/login_view.dart';
 import 'package:simpl/modules/auth/views/register_view.dart';
 import 'package:simpl/modules/auth/views/verification_view.dart';
-import 'package:simpl/modules/order/bindings/order_binding.dart';
+import 'package:simpl/modules/order/bindings/order_view_binding.dart';
+import 'package:simpl/modules/order/bindings/order_create_binding.dart';
 import 'package:simpl/modules/order/views/order_create_view.dart';
 import 'package:simpl/modules/order/views/order_view.dart';
 import 'package:simpl/modules/tracking/bindings/tracking_binding.dart';
@@ -47,13 +48,13 @@ class AppPages {
       page: () => const OrderView(),
       bindings : [
         AuthBinding(),
-        OrderBinding(),
+        OrderViewBinding(),
       ],
     ),
     GetPage(
       name: Routes.CREATE_ORDER,
       page: () => const OrderCreateView(),
-      binding: OrderBinding(),
+      binding: OrderCreateBinding(),
     ),
   ];
 }

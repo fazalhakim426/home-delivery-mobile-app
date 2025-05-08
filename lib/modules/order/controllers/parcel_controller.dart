@@ -3,14 +3,12 @@ import 'package:get/get.dart';
 import 'package:simpl/data/models/CountryModel.dart';
 import 'package:simpl/data/models/CountryStateModel.dart';
 import 'package:simpl/data/models/ServiceModel.dart';
-import 'package:dio/dio.dart' as dio;
 import 'package:simpl/data/models/ShCodeModel.dart';
 import 'package:simpl/data/repositories/order_repository.dart';
 import 'package:simpl/modules/order/controllers/recipient_controller.dart';
 
 class ParcelController extends GetxController {
-
-  final OrderRepository _orderRepository= new OrderRepository();
+  final OrderRepository _orderRepository = OrderRepository();
   final trackingIdController = TextEditingController();
   final customerReferenceController = TextEditingController();
   final weightController = TextEditingController();
@@ -19,13 +17,7 @@ class ParcelController extends GetxController {
   final widthController = TextEditingController();
   final heightController = TextEditingController();
 
-
-
-  final List<Country> countries = [
-    Country(id: 1, name: 'Brazil',code:'BR'),
-  ];
-  final List<CountryState> recipientStates = [
-  ];
+  final List<CountryState> recipientStates = [];
 
   final isLoading = false.obs;
 
@@ -33,23 +25,29 @@ class ParcelController extends GetxController {
   final RxnInt selectedServiceId = RxnInt();
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
 
-  final List<Service> services = [
-    Service(id: 1, name: 'Standard Delivery')
-  ];
-  final List<ShCode> shCodes = [
-    ShCode(code: 610799, description: "jamas"),
-    ShCode(code: 620590, description: "Vestuário")
-  ];
+  final RxList<Country> countries = <Country>[].obs; // Changed to RxList
+  final RxList<Service> services = <Service>[].obs; // Changed to RxList
+  final RxList<ShCode> shCodes = <ShCode>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    if (services.isNotEmpty) {
-      selectedServiceId.value = services.first.id;
-    }
-    fetchShippingServices();
-    fetchShCodes();
+    fetchInitialData();
+  }
 
+  Future<void> fetchInitialData() async {
+    try {
+      await Future.wait([
+        fetchShippingServices(),
+        fetchShCodes(),
+      ]);
+      // Set default service after loading
+      if (services.isNotEmpty) {
+        selectedServiceId.value = services.first.id;
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load initial data: ${e.toString()}');
+    }
   }
 
   @override
@@ -75,7 +73,6 @@ class ParcelController extends GetxController {
     fieldErrors.clear();
   }
 
-
   Map<String, dynamic> toJson() {
     return {
       "service_id": selectedServiceId.value,
@@ -93,19 +90,19 @@ class ParcelController extends GetxController {
     };
   }
 
-  Future<void> fetchShippingServices() async{
+  Future<void> fetchShippingServices() async {
     isLoading.value = true;
     try {
       final serviceList = await _orderRepository.getAllServices();
       services.assignAll(serviceList);
     } catch (e) {
-        print(e.toString());
-        Get.snackbar('Error', 'Failed to fetch orders: ${e.toString()}');
+      print(e.toString());
+      Get.snackbar('Error', 'Failed to fetch services: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
-
   }
+
   Future<void> fetchShCodes() async {
     isLoading.value = true;
     try {
@@ -113,7 +110,7 @@ class ParcelController extends GetxController {
       shCodes.assignAll(shCodesList);
     } catch (e) {
       print(e.toString());
-        Get.snackbar('Error', 'Failed to fetch shCode: ${e.toString()}');
+      Get.snackbar('Error', 'Failed to fetch shCodes: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }

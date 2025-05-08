@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/modules/order/controllers/order_controller.dart';
+import 'package:simpl/modules/order/controllers/order_create_controller.dart';
 import 'package:simpl/modules/order/controllers/validators/order_validators.dart';
 
-class BasicInfoForm extends GetView<OrderController> {
+class BasicInfoForm extends GetView<OrderCreateController> {
   const BasicInfoForm({super.key});
 
   @override
