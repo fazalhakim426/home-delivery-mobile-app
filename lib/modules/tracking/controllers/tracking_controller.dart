@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/models/tracking_model.dart';
-import 'package:simpl/data/repositories/tracking_respository.dart';
-import 'package:simpl/modules/tracking/controllers/tracking_controller.dart';
+import 'package:home_delivery_br/data/models/tracking_model.dart';
+import 'package:home_delivery_br/data/repositories/tracking_respository.dart';
+import 'package:home_delivery_br/modules/tracking/controllers/tracking_controller.dart';
 import 'package:intl/intl.dart';
 
 

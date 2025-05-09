@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
-import 'package:simpl/app/constants.dart';
+import 'package:home_delivery_br/app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiProvider extends GetxService {

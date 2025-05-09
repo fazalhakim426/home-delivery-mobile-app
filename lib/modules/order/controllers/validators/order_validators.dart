@@ -41,11 +41,13 @@ class OrderValidators {
 
   static String? validateNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'This field is required';
+      return 'Please enter a number';
     }
-    if (double.tryParse(value) == null) {
-      return 'Please enter a valid number';
+    final number = num.tryParse(value);
+    if (number == null) {
+      return 'Invalid number';
     }
     return null;
   }
+
 }

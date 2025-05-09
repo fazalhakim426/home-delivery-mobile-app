@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/app/app_colors.dart';
-import 'package:simpl/modules/order/controllers/order_create_controller.dart';
-import 'package:simpl/modules/order/views/BasicInfoForm.dart';
-import 'package:simpl/modules/order/views/ParcelDetailsForm.dart';
-import 'package:simpl/modules/order/views/SenderRecipientForm.dart';
+import 'package:home_delivery_br/app/app_colors.dart';
+import 'package:home_delivery_br/modules/order/controllers/order_create_controller.dart';
+import 'package:home_delivery_br/modules/order/views/BasicInfoForm.dart';
+import 'package:home_delivery_br/modules/order/views/ParcelDetailsForm.dart';
+import 'package:home_delivery_br/modules/order/views/SenderRecipientForm.dart';
 
 class OrderCreateView extends GetView<OrderCreateController> {
   const OrderCreateView({super.key});

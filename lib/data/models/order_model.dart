@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:simpl/data/models/ProductModel.dart';
-import 'package:simpl/data/models/RecipientModel.dart';
-import 'package:simpl/data/models/SenderModel.dart';
-import 'package:simpl/data/models/ServiceModel.dart';
+import 'package:home_delivery_br/data/models/ProductModel.dart';
+import 'package:home_delivery_br/data/models/RecipientModel.dart';
+import 'package:home_delivery_br/data/models/SenderModel.dart';
+import 'package:home_delivery_br/data/models/ServiceModel.dart';
 
 class Order {
   final int? id;
@@ -74,13 +74,7 @@ class Order {
       id: json['id'] as int?,
       title: json['customer_reference'] ?? '', // Use customer_reference as title?
       description: json['shipping_service_name'] ?? '',
-      status: (json['is_shipped'] == true)
-          ? "Shipped"
-          : (json['is_cancelled'] == true)
-          ? "Cancelled"
-          : (json['is_refund'] == true)
-          ? "Refunded"
-          : "Order Place",
+      status: json['order_status_string'] ,
       createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at']) : null,
       trackingCode: json['tracking_code'],
       service: Service.fromJson(json['service'] ?? {}),

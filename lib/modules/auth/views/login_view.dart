@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/modules/auth/controllers/auth_controller.dart';
-import 'package:simpl/routes/app_pages.dart';
+import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 
-import 'package:simpl/app/app_colors.dart';
+import 'package:home_delivery_br/app/app_colors.dart';
 class LoginView extends GetView<AuthController> {
   const LoginView({Key? key}) : super(key: key);
 
@@ -97,14 +97,14 @@ class LoginView extends GetView<AuthController> {
                         : const Text('Login', style: TextStyle(fontSize: 16)),
                   ),
                 ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () => Get.toNamed(Routes.REGISTER),
-                  child: const Text(
-                    'Don\'t have an account? Register',
-                    style: TextStyle(color: AppColors.primary),
-                  ),
-                ),
+                // const SizedBox(height: 16),
+                // TextButton(
+                //   onPressed: () => Get.toNamed(Routes.REGISTER),
+                //   child: const Text(
+                //     'Don\'t have an account? Register',
+                //     style: TextStyle(color: AppColors.primary),
+                //   ),
+                // ),
               ],
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/modules/auth/controllers/auth_controller.dart';
-import 'package:simpl/routes/app_pages.dart';
+import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 
 class SplashScreen extends StatelessWidget {
   @override

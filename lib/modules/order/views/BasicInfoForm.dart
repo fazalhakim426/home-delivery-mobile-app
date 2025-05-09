@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/modules/order/controllers/order_create_controller.dart';
-import 'package:simpl/modules/order/controllers/validators/order_validators.dart';
+import 'package:home_delivery_br/modules/order/controllers/order_create_controller.dart';
+import 'package:home_delivery_br/modules/order/controllers/validators/order_validators.dart';
 
 class BasicInfoForm extends GetView<OrderCreateController> {
   const BasicInfoForm({super.key});
@@ -14,136 +14,156 @@ class BasicInfoForm extends GetView<OrderCreateController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Basic Information',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Tracking ID Field
-          TextFormField(
-            controller: controller.parcelController.trackingIdController,
-            decoration:   InputDecoration(
-              labelText: 'Tracking/Customer ID*',
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          // Section Header
+          _buildSectionHeader(context, 'Basic Information'),
+          const SizedBox(height: 24),
 
-              errorText: controller.getFieldError("parcel.tracking_id"),
-            ),
+          // Tracking ID Field
+          _buildTextField(
+            context: context,
+            textController: controller.parcelController.trackingIdController,
+            label: 'Tracking/Customer ID*',
+            fieldKey: 'parcel.tracking_id',
             validator: OrderValidators.validateRequired,
-            onChanged: (_) {
-              controller.clearFieldError('parcel.tracking_id');
-            },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
           // Weight and Shipment Value Row
           Row(
             children: [
               Expanded(
-                child: TextFormField(
-                  controller: controller.parcelController.weightController,
-                  decoration:   InputDecoration(
-                    labelText: 'Weight (kg)*',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    errorText: controller.getFieldError("parcel.weight"),
-                  ),
+                child: _buildTextField(
+                  context: context,
+                  textController: controller.parcelController.weightController,
+                  label: 'Weight (kg)*',
+                  fieldKey: 'parcel.weight',
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
-                  onChanged: (_) {
-                    controller.clearFieldError('parcel.weight');
-                  },
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: TextFormField(
-                  controller: controller.parcelController.shipmentValueController,
-                  decoration: InputDecoration(
-                    labelText: 'Shipment value (\$)*',
-                    border: const OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    errorText: controller.getFieldError("parcel.shipment_value"),
-                  ),
+                child: _buildTextField(
+                  context: context,
+                  textController: controller.parcelController.shipmentValueController,
+                  label: 'Shipment value (\$)*',
+                  fieldKey: 'parcel.shipment_value',
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
-                  onChanged: (_) {
-                    controller.clearFieldError('parcel.shipment_value');
-                  },
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
           // Dimensions Section
-          Text(
-            'Dimensions (cm)',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 8),
+          _buildSectionSubheader(context, 'Dimensions (cm)'),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
-                child: TextFormField(
-                  controller: controller.parcelController.lengthController,
-                  decoration:   InputDecoration(
-                    labelText: 'Length',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    errorText: controller.getFieldError("parcel.length"),
-
-                  ),
+                child: _buildTextField(
+                  context: context,
+                  textController: controller.parcelController.lengthController,
+                  label: 'Length',
+                  fieldKey: 'parcel.length',
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
-                  onChanged: (_) {
-                    controller.clearFieldError('parcel.length');
-                  },
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Expanded(
-                child: TextFormField(
-                  controller: controller.parcelController.widthController,
-                  decoration:   InputDecoration(
-                    labelText: 'Width',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    errorText: controller.getFieldError("parcel.width"),
-
-                  ),
+                child: _buildTextField(
+                  context: context,
+                  textController: controller.parcelController.widthController,
+                  label: 'Width',
+                  fieldKey: 'parcel.width',
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
-                  onChanged: (_) {
-                    controller.fieldErrors.remove('parcel.width');
-                    controller.update();
-                  },
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Expanded(
-                child: TextFormField(
-                  controller: controller.parcelController.heightController,
-                  decoration: InputDecoration(
-                    labelText: 'Height',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    errorText: controller.getFieldError("parcel.height"),
-
-                  ),
+                child: _buildTextField(
+                  context: context,
+                  textController: controller.parcelController.heightController,
+                  label: 'Height',
+                  fieldKey: 'parcel.height',
                   keyboardType: TextInputType.number,
                   validator: OrderValidators.validateNumber,
-                  onChanged: (_) {
-                    controller.clearFieldError('parcel.height');
-                  },
                 ),
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  // Helper method for section headers
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.w600,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
+  }
+
+  // Helper method for section subheaders
+  Widget _buildSectionSubheader(BuildContext context, String title) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w500,
+        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+      ),
+    );
+  }
+
+  // Helper method for text fields
+  Widget _buildTextField({
+    required BuildContext context,
+    required TextEditingController textController,
+    required String label,
+    required String fieldKey,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: textController,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.outline,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 1.5,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        labelStyle: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+        ),
+        errorText: controller.getFieldError(fieldKey),
+        errorMaxLines: 2,
+      ),
+      keyboardType: keyboardType,
+      validator: validator,
+      onChanged: (_) => controller.clearFieldError(fieldKey),
     );
   }
 }

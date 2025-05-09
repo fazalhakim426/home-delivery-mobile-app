@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/models/user_model.dart';
-import 'package:simpl/data/repositories/auth_repository.dart';
-import 'package:simpl/routes/app_pages.dart';
+import 'package:home_delivery_br/data/models/user_model.dart';
+import 'package:home_delivery_br/data/repositories/auth_repository.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository;

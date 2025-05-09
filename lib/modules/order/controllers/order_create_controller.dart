@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/models/order_model.dart';
-import 'package:simpl/data/repositories/order_repository.dart';
-import 'package:simpl/data/services/form_persistence_service.dart';
-import 'package:dio/dio.dart' as dio;
+import 'package:home_delivery_br/data/models/order_model.dart';
+import 'package:home_delivery_br/data/repositories/order_repository.dart';
+import 'package:home_delivery_br/data/services/form_persistence_service.dart';
 import 'sender_controller.dart';
 import 'recipient_controller.dart';
 import 'parcel_controller.dart';
@@ -19,7 +18,6 @@ class OrderCreateController extends GetxController {
   late final RecipientController recipientController;
   late final ParcelController parcelController;
   late final ProductController productController;
-
 
   OrderCreateController({required OrderRepository orderRepository}) : _orderRepository = orderRepository {
     senderController = Get.put(SenderController());
@@ -226,14 +224,17 @@ class OrderCreateController extends GetxController {
   Future<void> addOrder() async {
     isLoading.value = true;
     try {
+      final parcel = parcelController.toJson();
+      parcel['merchant'] = senderController.firstNameController.text;
       final orderData = {
-        "parcel": parcelController.toJson(),
+        "parcel": parcel,
         "sender": senderController.toJson(),
         "recipient": recipientController.toJson(),
         "products": productController.toJson(),
       };
       final createdOrder = await _orderRepository.createOrder(orderData);
       // orders.add(createdOrder);
+
       Get.back();
       Get.snackbar('Success', 'Order added successfully');
     } catch (e) {

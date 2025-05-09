@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:simpl/data/repositories/tracking_respository.dart';
-import 'package:simpl/modules/tracking/controllers/tracking_controller.dart';
+import 'package:home_delivery_br/data/repositories/tracking_respository.dart';
+import 'package:home_delivery_br/modules/tracking/controllers/tracking_controller.dart';
 class TrackingBinding extends Bindings {
   @override
   void dependencies() {

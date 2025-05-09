@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:simpl/app/constants.dart';
-import 'package:simpl/data/models/tracking_model.dart';
+import 'package:home_delivery_br/app/constants.dart';
+import 'package:home_delivery_br/data/models/tracking_model.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/providers/api_provider.dart';
+import 'package:home_delivery_br/data/providers/api_provider.dart';
 class TrackingRepository {
 
   final ApiProvider _apiProvider = Get.find<ApiProvider>();

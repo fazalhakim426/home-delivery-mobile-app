@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/app/app_colors.dart';
-import 'package:simpl/connectivity_service.dart';
-import 'package:simpl/data/providers/api_provider.dart';
-import 'package:simpl/data/repositories/auth_repository.dart';
-import 'package:simpl/data/services/form_persistence_service.dart';
-import 'package:simpl/modules/auth/bindings/auth_binding.dart';
-import 'package:simpl/modules/auth/controllers/auth_controller.dart';
-import 'package:simpl/routes/app_pages.dart';
+import 'package:home_delivery_br/app/app_colors.dart';
+import 'package:home_delivery_br/connectivity_service.dart';
+import 'package:home_delivery_br/data/providers/api_provider.dart';
+import 'package:home_delivery_br/data/repositories/auth_repository.dart';
+import 'package:home_delivery_br/data/services/form_persistence_service.dart';
+import 'package:home_delivery_br/modules/auth/bindings/auth_binding.dart';
+import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/modules/auth/controllers/auth_controller.dart';
-import 'package:simpl/routes/app_pages.dart';
+import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 
-import 'package:simpl/app/app_colors.dart';
+import 'package:home_delivery_br/app/app_colors.dart';
 class HomeView extends GetView<AuthController> {
   const HomeView({super.key});
 

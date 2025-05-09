@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simpl/app/constants.dart';
-import 'package:simpl/data/models/user_model.dart';
-import 'package:simpl/data/providers/api_provider.dart';
+import 'package:home_delivery_br/app/constants.dart';
+import 'package:home_delivery_br/data/models/user_model.dart';
+import 'package:home_delivery_br/data/providers/api_provider.dart';
 
 class AuthRepository {
   final ApiProvider _apiProvider = Get.find<ApiProvider>();

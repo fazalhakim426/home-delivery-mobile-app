@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:simpl/modules/tracking/controllers/tracking_controller.dart';
+import 'package:home_delivery_br/modules/tracking/controllers/tracking_controller.dart';
 
 class TrackingView extends GetView<TrackingController> {
   const TrackingView({super.key});

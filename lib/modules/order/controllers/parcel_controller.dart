@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/models/CountryModel.dart';
-import 'package:simpl/data/models/CountryStateModel.dart';
-import 'package:simpl/data/models/ServiceModel.dart';
-import 'package:simpl/data/models/ShCodeModel.dart';
-import 'package:simpl/data/repositories/order_repository.dart';
-import 'package:simpl/modules/order/controllers/recipient_controller.dart';
+import 'package:home_delivery_br/data/models/CountryModel.dart';
+import 'package:home_delivery_br/data/models/CountryStateModel.dart';
+import 'package:home_delivery_br/data/models/ServiceModel.dart';
+import 'package:home_delivery_br/data/models/ShCodeModel.dart';
+import 'package:home_delivery_br/data/repositories/order_repository.dart';
+import 'package:home_delivery_br/modules/order/controllers/recipient_controller.dart';
 
 class ParcelController extends GetxController {
   final OrderRepository _orderRepository = OrderRepository();
@@ -76,7 +76,6 @@ class ParcelController extends GetxController {
   Map<String, dynamic> toJson() {
     return {
       "service_id": selectedServiceId.value,
-      "merchant": Get.find<RecipientController>().firstNameController.text,
       "carrier": "Carrier",
       "tracking_id": trackingIdController.text,
       "customer_reference": trackingIdController.text,

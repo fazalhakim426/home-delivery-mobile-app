@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:simpl/modules/order/controllers/ProductFormModel.dart';
+import 'package:home_delivery_br/modules/order/controllers/ProductFormModel.dart';
 
 class ProductController extends GetxController {
   final RxList<ProductFormModel> products = <ProductFormModel>[].obs;
