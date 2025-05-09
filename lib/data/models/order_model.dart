@@ -74,7 +74,7 @@ class Order {
       id: json['id'] as int?,
       title: json['customer_reference'] ?? '', // Use customer_reference as title?
       description: json['shipping_service_name'] ?? '',
-      status: json['order_status_string'] ,
+      status: json['order_status'] ,
       createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at']) : null,
       trackingCode: json['tracking_code'],
       service: Service.fromJson(json['service'] ?? {}),
