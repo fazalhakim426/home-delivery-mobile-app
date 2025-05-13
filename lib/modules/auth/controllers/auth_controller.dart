@@ -23,9 +23,8 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    emailController.text = 'mnaveedsaim@gmail.com';
-    passwordController.text = '1234';
+    emailController.text = '';
+    passwordController.text = '';
     checkLoginStatus();
   }
 
@@ -81,7 +80,7 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Failed to login: ${e.toString()}',
+        '${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -113,7 +112,7 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Failed to register: ${e.toString()}',
+        '${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -149,7 +148,7 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Failed to verify email: ${e.toString()}',
+        '${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -168,7 +167,7 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Failed to logout: ${e.toString()}',
+        '${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {

@@ -32,9 +32,7 @@ class AuthRepository {
       return user;
     } catch (e) {
        print('Sending email: $email, password: $password');
-
-      print('Failed to login: ${e.toString()}');
-      throw Exception('Failed to login: ${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 
@@ -52,7 +50,7 @@ class AuthRepository {
       User user = User.fromJson(userData);
       return user;
     } catch (e) {
-      throw Exception('Failed to register: ${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 
@@ -62,7 +60,7 @@ class AuthRepository {
       // Dummy implementation
       return true;
     } catch (e) {
-      throw Exception('Failed to verify email: ${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 
@@ -73,7 +71,7 @@ class AuthRepository {
       await prefs.remove(Constants.userToken);
       await prefs.remove(Constants.userData);
     } catch (e) {
-      throw Exception('Failed to logout: ${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 

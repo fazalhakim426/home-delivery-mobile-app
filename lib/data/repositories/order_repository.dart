@@ -27,33 +27,9 @@ class OrderRepository {
 
       return orders;
     } catch (e) {
-      throw Exception('Failed to get orders: ${e.toString()}');
+      throw Exception(e.toString());
     }
   }
-  // Future<List<Country>> fetchCountries() async {
-  //   try {
-  //     final response = await _apiProvider.get(Constants.countries);
-  //
-  //     if (response.statusCode == 200) {
-  //       final data = response.data;
-  //       if (data is List) {
-  //         List<Country> countries = data
-  //             .map((json) => Country.fromJson(json as Map<String, dynamic>))
-  //             .toList();
-  //         return countries;
-  //       } else {
-  //         throw Exception('Expected list but got ${data.runtimeType}');
-  //       }
-  //     } else {
-  //       throw Exception('Failed to load countries: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Failed to get countries: ${e.toString()}');
-  //   }
-  // }
-  //
-
-
   Future<List<Country>> fetchCountries() async {
 
     if (_cachedCountries != null) {
@@ -96,10 +72,10 @@ class OrderRepository {
           throw Exception('Expected list but got ${data.runtimeType}');
         }
       } else {
-        throw Exception('Failed to load countries: ${response.statusCode}');
+        throw Exception('Failed to load countries states: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Failed to get countries: ${e.toString()}');
+      throw Exception('Failed to get countries states: ${e.toString()}');
     }
 
   }
@@ -109,21 +85,21 @@ class OrderRepository {
       final response = await _apiProvider.get('${Constants.orders}/$id');
       return Order.fromJson(response.data);
     } catch (e) {
-      throw Exception('Failed to get order: ${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 
   // Create order
   Future<void> createOrder(order) async {
     try {
-      print('request sending....');
-      print(order);
+//       print('request sending....');
+//       print(order);
       final response = await _apiProvider.post(
         Constants.parcels,
         data: order,
       );
-      print('resposne data');
-      print(response.data['data']);
+//       print('resposne data');
+//       print(response.data['data']);
 
     } catch (e) {
       if (e is DioException && e.response?.statusCode == 422) {
@@ -135,8 +111,7 @@ class OrderRepository {
 
         throw formattedErrors;
       } else {
-        print("🚨 General error: ${e.toString()}");
-        throw Exception('Failed to create order: ${e.toString()}');
+        throw Exception(e.toString());
       }
     }
 
@@ -155,7 +130,7 @@ class OrderRepository {
       );
       return Order.fromJson(response.data);
     } catch (e) {
-      throw Exception('Failed to update order: ${e.toString()}');
+      throw Exception('${e.toString()}');
     }
   }
 
@@ -165,7 +140,7 @@ class OrderRepository {
       await _apiProvider.delete('${Constants.orders}/$id');
       return true;
     } catch (e) {
-      throw Exception('Failed to delete order: ${e.toString()}');
+      throw Exception('${e.toString()}');
     }
   }
 
@@ -183,7 +158,7 @@ class OrderRepository {
       );
       return Order.fromJson(response.data);
     } catch (e) {
-      throw Exception('Failed to toggle order: ${e.toString()}');
+      throw Exception('${e.toString()}');
     }
   }
 
@@ -199,7 +174,7 @@ class OrderRepository {
 
       return services;
     } catch (e) {
-      throw Exception('Failed to get :${Constants.services} ${e.toString()}');
+      throw Exception('${Constants.services} ${e.toString()}');
     }
   }
 
@@ -214,7 +189,7 @@ class OrderRepository {
           .toList();
       return shcodes;
     } catch (e) {
-      throw Exception('Failed to get :${Constants.shcodes} ${e.toString()}');
+      throw Exception('${Constants.shcodes} ${e.toString()}');
     }
   }
 

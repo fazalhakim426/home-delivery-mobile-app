@@ -42,7 +42,7 @@ class OrderViewController extends GetxController {
       if (e is dio.DioException && e.response?.statusCode == 401) {
         Get.offAllNamed('/login');
       } else {
-        Get.snackbar('Error', 'Failed to fetch orders: ${e.toString()}');
+        Get.snackbar('Error', e.toString());
       }
     } finally {
       isLoading.value = false;
@@ -60,7 +60,7 @@ class OrderViewController extends GetxController {
         fetchOrders();
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete order: ${e.toString()}');
+      Get.snackbar('Error',e.toString());
     } finally {
       isLoading.value = false;
     }

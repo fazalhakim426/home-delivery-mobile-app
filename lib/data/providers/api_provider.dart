@@ -64,12 +64,12 @@ class ApiProvider extends GetxService {
   String _handleDioError(dio.DioException error) {
     if (error.type == dio.DioExceptionType.connectionTimeout ||
         error.type == dio.DioExceptionType.receiveTimeout) {
-      return "Connection timed out. Please check your internet.";
+      return "Connection timed out.";
     } else if (error.type == dio.DioExceptionType.badCertificate ||
         error.error.toString().contains("HandshakeException")) {
-      return "Secure connection failed. Please check your internet or use a trusted network.";
+      return "Please check your internet or use a trusted network.";
     } else if (error.type == dio.DioExceptionType.connectionError) {
-      return "Failed to connect to server. Please check your internet.";
+      return "Please check your internet.";
     } else if (error.response != null) {
       return error.response?.data['message'] ??
           "Something went wrong. Please try again.";
