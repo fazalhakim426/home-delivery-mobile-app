@@ -7,30 +7,13 @@ import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
 import 'package:home_delivery_br/modules/order/controllers/order_view_controller.dart';
 import 'package:home_delivery_br/routes/app_pages.dart';
 
+import 'dart:async';
 class OrderView extends GetView<OrderViewController> {
   const OrderView({super.key});
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Order List'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              final authController = Get.find<AuthController>();
-              authController.logout();
-            },
-          ),
-        ],
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(12),
-          ),
-        ),
-      ),
+
       body: RefreshIndicator(
         onRefresh: () async {
           await controller.fetchOrders();
@@ -38,24 +21,137 @@ class OrderView extends GetView<OrderViewController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header Section
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Below are your most recent orders',
-                    style: TextStyle(color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Below are your most recent orders',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.logout),
+                        onPressed: () {
+                          final authController = Get.find<AuthController>();
+                          authController.logout();
+                        },
+                      ),
+                    ],
                   ),
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search by order ID or customer...',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onChanged: (value) {
+                      debounce(
+                            () => controller.searchOrders(value),
+                        const Duration(milliseconds: 500),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Date Filter Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            final selectedDate = await showDatePicker(
+                              context: context,
+                              initialDate: controller.startDate.value,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                            );
+                            if (selectedDate != null) {
+                              controller.filterByDate(
+                                selectedDate,
+                                controller.endDate.value,
+                              );
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  DateFormat('MMM dd, yyyy').format(controller.startDate.value),
+                                ),
+                                const Icon(Icons.calendar_today, size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Text('to'),
+                      ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            final selectedDate = await showDatePicker(
+                              context: context,
+                              initialDate: controller.endDate.value,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                            );
+                            if (selectedDate != null) {
+                              controller.filterByDate(
+                                controller.startDate.value,
+                                selectedDate,
+                              );
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  DateFormat('MMM dd, yyyy').format(controller.endDate.value),
+                                ),
+                                const Icon(Icons.calendar_today, size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+
+
                 ],
               ),
             ),
+
+            // Order List Section
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value && controller.orders.isEmpty) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (controller.orders.isEmpty) {
@@ -65,9 +161,11 @@ class OrderView extends GetView<OrderViewController> {
                       children: [
                         const Icon(Icons.list, size: 80, color: Colors.grey),
                         const SizedBox(height: 16),
-                        const Text(
-                          'No orders yet',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        Text(
+                          controller.searchQuery.value.isEmpty
+                              ? 'No orders found in selected period'
+                              : 'No orders match your search',
+                          style: const TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton.icon(
@@ -76,11 +174,10 @@ class OrderView extends GetView<OrderViewController> {
                             'Place New Order',
                             style: TextStyle(color: Colors.white),
                           ),
-                          onPressed: () => {
-                            Get.toNamed(Routes.CREATE_ORDER)
-                          },
+                          onPressed: () => Get.toNamed(Routes.CREATE_ORDER),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 16, horizontal: 24),
                           ),
@@ -95,14 +192,34 @@ class OrderView extends GetView<OrderViewController> {
                   );
                 }
 
-                return ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: controller.orders.length,
-                  itemBuilder: (context, index) {
-                    final order = controller.orders[index];
-                    return _buildOrderItem(order);
+                return NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+                        controller.hasMore &&
+                        !controller.isLoadMore.value) {
+                      controller.fetchOrders(loadMore: true);
+                    }
+                    return false;
                   },
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 80), // Space for FABs
+                    itemCount: controller.orders.length + (controller.hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= controller.orders.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+
+                      final order = controller.orders[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: _buildOrderItem(order),
+                      );
+                    },
+                  ),
                 );
               }),
             ),
@@ -111,6 +228,7 @@ class OrderView extends GetView<OrderViewController> {
       ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
             heroTag: 'tracking',
@@ -131,8 +249,13 @@ class OrderView extends GetView<OrderViewController> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
-
-
+  void debounce(VoidCallback callback, Duration duration) {
+    Timer? timer;
+    if (timer != null) {
+      timer.cancel();
+    }
+    timer = Timer(duration, callback);
+  }
   Widget _buildOrderItem(Order order) {
     return InkWell(
       onTap: () => _showOrderDetails(order),
@@ -286,7 +409,7 @@ class OrderView extends GetView<OrderViewController> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
-              _buildDetailRow("Weight:", "${order.weight} ${order.measurementUnit?.split('/').first ?? 'kg'}"),
+              _buildDetailRow("Weight:", "${order.weight} ${order.measurementUnit?.split('/').first ?? 'kg.'}"),
               if (order.volumetricWeight != null)
                 _buildDetailRow("Vol. Weight:", "${order.volumetricWeight!.toStringAsFixed(2)} kg"),
               _buildDetailRow("Dimensions:", "${order.length} x ${order.width} x ${order.height} cm"),
@@ -362,23 +485,7 @@ class OrderView extends GetView<OrderViewController> {
               Row(
 
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // ElevatedButton.icon(
-                  //   icon: const Icon(Icons.edit, size: 18),
-                  //   label: const Text("Edit"),
-                  //   style: ElevatedButton.styleFrom(
-                  //     backgroundColor: Colors.blue[50],
-                  //     foregroundColor: Colors.blue,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(8),
-                  //     ),
-                  //   ),
-                  //   onPressed: () {
-                  //     Get.back();
-                  //     Get.toNamed(Routes.CREATE_ORDER, arguments: order);
-                  //   },
-                  // ),
-
+                children: [ 
                   const SizedBox(height: 16),
 
                   ElevatedButton.icon(
@@ -426,7 +533,6 @@ class OrderView extends GetView<OrderViewController> {
     );
   }
 
-// Updated helper method to support custom text styling
   Widget _buildDetailRow(String label, dynamic value, {TextStyle? textStyle}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -450,6 +556,8 @@ class OrderView extends GetView<OrderViewController> {
       ),
     );
   }
+
+
   void _confirmDelete(Order order) {
     Get.back(); // Close the bottom sheet first
     Get.dialog(

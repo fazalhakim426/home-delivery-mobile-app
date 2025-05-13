@@ -8,7 +8,6 @@ import 'package:home_delivery_br/modules/order/views/SenderRecipientForm.dart';
 
 class OrderCreateView extends GetView<OrderCreateController> {
   const OrderCreateView({super.key});
-
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
@@ -17,15 +16,14 @@ class OrderCreateView extends GetView<OrderCreateController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create New Order'),
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(12),
+            bottom: Radius.circular(16),
           ),
         ),
+        centerTitle: true,
+        elevation: 0,
+
       ),
       body: Column(
         children: [

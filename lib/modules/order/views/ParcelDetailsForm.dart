@@ -178,7 +178,6 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
               );
             }),
             const SizedBox(height: 12),
-
             TextFormField(
               controller: product.descriptionController,
               decoration: InputDecoration(

@@ -232,53 +232,42 @@ class OrderCreateController extends GetxController {
         "recipient": recipientController.toJson(),
         "products": productController.toJson(),
       };
-      final createdOrder = await _orderRepository.createOrder(orderData);
-      // orders.add(createdOrder);
 
-      Get.back();
-      Get.snackbar('Success', 'Order added successfully');
-    } catch (e) {
-      if (e is Map<String, String>) {
-        fieldErrors.assignAll(e); // update UI
+      final response = await _orderRepository.createOrder(orderData);
+
+      if (response['success'] == true) {
+        Get.back();
+        Get.snackbar('Success', 'Order added successfully');
+      } else {
+        // Handle error returned from the API
+        if (response['errors'] != null && response['errors'] is Map<String, String>) {
+          fieldErrors.assignAll(response['errors']);
+        }
+        Get.snackbar(
+          'Failed',
+          response['message'] ?? 'Failed to add order.',
+          snackPosition: SnackPosition.BOTTOM,
+          isDismissible: true,
+          duration: const Duration(seconds: 5), // Optional: controls how long it stays
+          mainButton: TextButton(
+            onPressed: () {
+              if (Get.isSnackbarOpen) Get.back(); // Closes the snackbar
+            },
+            child: const Text(
+              'CLOSE',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
       }
+
+    } catch (e) {
       print(e.toString());
-      Get.snackbar('Invalid data', 'Failed to add order: ${e.toString()}',snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Error', 'Something went wrong.');
     } finally {
       isLoading.value = false;
     }
   }
-
-  // Future<void> updateOrder() async {
-  //   if (selectedOrder.value == null) {
-  //     Get.snackbar('Error', 'No order selected for update');
-  //     return;
-  //   }
-  //
-  //   isLoading.value = true;
-  //   try {
-  //     final updatedOrder = selectedOrder.value!.copyWith();
-  //     final result = await _orderRepository.updateOrder(updatedOrder);
-  //
-  //     final index = orders.indexWhere((order) => order.id == result.id);
-  //     if (index != -1) {
-  //       orders[index] = result;
-  //     }
-  //
-  //     clearForm();
-  //     Get.back();
-  //     Get.snackbar('Success', 'Order updated successfully');
-  //   } catch (e) {
-  //     Get.snackbar('Error', 'Failed to update order: ${e.toString()}');
-  //   } finally {
-  //     isLoading.value = false;
-  //     selectedOrder.value = null;
-  //   }
-  // }
-
-
-  // void selectOrderForEdit(Order order) {
-  //   selectedOrder.value = order;
-  // }
 
   @override
   void onClose() {

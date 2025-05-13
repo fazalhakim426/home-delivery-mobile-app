@@ -3,42 +3,63 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_delivery_br/data/models/order_model.dart';
 import 'package:home_delivery_br/data/repositories/order_repository.dart';
-import 'package:home_delivery_br/data/services/form_persistence_service.dart';
 import 'package:dio/dio.dart' as dio;
-import 'sender_controller.dart';
-import 'recipient_controller.dart';
-import 'parcel_controller.dart';
-import 'product_controller.dart';
 
 class OrderViewController extends GetxController {
   final OrderRepository _orderRepository;
 
-
-  OrderViewController({required OrderRepository orderRepository}) : _orderRepository = orderRepository {
-  }
-
-
-  final isLoading = false.obs;
-  final orders = <Order>[].obs;
+  OrderViewController({required OrderRepository orderRepository})
+    : _orderRepository = orderRepository {}
+// In your controller class
+  final searchController = TextEditingController();
 
 
-
+  var orders = <Order>[].obs;
+  var isLoading = true.obs;
+  var isLoadMore = false.obs;
+  var page = 1;
+  var hasMore = true;
+  var searchQuery = ''.obs;
+  var startDate = DateTime.now().subtract(const Duration(days: 30)).obs;
+  var endDate = DateTime.now().obs;
 
   @override
   void onInit() {
-    super.onInit();
     fetchOrders();
+    super.onInit();
   }
 
-  Future<void> fetchOrders() async {
-    isLoading.value = true;
+  Future<void> fetchOrders({bool loadMore = false}) async {
+    if (loadMore) {
+      if (!hasMore || isLoadMore.value) return;
+      isLoadMore.value = true;
+      page++;
+    } else {
+      isLoading.value = true;
+      page = 1;
+      hasMore = true;
+    }
+
     try {
-      final orderList = await _orderRepository.getAllOrders();
-      orders.assignAll(orderList);
+      final orderList = await _orderRepository.getAllOrders(
+        page: page,
+        search: searchQuery.value,
+        startDate: startDate.value,
+        endDate: endDate.value,
+      );
+
+      if (loadMore) {
+        orders.addAll(orderList);
+      } else {
+        orders.assignAll(orderList);
+      }
+
+      // Check if we've reached the end of data
+      if (orderList.isEmpty) {
+        hasMore = false;
+      }
     } catch (e) {
       print(e.toString());
-
-      // If it's a DioException, check the status code
       if (e is dio.DioException && e.response?.statusCode == 401) {
         Get.offAllNamed('/login');
       } else {
@@ -46,9 +67,20 @@ class OrderViewController extends GetxController {
       }
     } finally {
       isLoading.value = false;
+      isLoadMore.value = false;
     }
   }
 
+  void searchOrders(String query) {
+    searchQuery.value = query;
+    fetchOrders();
+  }
+
+  void filterByDate(DateTime newStartDate, DateTime newEndDate) {
+    startDate.value = newStartDate;
+    endDate.value = newEndDate;
+    fetchOrders();
+  }
 
   Future<void> deleteOrder(int id) async {
     isLoading.value = true;
@@ -70,5 +102,4 @@ class OrderViewController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
 }
