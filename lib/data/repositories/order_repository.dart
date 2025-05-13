@@ -9,27 +9,69 @@ import 'package:home_delivery_br/data/models/ShCodeModel.dart';
 import 'package:home_delivery_br/data/models/order_model.dart';
 import 'package:home_delivery_br/data/providers/api_provider.dart';
 
+import 'package:intl/intl.dart';
 class OrderRepository {
   final ApiProvider _apiProvider = Get.find<ApiProvider>();
   List<Country>? _cachedCountries;
-  // Get all orders
-  Future<List<Order>> getAllOrders() async {
-    try {
-      final response = await _apiProvider.get(Constants.orders);
+Future<List<Order>> getAllOrders({
+  int page = 1,
+  int perPage = 10,
+  String? search,
+  DateTime? startDate,
+  DateTime? endDate,
+}) async {
+  try {
+    final Map<String, dynamic> queryParams = {
+      'page': page.toString(),
+      'per_page': perPage.toString(),
+    };
 
-      final data = response.data['data'];
-      print('order get successfully 2');
-      print(data);
-
-      List<Order> orders = (data as List)
-          .map((json) => Order.fromJson(json as Map<String, dynamic>))
-          .toList();
-
-      return orders;
-    } catch (e) {
-      throw Exception(e.toString());
+    if (search != null && search.isNotEmpty) {
+      queryParams['search'] = search;
     }
+
+    if (startDate != null) {
+      queryParams['start_date'] = DateFormat('yyyy-MM-dd').format(startDate);
+    }
+
+    if (endDate != null) {
+      queryParams['end_date'] = DateFormat('yyyy-MM-dd').format(endDate);
+    }
+
+    final response = await _apiProvider.get(Constants.orders, query: queryParams);
+    final data = response.data['data'];
+    
+    return (data as List)
+        .map((json) => Order.fromJson(json as Map<String, dynamic>))
+        .toList();
+  } catch (e) { 
+    throw Exception('Failed to get orders: ${e.toString()}');
   }
+}
+  // Future<List<Country>> fetchCountries() async {
+  //   try {
+  //     final response = await _apiProvider.get(Constants.countries);
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = response.data;
+  //       if (data is List) {
+  //         List<Country> countries = data
+  //             .map((json) => Country.fromJson(json as Map<String, dynamic>))
+  //             .toList();
+  //         return countries;
+  //       } else {
+  //         throw Exception('Expected list but got ${data.runtimeType}');
+  //       }
+  //     } else {
+  //       throw Exception('Failed to load countries: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Failed to get countries: ${e.toString()}');
+  //   }
+  // }
+  //
+
+
   Future<List<Country>> fetchCountries() async {
 
     if (_cachedCountries != null) {
@@ -59,7 +101,7 @@ class OrderRepository {
   Future<List<CountryState>> getStateByCountry(int id) async {
 
     try {
-      final response = await _apiProvider.get('v1/country/$id/states');
+      final response = await _apiProvider.get('country/$id/states');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -89,32 +131,43 @@ class OrderRepository {
     }
   }
 
-  // Create order
-  Future<void> createOrder(order) async {
+  Future<Map<String, dynamic>> createOrder(order) async {
     try {
-//       print('request sending....');
-//       print(order);
+      print('request sending....');
+      print(order);
+
       final response = await _apiProvider.post(
         Constants.parcels,
         data: order,
       );
-//       print('resposne data');
-//       print(response.data['data']);
 
-    } catch (e) {
-      if (e is DioException && e.response?.statusCode == 422) {
+      return response.data;
+
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 422) {
         final errors = e.response?.data['errors'] ?? {};
         final formattedErrors = <String, String>{};
         errors.forEach((key, value) {
           formattedErrors[key] = (value as List).join(', ');
         });
-
-        throw formattedErrors;
-      } else {
-        throw Exception(e.toString());
+        // Return a consistent failure format
+        return {
+          "success": false,
+          "message": "Validation error",
+          "errors": formattedErrors,
+        };
       }
-    }
 
+      return {
+        "success": false,
+        "message": "Unexpected error: ${e.message}",
+      };
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "Unexpected error: ${e.toString()}",
+      };
+    }
   }
 
   // Update order

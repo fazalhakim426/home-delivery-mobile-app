@@ -356,11 +356,15 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
       final errorText = controller.getFieldError("recipient.state_id");
       final states = controller.parcelController.recipientStates;
       final selectedValue = controller.recipientController.selectedStateId.value;
-      final isValidSelection = selectedValue != 0 && states.any((state) => state.id == selectedValue);
+      final isLoading = controller.isLoading.value;
+
+      // Determine if the selected value is valid
+      final isValidSelection = selectedValue != 0 &&
+          states.any((state) => state.id == selectedValue);
 
       return DropdownButtonFormField<int>(
         value: isValidSelection ? selectedValue : null,
-        onChanged: states.isEmpty
+        onChanged: isLoading || states.isEmpty
             ? null
             : (value) {
           if (value != null) {
@@ -375,7 +379,7 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           errorText: errorText,
-          suffixIcon: controller.isLoading.value
+          suffixIcon: isLoading
               ? const Padding(
             padding: EdgeInsets.all(8.0),
             child: CircularProgressIndicator(strokeWidth: 2),
@@ -383,16 +387,16 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
               : null,
         ),
         items: [
-          if (!isValidSelection)
-            DropdownMenuItem<int>(
-              value: null,
-              child: Text(
-                'Select state',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).hintColor,
-                ),
+          // Always include the "Select state" option
+          DropdownMenuItem<int>(
+            value: null,
+            child: Text(
+              'Select state',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).hintColor,
               ),
             ),
+          ),
           ...states.map((state) => DropdownMenuItem<int>(
             value: state.id,
             child: Text(
@@ -403,22 +407,17 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
           )),
         ],
         validator: (value) {
+          if (isLoading) return 'Loading states...';
           if (states.isEmpty) return 'No states available for this country';
           if (value == null) return 'Please select a state';
           return null;
         },
         isExpanded: true,
-        hint: Text(
-          'Select state',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).hintColor,
-          ),
-        ),
         icon: const Icon(Icons.arrow_drop_down),
         dropdownColor: Theme.of(context).colorScheme.surface,
         style: Theme.of(context).textTheme.bodyMedium,
-
       );
     });
   }
+
 }

@@ -229,14 +229,36 @@ class OrderCreateController extends GetxController {
         "sender": senderController.toJson(),
         "recipient": recipientController.toJson(),
         "products": productController.toJson(),
-      };
-      final createdOrder = await _orderRepository.createOrder(orderData);
-      Get.back();
-      Get.snackbar('Success', 'Order added successfully');
-    } catch (e) {
-      if (e is Map<String, String>) {
-        fieldErrors.assignAll(e); // update UI
+      }; 
+      final response = await _orderRepository.createOrder(orderData);
+
+      if (response['success'] == true) {
+        Get.back();
+        Get.snackbar('Success', 'Order added successfully');
+      } else {
+        // Handle error returned from the API
+        if (response['errors'] != null && response['errors'] is Map<String, String>) {
+          fieldErrors.assignAll(response['errors']);
+        }
+        Get.snackbar(
+          'Failed',
+          response['message'] ?? 'Failed to add order.',
+          snackPosition: SnackPosition.BOTTOM,
+          isDismissible: true,
+          duration: const Duration(seconds: 5), // Optional: controls how long it stays
+          mainButton: TextButton(
+            onPressed: () {
+              if (Get.isSnackbarOpen) Get.back(); // Closes the snackbar
+            },
+            child: const Text(
+              'CLOSE',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
       }
+
+    } catch (e) {
       print(e.toString());
       Get.snackbar('Invalid data', e.toString(),snackPosition: SnackPosition.BOTTOM);
     } finally {
