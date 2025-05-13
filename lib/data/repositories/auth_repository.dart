@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simpl/app/constants.dart';
-import 'package:simpl/data/models/user_model.dart';
-import 'package:simpl/data/providers/api_provider.dart';
+import 'package:home_delivery_br/app/constants.dart';
+import 'package:home_delivery_br/data/models/user_model.dart';
+import 'package:home_delivery_br/data/providers/api_provider.dart';
 
 class AuthRepository {
   final ApiProvider _apiProvider = Get.find<ApiProvider>();
@@ -12,7 +12,7 @@ class AuthRepository {
     try {
       // In a real app, we would send actual credentials
       // This is a dummy implementation
-      final response = await _apiProvider.post(
+      final response = await _apiProvider.postDio(
         Constants.login,
         data: {'email': email, 'password': password},
       );
@@ -32,7 +32,7 @@ class AuthRepository {
       return user;
     } catch (e) {
        print('Sending email: $email, password: $password');
-      
+
       print('Failed to login: ${e.toString()}');
       throw Exception('Failed to login: ${e.toString()}');
     }

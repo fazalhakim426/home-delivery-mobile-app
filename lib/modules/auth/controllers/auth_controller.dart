@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/data/models/user_model.dart';
-import 'package:simpl/data/repositories/auth_repository.dart';
-import 'package:simpl/routes/app_pages.dart';
+import 'package:home_delivery_br/data/models/user_model.dart';
+import 'package:home_delivery_br/data/repositories/auth_repository.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository;
@@ -31,10 +31,10 @@ class AuthController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    nameController.dispose();
-    verificationCodeController.dispose();
+    // emailController.dispose();
+    // passwordController.dispose();
+    // nameController.dispose();
+    // verificationCodeController.dispose();
     super.onClose();
   }
 
@@ -77,7 +77,7 @@ class AuthController extends GetxController {
         passwordController.text,
       );
       isLoggedIn.value = true;
-      Get.offAllNamed(Routes.HOME);
+      Get.offAllNamed(Routes.ORDERS);
     } catch (e) {
       Get.snackbar(
         'Error',

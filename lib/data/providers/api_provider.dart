@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
-import 'package:simpl/app/constants.dart';
+import 'package:home_delivery_br/app/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiProvider extends GetxService {
   late dio.Dio _dio;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<ApiProvider> init() async {
     _dio = dio.Dio(
@@ -20,15 +22,32 @@ class ApiProvider extends GetxService {
 
     _dio.interceptors.add(
       dio.InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // Add token if available
+        onRequest: (options, handler) async {
+          // Always read token from storage before each request
+          final token = await _getTokenFromStorage();
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
           return handler.next(options);
         },
         onResponse: (response, handler) {
           return handler.next(response);
         },
-        onError: (error, handler) {
-          return handler.next(error);
+        onError: (error, handler) async {
+          String message = _handleDioError(error);
+          if (error.response?.statusCode == 401) {
+            // Clear token on 401 and redirect to login
+            await clearAuthToken();
+            Get.offAllNamed('/login');
+          }
+          return handler.reject(
+            dio.DioException(
+              requestOptions: error.requestOptions,
+              error: message,
+              type: error.type,
+              response: error.response,
+            ),
+          );
         },
       ),
     );
@@ -36,12 +55,35 @@ class ApiProvider extends GetxService {
     return this;
   }
 
+  // Helper to get token from storage
+  Future<String?> _getTokenFromStorage() async {
+    final prefs = await _prefs;
+    return prefs.getString('auth_token');
+  }
+
+  String _handleDioError(dio.DioException error) {
+    if (error.type == dio.DioExceptionType.connectionTimeout ||
+        error.type == dio.DioExceptionType.receiveTimeout) {
+      return "Connection timed out. Please check your internet.";
+    } else if (error.type == dio.DioExceptionType.badCertificate ||
+        error.error.toString().contains("HandshakeException")) {
+      return "Secure connection failed. Please check your internet or use a trusted network.";
+    } else if (error.type == dio.DioExceptionType.connectionError) {
+      return "Failed to connect to server. Please check your internet.";
+    } else if (error.response != null) {
+      return error.response?.data['message'] ??
+          "Something went wrong. Please try again.";
+    } else {
+      return "Unexpected error occurred. Please try again later.";
+    }
+  }
+
   // GET request
   Future<dio.Response> get(String url, {Map<String, dynamic>? query}) async {
     try {
       return await _dio.get(url, queryParameters: query);
-    } catch (e) {
-      rethrow;
+    } on dio.DioException catch (e) {
+      throw Exception(e.error ?? 'API GET failed');
     }
   }
 
@@ -54,12 +96,20 @@ class ApiProvider extends GetxService {
     }
   }
 
+  Future<dio.Response> postDio(String url, {dynamic data}) async {
+    try {
+      return await _dio.post(url, data: data);
+    } on dio.DioException catch (e) {
+      throw Exception(e.error ?? 'API POST failed');
+    }
+  }
+
   // PUT request
   Future<dio.Response> put(String url, {dynamic data}) async {
     try {
       return await _dio.put(url, data: data);
-    } catch (e) {
-      rethrow;
+    } on dio.DioException catch (e) {
+      throw Exception(e.error ?? 'API PUT failed');
     }
   }
 
@@ -67,13 +117,19 @@ class ApiProvider extends GetxService {
   Future<dio.Response> delete(String url) async {
     try {
       return await _dio.delete(url);
-    } catch (e) {
-      rethrow;
+    } on dio.DioException catch (e) {
+      throw Exception(e.error ?? 'API DELETE failed');
     }
   }
 
-  // Set auth token
-  void setAuthToken(String token) {
-    _dio.options.headers['Authorization'] = 'Bearer $token';
+  Future<void> setAuthToken(String token) async {
+    final prefs = await _prefs;
+    await prefs.setString('auth_token', token);
+  }
+
+  Future<void> clearAuthToken() async {
+    final prefs = await _prefs;
+    await prefs.remove('auth_token');
+    // No longer need to remove from headers here
   }
 }

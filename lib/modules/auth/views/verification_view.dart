@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/modules/auth/controllers/auth_controller.dart';
+import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
 
 class VerificationView extends GetView<AuthController> {
   const VerificationView({super.key});

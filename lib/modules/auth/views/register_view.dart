@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:simpl/modules/auth/controllers/auth_controller.dart';
-import 'package:simpl/routes/app_pages.dart';
+import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
+import 'package:home_delivery_br/app/app_colors.dart';
 
 class RegisterView extends GetView<AuthController> {
   const RegisterView({Key? key}) : super(key: key);
@@ -11,7 +12,13 @@ class RegisterView extends GetView<AuthController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
-        backgroundColor: Colors.purple,
+        backgroundColor:AppColors.primary,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(12),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,7 +31,7 @@ class RegisterView extends GetView<AuthController> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple,
+                color:AppColors.primary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -33,13 +40,13 @@ class RegisterView extends GetView<AuthController> {
               controller: controller.nameController,
               decoration: InputDecoration(
                 labelText: 'Full Name',
-                prefixIcon: const Icon(Icons.person, color: Colors.purple),
+                prefixIcon: const Icon(Icons.person, color:AppColors.primary),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.purple, width: 2),
+                  borderSide: const BorderSide(color:AppColors.primary, width: 2),
                 ),
               ),
             ),
@@ -48,13 +55,13 @@ class RegisterView extends GetView<AuthController> {
               controller: controller.emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                prefixIcon: const Icon(Icons.email, color: Colors.purple),
+                prefixIcon: const Icon(Icons.email, color:AppColors.primary),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.purple, width: 2),
+                  borderSide: const BorderSide(color:AppColors.primary, width: 2),
                 ),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -64,13 +71,13 @@ class RegisterView extends GetView<AuthController> {
               controller: controller.passwordController,
               decoration: InputDecoration(
                 labelText: 'Password',
-                prefixIcon: const Icon(Icons.lock, color: Colors.purple),
+                prefixIcon: const Icon(Icons.lock, color:AppColors.primary),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.purple, width: 2),
+                  borderSide: const BorderSide(color:AppColors.primary, width: 2),
                 ),
               ),
               obscureText: true,
@@ -83,7 +90,8 @@ class RegisterView extends GetView<AuthController> {
                         ? null
                         : () => controller.register(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor:AppColors.primary,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -103,7 +111,7 @@ class RegisterView extends GetView<AuthController> {
               onPressed: () => Get.toNamed(Routes.LOGIN),
               child: const Text(
                 'Already have an account? Login',
-                style: TextStyle(color: Colors.purple),
+                style: TextStyle(color:AppColors.primary),
               ),
             ),
           ],
