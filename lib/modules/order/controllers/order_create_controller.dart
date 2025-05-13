@@ -229,7 +229,7 @@ class OrderCreateController extends GetxController {
         "sender": senderController.toJson(),
         "recipient": recipientController.toJson(),
         "products": productController.toJson(),
-      }; 
+      };
       final response = await _orderRepository.createOrder(orderData);
 
       if (response['success'] == true) {

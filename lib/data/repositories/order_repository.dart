@@ -183,7 +183,7 @@ Future<List<Order>> getAllOrders({
       );
       return Order.fromJson(response.data);
     } catch (e) {
-      throw Exception('${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 
@@ -193,7 +193,7 @@ Future<List<Order>> getAllOrders({
       await _apiProvider.delete('${Constants.orders}/$id');
       return true;
     } catch (e) {
-      throw Exception('${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 
@@ -211,7 +211,7 @@ Future<List<Order>> getAllOrders({
       );
       return Order.fromJson(response.data);
     } catch (e) {
-      throw Exception('${e.toString()}');
+      throw Exception(e.toString());
     }
   }
 
