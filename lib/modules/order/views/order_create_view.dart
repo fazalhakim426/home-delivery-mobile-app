@@ -5,26 +5,19 @@ import 'package:home_delivery_br/modules/order/controllers/order_create_controll
 import 'package:home_delivery_br/modules/order/views/BasicInfoForm.dart';
 import 'package:home_delivery_br/modules/order/views/ParcelDetailsForm.dart';
 import 'package:home_delivery_br/modules/order/views/SenderRecipientForm.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
+import 'package:home_delivery_br/widgets/app_scaffold.dart';
 
+import '../../../app/app_styles.dart';
 class OrderCreateView extends GetView<OrderCreateController> {
   const OrderCreateView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
     final isKeyboardOpen = bottomPadding > 0;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create New Order'),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(16),
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-
-      ),
+    return AppScaffold(
       body: Column(
         children: [
           // Progress indicator with labels
@@ -43,7 +36,7 @@ class OrderCreateView extends GetView<OrderCreateController> {
             child: Column(
               children: [
                 Obx(
-                      () => Row(
+                  () => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(3, (index) {
                       final isActive = controller.currentStep.value >= index;
@@ -53,18 +46,20 @@ class OrderCreateView extends GetView<OrderCreateController> {
                             width: 32,
                             height: 32,
                             decoration: BoxDecoration(
-                              color: isActive
-                                  ? AppColors.primary
-                                  : Colors.grey.shade200,
+                              color:
+                                  isActive
+                                      ? AppColors.primary
+                                      : Colors.grey.shade200,
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                               child: Text(
                                 '${index + 1}',
                                 style: TextStyle(
-                                  color: isActive
-                                      ? Colors.white
-                                      : Colors.grey.shade600,
+                                  color:
+                                      isActive
+                                          ? Colors.white
+                                          : Colors.grey.shade600,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -75,12 +70,14 @@ class OrderCreateView extends GetView<OrderCreateController> {
                             _getStepLabel(index),
                             style: TextStyle(
                               fontSize: 12,
-                              color: isActive
-                                  ? AppColors.primary
-                                  : Colors.grey.shade600,
-                              fontWeight: isActive
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
+                              color:
+                                  isActive
+                                      ? AppColors.primary
+                                      : Colors.grey.shade600,
+                              fontWeight:
+                                  isActive
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
                             ),
                           ),
                         ],
@@ -90,7 +87,7 @@ class OrderCreateView extends GetView<OrderCreateController> {
                 ),
                 const SizedBox(height: 12),
                 Obx(
-                      () => LinearProgressIndicator(
+                  () => LinearProgressIndicator(
                     value: (controller.currentStep.value + 1) / 3,
                     backgroundColor: Colors.grey.shade200,
                     color: AppColors.primary,
@@ -127,116 +124,216 @@ class OrderCreateView extends GetView<OrderCreateController> {
           ),
 
           // Bottom action bar
-          Container(
-            padding: EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 16,
-              bottom: isKeyboardOpen ? 16 : 24 + MediaQuery.of(context).padding.bottom,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
+          // Container(
+          //   padding: EdgeInsets.only(
+          //     left: 24,
+          //     right: 24,
+          //     top: 16,
+          //     bottom:
+          //         isKeyboardOpen
+          //             ? 16
+          //             : 24 + MediaQuery.of(context).padding.bottom,
+          //   ),
+          //   decoration: BoxDecoration(
+          //     color: Colors.white,
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: Colors.grey.withOpacity(0.1),
+          //         blurRadius: 8,
+          //         offset: const Offset(0, -2),
+          //       ),
+          //     ],
+          //     borderRadius: const BorderRadius.vertical(
+          //       top: Radius.circular(16),
+          //     ),
+          //   ),
+          //   child: Obx(
+          //     () => Row(
+          //       children: [
+          //         // Back button (only visible after first step)
+          //         if (controller.currentStep.value > 0)
+          //           Expanded(
+          //             flex: 1,
+          //             child: OutlinedButton(
+          //               onPressed: controller.previousStep,
+          //               style:AppStyles.outlinedButtonStyle,
+          //               child: const Text(
+          //                 'Back',
+          //                 style: AppStyles.grayText1
+          //               ),
+          //             ),
+          //           ),
+          //
+          //         if (controller.currentStep.value > 0)
+          //           const SizedBox(width: 12),
+          //
+          //         // Cancel button
+          //         if (controller.currentStep.value == 0)
+          //           Expanded(
+          //             flex: 1,
+          //             child:OutlinedButton(
+          //               onPressed: () => Get.toNamed(Routes.DASHBOARD),
+          //               style: AppStyles.outlinedButtonStyle,
+          //               child: const Text(
+          //                 'CANCEL',
+          //                 style: AppStyles.grayText1
+          //               ),
+          //             ),
+          //           ),
+          //
+          //         if (controller.currentStep.value == 0)
+          //           const SizedBox(width: 12),
+          //
+          //         // Next/Create button
+          //         Expanded(
+          //           flex: controller.currentStep.value == 0 ? 2 : 1,
+          //           child: ElevatedButton(
+          //             onPressed: controller.isLoading.value
+          //                 ? null
+          //                 : controller.currentStep.value == 2
+          //                 ? () => controller.addOrder()
+          //                 : controller.nextStep,
+          //             style: ElevatedButton.styleFrom(
+          //               backgroundColor: AppColors.primary,
+          //               foregroundColor: Colors.white,
+          //               padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24), // Increased padding
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(12), // More rounded corners
+          //               ),
+          //               elevation: 2, // Subtle shadow
+          //               shadowColor: AppColors.primary.withOpacity(0.3), // Matching shadow
+          //               minimumSize: const Size(double.infinity, 50), // Consistent minimum height
+          //             ),
+          //             child: Obx(() {
+          //               if (controller.isLoading.value) {
+          //                 return const SizedBox(
+          //                   width: 24,
+          //                   height: 24,
+          //                   child: CircularProgressIndicator(
+          //                     strokeWidth: 3, // Thicker loader
+          //                     color: Colors.white,
+          //                   ),
+          //                 );
+          //               }
+          //               return Text(
+          //                 controller.currentStep.value == 2 ? 'CREATE ORDER' : 'CONTINUE', // Uppercase
+          //                 style: const TextStyle(
+          //                   fontSize: 18, // Larger text
+          //                   fontWeight: FontWeight.w700, // Bolder
+          //                   letterSpacing: 0.5, // Better spacing
+          //                 ),
+          //               );
+          //             }),
+          //           ),
+          //
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+
+          SafeArea(
+            child: Container(
+              padding: const EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 16,
+                bottom: 24,
               ),
-            ),
-            child: Obx(
-                  () => Row(
-                children: [
-                  // Back button (only visible after first step)
-                  if (controller.currentStep.value > 0)
-                    Expanded(
-                      flex: 1,
-                      child: OutlinedButton(
-                        onPressed: controller.previousStep,
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: BorderSide(color: Colors.grey.shade300),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text(
-                          'Back',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    ),
-
-                  if (controller.currentStep.value > 0)
-                    const SizedBox(width: 12),
-
-                  // Cancel button
-                  if (controller.currentStep.value == 0)
-                    Expanded(
-                      flex: 1,
-                      child: OutlinedButton(
-                        onPressed: () => Get.back(),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: BorderSide(color: Colors.grey.shade300),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    ),
-
-                  if (controller.currentStep.value == 0)
-                    const SizedBox(width: 12),
-
-                  // Next/Create button
-                  Expanded(
-                    flex: controller.currentStep.value == 0 ? 2 : 1,
-                    child: ElevatedButton(
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : controller.currentStep.value == 2
-                          ? () => controller.addOrder()
-                          : controller.nextStep,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Obx(() {
-                        if (controller.isLoading.value) {
-                          return const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          );
-                        }
-                        return Text(
-                          controller.currentStep.value == 2
-                              ? 'Create Order'
-                              : 'Continue',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        );
-                      }),
-                    ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, -2),
                   ),
                 ],
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+              ),
+              child: Obx(
+                    () => Row(
+                  children: [
+                    // Back button (only visible after first step)
+                    if (controller.currentStep.value > 0)
+                      Expanded(
+                        flex: 1,
+                        child: OutlinedButton(
+                          onPressed: controller.previousStep,
+                          style: AppStyles.outlinedButtonStyle,
+                          child: const Text(
+                              'Back',
+                              style: AppStyles.grayText1
+                          ),
+                        ),
+                      ),
+
+                    if (controller.currentStep.value > 0)
+                      const SizedBox(width: 12),
+
+                    // Cancel button
+                    if (controller.currentStep.value == 0)
+                      Expanded(
+                        flex: 1,
+                        child: OutlinedButton(
+                          onPressed: () => Get.toNamed(Routes.DASHBOARD),
+                          style: AppStyles.outlinedButtonStyle,
+                          child: const Text(
+                              'CANCEL',
+                              style: AppStyles.grayText1
+                          ),
+                        ),
+                      ),
+
+                    if (controller.currentStep.value == 0)
+                      const SizedBox(width: 12),
+
+                    // Next/Create button
+                    Expanded(
+                      flex: controller.currentStep.value == 0 ? 2 : 1,
+                      child: ElevatedButton(
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : controller.currentStep.value == 2
+                            ? () => controller.addOrder()
+                            : controller.nextStep,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
+                          shadowColor: AppColors.primary.withOpacity(0.3),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                        child: Obx(() {
+                          if (controller.isLoading.value) {
+                            return const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 3,
+                                color: Colors.white,
+                              ),
+                            );
+                          }
+                          return Text(
+                            controller.currentStep.value == 2 ? 'SUBMIT' : 'CONTINUE',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

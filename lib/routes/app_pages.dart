@@ -4,12 +4,15 @@ import 'package:home_delivery_br/modules/auth/bindings/auth_binding.dart';
 import 'package:home_delivery_br/modules/auth/views/login_view.dart';
 import 'package:home_delivery_br/modules/auth/views/register_view.dart';
 import 'package:home_delivery_br/modules/auth/views/verification_view.dart';
+import 'package:home_delivery_br/modules/dashboard/bindings/dashboard_binding.dart';
 import 'package:home_delivery_br/modules/order/bindings/order_view_binding.dart';
 import 'package:home_delivery_br/modules/order/bindings/order_create_binding.dart';
 import 'package:home_delivery_br/modules/order/views/order_create_view.dart';
 import 'package:home_delivery_br/modules/order/views/order_view.dart';
 import 'package:home_delivery_br/modules/tracking/bindings/tracking_binding.dart';
 import 'package:home_delivery_br/modules/tracking/views/tracking_view.dart';
+
+import '../modules/dashboard/views/dashboard.dart';
 
 part 'app_routes.dart';
 
@@ -22,6 +25,11 @@ class AppPages {
     GetPage(
         name: Routes.Splash,
         page: () => SplashScreen()
+    ),
+    GetPage(
+      name: Routes.DASHBOARD,
+      page: () =>   DashboardView(),
+      binding: DashboardBinding(),
     ),
     GetPage(
       name: Routes.LOGIN,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:home_delivery_br/data/models/order_model.dart';
 import 'package:home_delivery_br/data/repositories/order_repository.dart';
@@ -7,7 +8,8 @@ import 'package:dio/dio.dart' as dio;
 
 class OrderViewController extends GetxController {
   final OrderRepository _orderRepository;
-
+  final isFilterVisible = false.obs;
+  final scrollController = ScrollController();
   OrderViewController({required OrderRepository orderRepository})
     : _orderRepository = orderRepository {}
 // In your controller class
@@ -27,8 +29,19 @@ class OrderViewController extends GetxController {
   void onInit() {
     fetchOrders();
     super.onInit();
+    scrollController.addListener(_handleScroll);
+  }
+  void _handleScroll() {
+    if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+      if (isFilterVisible.value) {
+        isFilterVisible.value = false;
+      }
+    }
   }
 
+  void toggleFilterVisibility() {
+    isFilterVisible.value = !isFilterVisible.value;
+  }
   Future<void> fetchOrders({bool loadMore = false}) async {
     if (loadMore) {
       if (!hasMore || isLoadMore.value) return;
@@ -100,6 +113,7 @@ class OrderViewController extends GetxController {
 
   @override
   void onClose() {
+    scrollController.dispose();
     super.onClose();
   }
 }

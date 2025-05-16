@@ -10,29 +10,18 @@ class AuthRepository {
   // Login
   Future<User> login(String email, String password) async {
     try {
-      // In a real app, we would send actual credentials
-      // This is a dummy implementation
       final response = await _apiProvider.postDio(
         Constants.login,
         data: {'email': email, 'password': password},
       );
-      // Simulate successful login
-
       User user = User.fromJson(response.data['user']);
-      print(user.token);
-
-      // Save user token
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(Constants.userToken, user.token ?? '');
       await prefs.setString(Constants.userData, user.email);
-
-      // Set token for future requests
       _apiProvider.setAuthToken(user.token ?? '');
-
       return user;
     } catch (e) {
-       print('Sending email: $email, password: $password');
-      throw Exception(e.toString());
+      throw e;
     }
   }
 

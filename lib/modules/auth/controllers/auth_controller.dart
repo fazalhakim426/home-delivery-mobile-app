@@ -15,6 +15,8 @@ class AuthController extends GetxController {
   final user = Rxn<User>();
 
   // Text controllers
+
+  final loginFormKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
@@ -78,9 +80,10 @@ class AuthController extends GetxController {
       isLoggedIn.value = true;
       Get.offAllNamed(Routes.ORDERS);
     } catch (e) {
+
       Get.snackbar(
         'Error',
-        '${e.toString()}',
+        e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
