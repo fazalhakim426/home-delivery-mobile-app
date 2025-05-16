@@ -144,13 +144,18 @@ Future<List<Order>> getAllOrders({
       if (e.response?.statusCode == 422) {
         final errors = e.response?.data['errors'] ?? {};
         final formattedErrors = <String, String>{};
+
         errors.forEach((key, value) {
           formattedErrors[key] = (value as List).join(', ');
         });
-        // Return a consistent failure format
+
+        // Combine all error messages into a single string for the message
+        final combinedErrorMessage = formattedErrors.values.join(' | ');
+
+        // Return a consistent failure format with combined message
         return {
           "success": false,
-          "message": "Validation error",
+          "message": "Validation error: $combinedErrorMessage",
           "errors": formattedErrors,
         };
       }

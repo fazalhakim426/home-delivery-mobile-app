@@ -3,24 +3,23 @@ import 'package:get/get.dart';
 import 'package:home_delivery_br/data/models/Dashboard.dart';
 import 'package:home_delivery_br/modules/dashboard/views/monthly_orders_chart.dart';
 import 'package:home_delivery_br/widgets/app_scaffold.dart';
-import 'package:intl/intl.dart';
 import '../controllers/dashboard_controller.dart';
 import 'order_summary_card.dart';
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class DashboardView extends StatelessWidget {
   final DashboardController controller = Get.find<DashboardController>();
 
-  @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      body: Obx(() {
-        final dashboard = controller.dashboard.value;
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Obx(() {
+            final dashboard = controller.dashboard.value;
 
-        return controller.isLoading.value && dashboard == null
-            ? const Center(child: CircularProgressIndicator())
-            : Padding(
+            return controller.isLoading.value && dashboard == null
+                ? const Center(child: CircularProgressIndicator())
+                : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,66 +28,67 @@ class DashboardView extends StatelessWidget {
                     'Dashboard Statistics',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  const SizedBox(height: 20),
 
                   /// 🔹 Date Filters
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _selectDate(context, true),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              'Start: ${DateFormat('yyyy-MM-dd').format(controller.startDate.value)}',
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _selectDate(context, false),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              'End: ${DateFormat('yyyy-MM-dd').format(controller.endDate.value)}',
-                            ),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => controller.fetchDashboard(),
-                        icon: const Icon(Icons.refresh),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: GestureDetector(
+                  //         onTap: () => _selectDate(context, true),
+                  //         child: Container(
+                  //           padding: const EdgeInsets.all(12),
+                  //           decoration: BoxDecoration(
+                  //             border: Border.all(color: Colors.grey),
+                  //             borderRadius: BorderRadius.circular(8),
+                  //           ),
+                  //           child: Text(
+                  //             'Start: ${DateFormat('yyyy-MM-dd').format(controller.startDate.value)}',
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 10),
+                  //     Expanded(
+                  //       child: GestureDetector(
+                  //         onTap: () => _selectDate(context, false),
+                  //         child: Container(
+                  //           padding: const EdgeInsets.all(12),
+                  //           decoration: BoxDecoration(
+                  //             border: Border.all(color: Colors.grey),
+                  //             borderRadius: BorderRadius.circular(8),
+                  //           ),
+                  //           child: Text(
+                  //             'End: ${DateFormat('yyyy-MM-dd').format(controller.endDate.value)}',
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     IconButton(
+                  //       onPressed: () => controller.fetchDashboard(),
+                  //       icon: const Icon(Icons.refresh),
+                  //     ),
+                  //   ],
+                  // ),
 
                   const SizedBox(height: 20),
 
-                  if (dashboard != null)
-                    buildOrderSummaryTabs(context, dashboard)
-                  else
+                  if (dashboard != null) ...[
+                    buildOrderSummaryTabs(context, dashboard),
+                    const SizedBox(height: 20),
+                    buildMonthlyOrderChart(dashboard, controller),
+                    const SizedBox(height: 20),
+                    buildDonutChart(context, dashboard),
+                    const SizedBox(height: 20), // Extra space at bottom for better scrolling
+                  ] else
                     const Center(child: Text("No data available")),
-                  const SizedBox(height: 20),
-                  buildMonthlyOrderChart(dashboard, controller),
-                  const SizedBox(height: 20),
-                  buildDonutChart(context, controller.dashboard.value!),
                 ],
               ),
             );
-      }),
+          }),
+        ),
+      ),
     );
   }
-
   Widget buildDonutChart(BuildContext context, Dashboard dashboard) {
     // Extract the doughnut data
     final doughnutData = dashboard.doughnutData;

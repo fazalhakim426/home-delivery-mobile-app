@@ -84,20 +84,32 @@ class LoginView extends GetView<AuthController> {
                         ? null
                         : () {
                       if (_formKey.currentState!.validate()) {
-                        controller.login(); // ✅ Only login if form is valid
+                        controller.login();
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 18), // Increased vertical padding
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12), // Slightly more rounded
                       ),
+                      elevation: 4, // Subtle shadow
+                      shadowColor: AppColors.primary.withOpacity(0.3), // Soft shadow color
                     ),
                     child: controller.isLoading.value
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text('Login', style: TextStyle(fontSize: 16)),
+                        ? const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 3, // Thicker loader
+                    )
+                        : const Text(
+                      'LOGIN', // Uppercase for better visibility
+                      style: TextStyle(
+                        fontSize: 18, // Larger font
+                        fontWeight: FontWeight.w700, // Bold
+                        letterSpacing: 0.5, // Slightly spaced letters
+                      ),
+                    ),
                   )),
                 ],
               ),

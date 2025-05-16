@@ -53,8 +53,8 @@ class _AppScaffoldState extends State<AppScaffold> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        backgroundColor: Colors.white, // Or any static color (e.g., AppColors.primary)
         title: Text(widget.title),
-        backgroundColor: Colors.white, // Kept constant as per your requirement
         foregroundColor: AppColors.primary,
         leading: widget.showDrawer
             ? IconButton(
