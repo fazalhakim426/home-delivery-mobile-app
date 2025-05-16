@@ -5,6 +5,8 @@ import 'package:home_delivery_br/modules/order/controllers/order_create_controll
 import 'package:home_delivery_br/modules/order/views/BasicInfoForm.dart';
 import 'package:home_delivery_br/modules/order/views/ParcelDetailsForm.dart';
 import 'package:home_delivery_br/modules/order/views/SenderRecipientForm.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
+import 'package:home_delivery_br/widgets/app_scaffold.dart';
 
 class OrderCreateView extends GetView<OrderCreateController> {
   const OrderCreateView({super.key});
@@ -13,18 +15,7 @@ class OrderCreateView extends GetView<OrderCreateController> {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
     final isKeyboardOpen = bottomPadding > 0;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create New Order'),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(16),
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-
-      ),
+    return AppScaffold( 
       body: Column(
         children: [
           // Progress indicator with labels
@@ -178,7 +169,7 @@ class OrderCreateView extends GetView<OrderCreateController> {
                     Expanded(
                       flex: 1,
                       child: OutlinedButton(
-                        onPressed: () => Get.back(),
+                        onPressed: () => Get.toNamed(Routes.DASHBOARD),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           side: BorderSide(color: Colors.grey.shade300),

@@ -133,9 +133,6 @@ Future<List<Order>> getAllOrders({
 
   Future<Map<String, dynamic>> createOrder(order) async {
     try {
-      print('request sending....');
-      print(order);
-
       final response = await _apiProvider.post(
         Constants.parcels,
         data: order,

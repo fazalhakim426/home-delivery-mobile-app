@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:home_delivery_br/widgets/app_scaffold.dart';
 import 'package:intl/intl.dart';
 import 'package:home_delivery_br/app/app_colors.dart';
 import 'package:home_delivery_br/data/models/order_model.dart';
-import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
 import 'package:home_delivery_br/modules/order/controllers/order_view_controller.dart';
 import 'package:home_delivery_br/routes/app_pages.dart';
 
 import 'dart:async';
 class OrderView extends GetView<OrderViewController> {
   const OrderView({super.key});
-
   Widget build(BuildContext context) {
-    return Scaffold(
-
+    return AppScaffold(
       body: RefreshIndicator(
         onRefresh: () async {
           await controller.fetchOrders();
@@ -21,13 +19,11 @@ class OrderView extends GetView<OrderViewController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
                   Row(
                     children: [
                       Expanded(
@@ -35,13 +31,6 @@ class OrderView extends GetView<OrderViewController> {
                           'Below are your most recent orders',
                           style: TextStyle(color: Colors.grey),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.logout),
-                        onPressed: () {
-                          final authController = Get.find<AuthController>();
-                          authController.logout();
-                        },
                       ),
                     ],
                   ),
@@ -226,28 +215,7 @@ class OrderView extends GetView<OrderViewController> {
           ],
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: 'tracking',
-            onPressed: () => Get.toNamed(Routes.TRACKINGS),
-            backgroundColor: AppColors.primary,
-            mini: true,
-            child: const Icon(Icons.local_shipping, color: Colors.white),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            heroTag: 'create',
-            onPressed: () => Get.toNamed(Routes.CREATE_ORDER),
-            backgroundColor: AppColors.primary,
-            child: const Icon(Icons.add, color: Colors.white),
-          ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    );
+     );
   }
   void debounce(VoidCallback callback, Duration duration) {
     Timer? timer;

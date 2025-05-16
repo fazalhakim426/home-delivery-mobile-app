@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:home_delivery_br/widgets/app_scaffold.dart';
 import 'package:intl/intl.dart';
 import 'package:home_delivery_br/modules/tracking/controllers/tracking_controller.dart';
 
@@ -12,17 +13,17 @@ class TrackingView extends GetView<TrackingController> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Package Tracker"),
-        centerTitle: true,
-        elevation: 0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(16),
-          ),
-        ),
-      ),
+    return AppScaffold(
+      // appBar: AppBar(
+      //   title: const Text("Package Tracker"),
+      //   centerTitle: true,
+      //   elevation: 0,
+      //   shape: const RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.vertical(
+      //       bottom: Radius.circular(16),
+      //     ),
+      //   ),
+      // ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(

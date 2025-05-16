@@ -22,7 +22,7 @@ class SplashScreen extends StatelessWidget {
     await authController.checkLoginStatus();
 
     if (authController.isLoggedIn.value) {
-      Get.offNamed(Routes.ORDERS);
+      Get.offNamed(Routes.DASHBOARD);
     } else {
       Get.offNamed(Routes.LOGIN);
     }

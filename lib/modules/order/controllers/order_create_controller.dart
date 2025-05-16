@@ -236,7 +236,6 @@ class OrderCreateController extends GetxController {
         Get.back();
         Get.snackbar('Success', 'Order added successfully');
       } else {
-        // Handle error returned from the API
         if (response['errors'] != null && response['errors'] is Map<String, String>) {
           fieldErrors.assignAll(response['errors']);
         }
