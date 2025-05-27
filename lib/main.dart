@@ -49,45 +49,42 @@ void main() async {
             Obx(() {
               if (connectivity.isConnected.value) return const SizedBox();
 
-              final hasSnackbar = Get.isSnackbarOpen;
-              final snackbarHeight = hasSnackbar ? 70.0 : 0.0;
-              final topPosition = kToolbarHeight +
-                  MediaQuery.of(context).padding.top +
-                  snackbarHeight;
-
               return Positioned(
-                top: topPosition,
+                top: 0, // Position below app bar
                 left: 0,
                 right: 0,
-                child: Material(
-                  elevation: 4,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.red[400],
-                      gradient: LinearGradient(
-                        colors: [Colors.red[600]!, Colors.red[400]!],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+                child: SafeArea(
+                  bottom: false,
+                  child: Material(
+                    elevation: 4,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.red[400],
+                        gradient: LinearGradient(
+                          colors: [Colors.red[600]!, Colors.red[400]!],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.wifi_off,
-                            color: Colors.white, size: 20),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'No internet connection.',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w500,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.wifi_off,
+                              color: Colors.white, size: 24),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'No internet connection',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

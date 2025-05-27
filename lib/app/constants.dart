@@ -1,5 +1,5 @@
 class Constants { 
-  static const String baseUrl = 'https://dev.homedeliverybr.com/api/v1/'; 
+  static const String baseUrl = 'https://app.homedeliverybr.com/api/v1/';
   static const String login = 'login';
   static const String register = '/register';
   static const String dashboard = '/dashboard';

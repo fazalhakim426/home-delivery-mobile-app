@@ -10,7 +10,8 @@ class BasicInfoForm extends GetView<OrderCreateController> {
   Widget build(BuildContext context) {
     return Form(
       key: controller.basicInfoFormKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.disabled,
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -37,7 +38,7 @@ class BasicInfoForm extends GetView<OrderCreateController> {
                   textController: controller.parcelController.weightController,
                   label: 'Weight (kg)*',
                   fieldKey: 'parcel.weight',
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                   validator: OrderValidators.validateNumber,
                 ),
               ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_delivery_br/app/app_styles.dart';
+import 'package:home_delivery_br/data/models/ServiceModel.dart';
+import 'package:home_delivery_br/data/models/ShCodeModel.dart';
 import 'package:home_delivery_br/modules/order/controllers/order_create_controller.dart';
 import 'package:home_delivery_br/modules/order/controllers/validators/order_validators.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 class ParcelDetailsForm extends GetView<OrderCreateController> {
   @override
@@ -26,66 +29,34 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
               ),
             ),
             const SizedBox(height: 24),
-// Combined Service and Tax Modality in one card
+            // Combined Service and Tax Modality in one card
             _buildCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Service Dropdown
                   Obx(() {
-                    final errorText = controller.fieldErrors["parcel.service_id"];
-                    return LayoutBuilder(
-                      builder: (context, constraints) {
-                        return ConstrainedBox(
-                          constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                          child: DropdownButtonFormField<int>(
-                            isExpanded: true,
-                            value: controller.parcelController.selectedServiceId.value,
-                            onChanged: (value) {
-                              controller.parcelController.selectedServiceId.value = value!;
-                              controller.clearFieldError("parcel.service_id");
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Shipping Service',
-                              labelStyle: AppStyles.inputLabelStyle,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: colorScheme.outline),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: colorScheme.outline),
-                              ),
-                              errorText: errorText,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
-                              ),
-                            ),
-                            style: AppStyles.inputTextStyle,
-                            items: controller.parcelController.services
-                                .map((service) => DropdownMenuItem(
-                              value: service.id,
-                              child: Text(
-                                service.name,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppStyles.dropdownItemStyle,
-                              ),
-                            ))
-                                .toList(),
-                            validator: (value) =>
-                            value == null ? 'Please select a service' : null,
-                          ),
-                        );
-                      },
+                    return buildShippingServiceDropdown(
+                      context: context,
+                      selectedServiceId: controller.parcelController
+                          .selectedServiceId,
+                      services: controller.parcelController.services,
+                      getFieldError: controller.getFieldError,
+                      clearFieldError: controller.clearFieldError,
+                      colorScheme: Theme
+                          .of(context)
+                          .colorScheme,
                     );
                   }),
+
 
                   const SizedBox(height: 40),
 
                   // Tax Modality Dropdown
                   Obx(() {
-                    final errorText = controller.getFieldError('parcel.tax_modality');
+                    final errorText = controller.getFieldError(
+                      'parcel.tax_modality',
+                    );
                     return DropdownButtonFormField<String>(
                       value: controller.parcelController.taxModality.value,
                       onChanged: (value) {
@@ -109,115 +80,29 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                       items: const [
                         DropdownMenuItem(
                           value: 'DDU',
-                          child: Text('Delivered Duty Unpaid (DDU)',
-                              style: AppStyles.dropdownItemStyle),
+                          child: Text(
+                            'Delivered Duty Unpaid (DDU)',
+                            style: AppStyles.dropdownItemStyle,
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'DDP',
-                          child: Text('Delivered Duty Paid (DDP)',
-                              style: AppStyles.dropdownItemStyle),
+                          child: Text(
+                            'Delivered Duty Paid (DDP)',
+                            style: AppStyles.dropdownItemStyle,
+                          ),
                         ),
                       ],
-                      validator: (value) =>
-                      value == null ? 'Please select tax modality' : null,
+                      validator:
+                          (value) =>
+                      value == null
+                          ? 'Please select tax modality'
+                          : null,
                     );
                   }),
                 ],
               ),
             ),
-            // Service Dropdown
-            // Obx(() {
-            //   final errorText = controller.fieldErrors["parcel.service_id"];
-            //   return _buildCard(
-            //     child: LayoutBuilder(
-            //       builder: (context, constraints) {
-            //         return ConstrainedBox(
-            //           constraints: BoxConstraints(minWidth: constraints.maxWidth),
-            //           child: DropdownButtonFormField<int>(
-            //             isExpanded: true,
-            //             value: controller.parcelController.selectedServiceId.value,
-            //             onChanged: (value) {
-            //               controller.parcelController.selectedServiceId.value = value!;
-            //               controller.clearFieldError("parcel.service_id");
-            //             },
-            //             decoration: InputDecoration(
-            //               labelText: 'Service',
-            //               labelStyle: AppStyles.inputLabelStyle,
-            //               border: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(color: colorScheme.outline),
-            //               ),
-            //               enabledBorder: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(color: colorScheme.outline),
-            //               ),
-            //               errorText: errorText,
-            //               contentPadding: const EdgeInsets.symmetric(
-            //                 horizontal: 16,
-            //                 vertical: 14,
-            //               ),
-            //             ),
-            //             style: AppStyles.inputTextStyle,
-            //             items: controller.parcelController.services
-            //                 .map((service) => DropdownMenuItem(
-            //               value: service.id,
-            //               child: Text(
-            //                 service.name,
-            //                 overflow: TextOverflow.ellipsis,
-            //                 style: AppStyles.dropdownItemStyle,
-            //               ),
-            //             ))
-            //                 .toList(),
-            //             validator: (value) =>
-            //             value == null ? 'Please select a service' : null,
-            //           ),
-            //         );
-            //       },
-            //     ),
-            //   );
-            // }),
-            // const SizedBox(height: 20),
-            //
-            // // Tax Modality Dropdown
-            // Obx(() {
-            //   final errorText = controller.getFieldError('parcel.tax_modality');
-            //   return _buildCard(
-            //     child: DropdownButtonFormField<String>(
-            //       value: controller.parcelController.taxModality.value,
-            //       onChanged: (value) {
-            //         controller.parcelController.taxModality.value = value!;
-            //         controller.clearFieldError("parcel.tax_modality");
-            //       },
-            //       decoration: InputDecoration(
-            //         labelText: 'Tax Modality',
-            //         labelStyle: AppStyles.inputLabelStyle,
-            //         border: OutlineInputBorder(
-            //           borderRadius: BorderRadius.circular(12),
-            //           borderSide: BorderSide(color: colorScheme.outline),
-            //         ),
-            //         contentPadding: const EdgeInsets.symmetric(
-            //           horizontal: 16,
-            //           vertical: 14,
-            //         ),
-            //         errorText: errorText,
-            //       ),
-            //       style: AppStyles.inputTextStyle,
-            //       items: const [
-            //         DropdownMenuItem(
-            //           value: 'DDU',
-            //           child: Text('DDU', style: AppStyles.dropdownItemStyle),
-            //         ),
-            //         DropdownMenuItem(
-            //           value: 'DDP',
-            //           child: Text('DDP', style: AppStyles.dropdownItemStyle),
-            //         ),
-            //       ],
-            //       validator: (value) =>
-            //       value == null ? 'Please select tax modality' : null,
-            //     ),
-            //   );
-            // }),
-            // const SizedBox(height: 32),
 
             // Products Section
             Text(
@@ -240,7 +125,8 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                         ? productsError!
                         : 'No products added yet',
                     textAlign: TextAlign.center,
-                    style: productsError != null
+                    style:
+                    productsError != null
                         ? AppStyles.errorTextStyle
                         : AppStyles.hintTextStyle,
                   ),
@@ -285,7 +171,10 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: Theme.of(Get.context!).colorScheme.outlineVariant,
+          color: Theme
+              .of(Get.context!)
+              .colorScheme
+              .outlineVariant,
           width: 1,
         ),
       ),
@@ -293,48 +182,13 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // SH Code Dropdown
             Obx(() {
-              final shCodes = controller.parcelController.shCodes;
-              final errorText = controller.getFieldError('products.$index.sh_code');
-              return DropdownButtonFormField<int>(
-                value: product.selectedShCode.value,
-                onChanged: (value) {
-                  product.selectedShCode.value = value!;
-                  controller.clearFieldError('products.$index.sh_code');
-                },
-                decoration: InputDecoration(
-                  labelText: 'SH Code',
-                  labelStyle: AppStyles.inputLabelStyle,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  errorText: errorText,
-                ),
-                style: AppStyles.inputTextStyle,
-                isExpanded: true,
-                items: shCodes.isEmpty
-                    ? [
-                  const DropdownMenuItem(
-                    value: null,
-                    child: Text('Loading shCodes...',
-                        style: AppStyles.dropdownItemStyle),
-                  )
-                ]
-                    : shCodes
-                    .map((shCode) => DropdownMenuItem(
-                  value: shCode.code,
-                  child: Text(
-                    shCode.description,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppStyles.dropdownItemStyle,
-                  ),
-                ))
-                    .toList(),
+              return buildShCodeDropdown(
+                selectedShCode: product.selectedShCode,
+                shCodes: controller.parcelController.shCodes,
+                index: index,
+                getFieldError: controller.getFieldError,
+                clearFieldError: controller.clearFieldError,
               );
             }),
             const SizedBox(height: 16),
@@ -352,10 +206,13 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                   horizontal: 16,
                   vertical: 14,
                 ),
-                errorText: controller.getFieldError('products.$index.description'),
+                errorText: controller.getFieldError(
+                  'products.$index.description',
+                ),
               ),
               style: AppStyles.inputTextStyle,
-              onChanged: (_) =>
+              onChanged:
+                  (_) =>
                   controller.clearFieldError('products.$index.description'),
               validator: OrderValidators.validateRequired,
             ),
@@ -377,12 +234,17 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                         horizontal: 16,
                         vertical: 14,
                       ),
-                      errorText: controller.getFieldError('products.$index.quantity'),
+                      errorText: controller.getFieldError(
+                        'products.$index.quantity',
+                      ),
                     ),
                     style: AppStyles.inputTextStyle,
                     keyboardType: TextInputType.number,
-                    onChanged: (_) =>
-                        controller.clearFieldError('products.$index.quantity'),
+                    onChanged:
+                        (_) =>
+                        controller.clearFieldError(
+                          'products.$index.quantity',
+                        ),
                     validator: OrderValidators.validateNumber,
                   ),
                 ),
@@ -400,11 +262,14 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                         horizontal: 16,
                         vertical: 14,
                       ),
-                      errorText: controller.getFieldError('products.$index.value'),
+                      errorText: controller.getFieldError(
+                        'products.$index.value',
+                      ),
                     ),
                     style: AppStyles.inputTextStyle,
                     keyboardType: TextInputType.number,
-                    onChanged: (_) =>
+                    onChanged:
+                        (_) =>
                         controller.clearFieldError('products.$index.value'),
                     validator: OrderValidators.validateNumber,
                   ),
@@ -418,24 +283,54 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                Obx(() => FilterChip(
-                  label: const Text("Battery", style: AppStyles.chipTextStyle),
-                  selected: product.isBattery.value,
-                  selectedColor: Theme.of(Get.context!).colorScheme.primaryContainer,
-                  onSelected: (val) => product.isBattery.value = val,
-                )),
-                Obx(() => FilterChip(
-                  label: const Text("Perfume", style: AppStyles.chipTextStyle),
-                  selected: product.isPerfume.value,
-                  selectedColor: Theme.of(Get.context!).colorScheme.primaryContainer,
-                  onSelected: (val) => product.isPerfume.value = val,
-                )),
-                Obx(() => FilterChip(
-                  label: const Text("Flammable", style: AppStyles.chipTextStyle),
-                  selected: product.isFlameable.value,
-                  selectedColor: Theme.of(Get.context!).colorScheme.primaryContainer,
-                  onSelected: (val) => product.isFlameable.value = val,
-                )),
+                Obx(
+                      () =>
+                      FilterChip(
+                        label: const Text(
+                          "Battery",
+                          style: AppStyles.chipTextStyle,
+                        ),
+                        selected: product.isBattery.value,
+                        selectedColor:
+                        Theme
+                            .of(Get.context!)
+                            .colorScheme
+                            .primaryContainer,
+                        onSelected: (val) => product.isBattery.value = val,
+                      ),
+                ),
+                Obx(
+                      () =>
+                      FilterChip(
+                        label: const Text(
+                          "Perfume",
+                          style: AppStyles.chipTextStyle,
+                        ),
+                        selected: product.isPerfume.value,
+                        selectedColor:
+                        Theme
+                            .of(Get.context!)
+                            .colorScheme
+                            .primaryContainer,
+                        onSelected: (val) => product.isPerfume.value = val,
+                      ),
+                ),
+                Obx(
+                      () =>
+                      FilterChip(
+                        label: const Text(
+                          "Flammable",
+                          style: AppStyles.chipTextStyle,
+                        ),
+                        selected: product.isFlameable.value,
+                        selectedColor:
+                        Theme
+                            .of(Get.context!)
+                            .colorScheme
+                            .primaryContainer,
+                        onSelected: (val) => product.isFlameable.value = val,
+                      ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -444,10 +339,17 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () => controller.productController.removeProduct(index),
+                onPressed:
+                    () => controller.productController.removeProduct(index),
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(Get.context!).colorScheme.error,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  foregroundColor: Theme
+                      .of(Get.context!)
+                      .colorScheme
+                      .error,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
@@ -458,7 +360,7 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -471,14 +373,172 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: Theme.of(Get.context!).colorScheme.outlineVariant,
+          color: Theme
+              .of(Get.context!)
+              .colorScheme
+              .outlineVariant,
           width: 1,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: child,
+      child: Padding(padding: const EdgeInsets.all(16), child: child),
+    );
+  }
+
+  Widget buildShCodeDropdown({
+    required RxnInt selectedShCode,
+    required List<ShCode> shCodes,
+    required int index,
+    required String? Function(String key) getFieldError,
+    required void Function(String key) clearFieldError,
+  }) {
+    final errorText = getFieldError('products.$index.sh_code');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DropdownSearch<int>(
+          items: shCodes.map((shCode) => shCode.code).toList(),
+          selectedItem: selectedShCode.value,
+          onChanged: (value) {
+            if (value != null) {
+              selectedShCode.value = value;
+              clearFieldError('products.$index.sh_code');
+            }
+          },
+          dropdownDecoratorProps: DropDownDecoratorProps(
+            dropdownSearchDecoration: InputDecoration(
+              labelText: 'SH Code',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+              errorText: errorText,
+            ),
+          ),
+          dropdownBuilder: (context, selectedItem) {
+            final selected = shCodes.firstWhere(
+                  (shCode) => shCode.code == selectedItem,
+              orElse: () => ShCode(code: -1, description: ''),
+            );
+            return Text(
+              selected.description,
+              overflow: TextOverflow.ellipsis,
+              style: AppStyles.dropdownItemStyle,
+            );
+          },
+          popupProps: PopupProps.bottomSheet(
+            showSearchBox: true,
+            constraints: BoxConstraints(
+              maxHeight: Get.height * 0.6,
+              maxWidth: double.infinity,
+            ),
+            itemBuilder: (context, item, isSelected) {
+              final shCode = shCodes.firstWhere((e) => e.code == item);
+              return ListTile(
+                title: Text(
+                  shCode.description,
+                  style: AppStyles.dropdownItemStyle,
+                ),
+              );
+            },
+            searchFieldProps: TextFieldProps(
+              decoration: InputDecoration(
+                labelText: 'Search sh code',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 12),
+            child: Text(
+              errorText,
+              style: const TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget buildShippingServiceDropdown({
+    required RxnInt selectedServiceId,
+    required List<Service> services,
+    required String? Function(String key) getFieldError,
+    required void Function(String key) clearFieldError,
+    required ColorScheme colorScheme,
+    required BuildContext context,
+  }) {
+    final errorText = getFieldError("parcel.service_id");
+
+    return DropdownSearch<Service>(
+      selectedItem: services.firstWhere(
+            (service) => service.id == selectedServiceId.value,
+        orElse: () =>
+        services.isNotEmpty ? services.first : Service(
+            id: 0, name: 'No services'),
       ),
+      items: services,
+      itemAsString: (service) => service.name,
+      onChanged: (Service? value) {
+        if (value != null) {
+          selectedServiceId.value = value.id;
+          clearFieldError("parcel.service_id");
+        }
+      },
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: 'Shipping Service',
+          labelStyle: AppStyles.inputLabelStyle,
+          prefixIcon: const Icon(Icons.local_shipping),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
+          errorText: errorText,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
+        ),
+      ),
+      popupProps: PopupProps.modalBottomSheet(
+        showSearchBox: true,
+        searchFieldProps: TextFieldProps(
+          decoration: InputDecoration(
+            labelText: 'Search service',
+            prefixIcon: const Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        modalBottomSheetProps: ModalBottomSheetProps(
+          isScrollControlled: true,
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery
+                .of(context)
+                .size
+                .height * 0.6,
+            minHeight: MediaQuery
+                .of(context)
+                .size
+                .height * 0.6,
+          ),
+        ),
+      ),
+      validator: (value) =>
+      value == null ? 'Please select a service' : null,
     );
   }
 }

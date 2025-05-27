@@ -20,7 +20,7 @@ class RecipientController extends GetxController {
 
 
   final RxnString accountType = RxnString('individual');
-  final RxnInt selectedCountryId = RxnInt();
+  final RxInt selectedCountryId = 0.obs;
   final RxnInt selectedStateId = RxnInt();
 
   @override

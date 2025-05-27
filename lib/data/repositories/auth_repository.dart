@@ -7,6 +7,22 @@ import 'package:home_delivery_br/data/providers/api_provider.dart';
 class AuthRepository {
   final ApiProvider _apiProvider = Get.find<ApiProvider>();
 
+  Future<Map<String, dynamic>?> getAppConfig(String platform, String version) async {
+    try {
+      final response = await _apiProvider.get(
+        '/app-config',
+        query: {
+          'platform': platform,
+          'version': version,
+        },
+      );
+      return response.data;
+    } catch (e) {
+      print("Error fetching config: $e");
+      return null;
+    }
+  }
+
   // Login
   Future<User> login(String email, String password) async {
     try {
@@ -24,6 +40,7 @@ class AuthRepository {
       throw e;
     }
   }
+
 
   // Register
   Future<User> register(String name, String email, String password) async {

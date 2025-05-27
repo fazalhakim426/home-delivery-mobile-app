@@ -6,6 +6,7 @@ import 'package:home_delivery_br/data/repositories/order_repository.dart';
 import 'package:home_delivery_br/data/services/form_persistence_service.dart';
 import 'sender_controller.dart';
 import 'recipient_controller.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 import 'parcel_controller.dart';
 import 'product_controller.dart';
 
@@ -18,6 +19,7 @@ class OrderCreateController extends GetxController {
   late final RecipientController recipientController;
   late final ParcelController parcelController;
   late final ProductController productController;
+  bool submitted = false;
 
   OrderCreateController({required OrderRepository orderRepository}) : _orderRepository = orderRepository {
     senderController = Get.put(SenderController());
@@ -90,18 +92,31 @@ class OrderCreateController extends GetxController {
   }
 
   String? getFieldError(String fieldKey) {
-    if(this.fieldErrors.containsKey(fieldKey) &&
-        this.fieldErrors[fieldKey]!.isNotEmpty){
-      return this.fieldErrors[fieldKey];
-    }
-    return null;
+    if (!submitted) return null;
+    return fieldErrors[fieldKey];
   }
+
+  // String? getFieldError(String fieldKey) {
+  //   if(this.fieldErrors.containsKey(fieldKey) &&
+  //       this.fieldErrors[fieldKey]!.isNotEmpty){
+  //       return this.fieldErrors[fieldKey];
+  //   }
+  //   return null;
+  // }
+  // void clearFieldError(String fieldPath) {
+  //   update();
+  //   if (fieldErrors.containsKey(fieldPath)) {
+  //     fieldErrors.remove(fieldPath);
+  //   }
+  // }
   void clearFieldError(String fieldPath) {
-    update();
     if (fieldErrors.containsKey(fieldPath)) {
       fieldErrors.remove(fieldPath);
+      update();
+      print('updated ${fieldPath}');
     }
   }
+
 
   @override
   void onInit() {
@@ -235,6 +250,8 @@ class OrderCreateController extends GetxController {
       if (response['success'] == true) {
         Get.back();
         Get.snackbar('Success', 'Order added successfully');
+        clearForm();
+        Get.offNamed(Routes.ORDERS);
       } else {
         if (response['errors'] != null && response['errors'] is Map<String, String>) {
           fieldErrors.assignAll(response['errors']);

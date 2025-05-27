@@ -38,6 +38,9 @@ class AuthController extends GetxController {
     // verificationCodeController.dispose();
     super.onClose();
   }
+  Future<Map<String, dynamic>?> checkAppConfig(String platform, String version) async {
+    return await _authRepository.getAppConfig(platform, version);
+  }
 
   // Check if user is logged in
   Future<void> checkLoginStatus() async {

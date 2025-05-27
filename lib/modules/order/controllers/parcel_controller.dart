@@ -106,6 +106,22 @@ class ParcelController extends GetxController {
     isLoading.value = true;
     try {
       final shCodesList = await _orderRepository.getAllShCodes();
+
+      // Check for duplicates
+      final seen = <dynamic>{};
+      final duplicates = <dynamic>{};
+
+      for (var code in shCodesList) {
+        if (!seen.add(code)) {
+          duplicates.add(code);
+        }
+      }
+
+      if (duplicates.isNotEmpty) {
+        print('Duplicate shCodes detected: $duplicates');
+        Get.snackbar('Warning', 'Duplicate shCodes detected: $duplicates');
+      }
+
       shCodes.assignAll(shCodesList);
     } catch (e) {
       print(e.toString());

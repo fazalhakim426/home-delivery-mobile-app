@@ -31,7 +31,11 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.18.1
+  dropdown_search: ^5.0.6
+  get: ^4.7.2
+  package_info_plus: ^4.0.2 # Compatible with get
   cupertino_icons: ^1.0.8
+  url_launcher: ^6.1.7
   connectivity_plus: ^4.0.2
   internet_connection_checker: ^1.0.0+1
   fl_chart: ^0.64.0

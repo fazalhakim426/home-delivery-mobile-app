@@ -48,29 +48,6 @@ Future<List<Order>> getAllOrders({
     throw Exception('Failed to get orders: ${e.toString()}');
   }
 }
-  // Future<List<Country>> fetchCountries() async {
-  //   try {
-  //     final response = await _apiProvider.get(Constants.countries);
-  //
-  //     if (response.statusCode == 200) {
-  //       final data = response.data;
-  //       if (data is List) {
-  //         List<Country> countries = data
-  //             .map((json) => Country.fromJson(json as Map<String, dynamic>))
-  //             .toList();
-  //         return countries;
-  //       } else {
-  //         throw Exception('Expected list but got ${data.runtimeType}');
-  //       }
-  //     } else {
-  //       throw Exception('Failed to load countries: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Failed to get countries: ${e.toString()}');
-  //   }
-  // }
-  //
-
 
   Future<List<Country>> fetchCountries() async {
 
