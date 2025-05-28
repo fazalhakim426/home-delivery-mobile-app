@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:home_delivery_br/data/models/order_model.dart';
 import 'package:home_delivery_br/data/repositories/order_repository.dart';
 import 'package:dio/dio.dart' as dio;
-
 class OrderViewController extends GetxController {
   final OrderRepository _orderRepository;
   final isFilterVisible = false.obs;
@@ -22,9 +21,8 @@ class OrderViewController extends GetxController {
   var page = 1;
   var hasMore = true;
   var searchQuery = ''.obs;
-  var startDate = DateTime.now().subtract(const Duration(days: 30)).obs;
-  var endDate = DateTime.now().obs;
-
+  var startDate = DateTime.now().subtract(const Duration(days: 365)).obs;
+  var endDate = DateTime.now().add(const Duration(days:1)).obs;
   @override
   void onInit() {
     fetchOrders();

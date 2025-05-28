@@ -8,7 +8,6 @@ import 'package:home_delivery_br/data/services/form_persistence_service.dart';
 import 'package:home_delivery_br/modules/auth/bindings/auth_binding.dart';
 import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
 import 'package:home_delivery_br/routes/app_pages.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

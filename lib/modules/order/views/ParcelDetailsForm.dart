@@ -384,88 +384,6 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
     );
   }
 
-  Widget buildShCodeDropdown({
-    required RxnInt selectedShCode,
-    required List<ShCode> shCodes,
-    required int index,
-    required String? Function(String key) getFieldError,
-    required void Function(String key) clearFieldError,
-  }) {
-    final errorText = getFieldError('products.$index.sh_code');
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        DropdownSearch<int>(
-          items: shCodes.map((shCode) => shCode.code).toList(),
-          selectedItem: selectedShCode.value,
-          onChanged: (value) {
-            if (value != null) {
-              selectedShCode.value = value;
-              clearFieldError('products.$index.sh_code');
-            }
-          },
-          dropdownDecoratorProps: DropDownDecoratorProps(
-            dropdownSearchDecoration: InputDecoration(
-              labelText: 'SH Code',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
-              errorText: errorText,
-            ),
-          ),
-          dropdownBuilder: (context, selectedItem) {
-            final selected = shCodes.firstWhere(
-                  (shCode) => shCode.code == selectedItem,
-              orElse: () => ShCode(code: -1, description: ''),
-            );
-            return Text(
-              selected.description,
-              overflow: TextOverflow.ellipsis,
-              style: AppStyles.dropdownItemStyle,
-            );
-          },
-          popupProps: PopupProps.bottomSheet(
-            showSearchBox: true,
-            constraints: BoxConstraints(
-              maxHeight: Get.height * 0.6,
-              maxWidth: double.infinity,
-            ),
-            itemBuilder: (context, item, isSelected) {
-              final shCode = shCodes.firstWhere((e) => e.code == item);
-              return ListTile(
-                title: Text(
-                  shCode.description,
-                  style: AppStyles.dropdownItemStyle,
-                ),
-              );
-            },
-            searchFieldProps: TextFieldProps(
-              decoration: InputDecoration(
-                labelText: 'Search sh code',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (errorText != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 4, left: 12),
-            child: Text(
-              errorText,
-              style: const TextStyle(color: Colors.red, fontSize: 12),
-            ),
-          ),
-      ],
-    );
-  }
 
   Widget buildShippingServiceDropdown({
     required RxnInt selectedServiceId,
@@ -539,6 +457,74 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
       ),
       validator: (value) =>
       value == null ? 'Please select a service' : null,
+    );
+  }
+  Widget buildShCodeDropdown({
+    required RxnInt selectedShCode,
+    required List<ShCode> shCodes,
+    required int index,
+    required String? Function(String key) getFieldError,
+    required void Function(String key) clearFieldError,
+  }) {
+    final errorText = getFieldError('products.$index.sh_code');
+    final colorScheme = Theme.of(Get.context!).colorScheme;
+
+    return DropdownSearch<ShCode>(
+      selectedItem: shCodes.firstWhere(
+            (shCode) => shCode.code == selectedShCode.value,
+        orElse: () => shCodes.isNotEmpty
+            ? shCodes.first
+            : ShCode(code: -1, description: 'No SH codes'),
+      ),
+      items: shCodes,
+      itemAsString: (shCode) => shCode.description,
+      onChanged: (ShCode? value) {
+        if (value != null) {
+          selectedShCode.value = value.code;
+          clearFieldError('products.$index.sh_code');
+        }
+      },
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: 'SH Code',
+          labelStyle: AppStyles.inputLabelStyle,
+          prefixIcon: const Icon(Icons.code),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
+          errorText: errorText,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
+        ),
+      ),
+      popupProps: PopupProps.modalBottomSheet(
+        showSearchBox: true,
+        searchFieldProps: TextFieldProps(
+          decoration: InputDecoration(
+            labelText: 'Search SH code',
+            prefixIcon: const Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        modalBottomSheetProps: ModalBottomSheetProps(
+          isScrollControlled: true,
+          constraints: BoxConstraints(
+            maxHeight: Get.height * 0.6,
+            minHeight: Get.height * 0.6,
+          ),
+          barrierColor: Colors.black.withOpacity(0.5),
+        ),
+      ),
+      validator: (value) => value == null ? 'Please select an SH code' : null,
     );
   }
 }

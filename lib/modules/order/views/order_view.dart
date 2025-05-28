@@ -19,227 +19,6 @@ class OrderView extends GetView<OrderViewController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           // Header with improved styling
-            //           Container(
-            //             padding: const EdgeInsets.symmetric(vertical: 8),
-            //             child: Text(
-            //               'Your Recent Orders',
-            //               style: TextStyle(
-            //                 fontSize: 18,
-            //                 fontWeight: FontWeight.w600,
-            //                 color: Colors.grey[800],
-            //                 letterSpacing: 0.3,
-            //               ),
-            //             ),
-            //           ),
-            //
-            //           // Subtitle with better spacing
-            //           Padding(
-            //             padding: const EdgeInsets.only(bottom: 16),
-            //             child: Text(
-            //               'Below are your most recent activities',
-            //               style: TextStyle(
-            //                 fontSize: 14,
-            //                 color: Colors.grey[600],
-            //                 fontStyle: FontStyle.italic,
-            //               ),
-            //             ),
-            //           ),
-            //
-            //           // Enhanced search field
-            //           TextField(
-            //             decoration: InputDecoration(
-            //               hintText: 'Search by order ID, customer or date...',
-            //               hintStyle: TextStyle(
-            //                 color: Colors.grey[500],
-            //                 fontSize: 14,
-            //               ),
-            //               prefixIcon: Icon(
-            //                 Icons.search,
-            //                 color: Colors.grey[600],
-            //               ),
-            //               filled: true,
-            //               fillColor: Colors.grey[50],
-            //               border: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(
-            //                   color: Colors.grey[300]!,
-            //                   width: 1.5,
-            //                 ),
-            //               ),
-            //               enabledBorder: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(
-            //                   color: Colors.grey[300]!,
-            //                   width: 1.5,
-            //                 ),
-            //               ),
-            //               focusedBorder: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(
-            //                   color: AppColors.primary,
-            //                   width: 1.5,
-            //                 ),
-            //               ),
-            //               contentPadding: const EdgeInsets.symmetric(
-            //                 vertical: 16,
-            //                 horizontal: 16,
-            //               ),
-            //             ),
-            //             style: TextStyle(
-            //               fontSize: 14,
-            //               color: Colors.grey[800],
-            //               fontWeight: FontWeight.w500,
-            //             ),
-            //             onChanged: (value) {
-            //               debounce(
-            //                     () => controller.searchOrders(value),
-            //                 const Duration(milliseconds: 500),
-            //               );
-            //             },
-            //           ),
-            //         ],
-            //       ),
-            //
-            //       const SizedBox(height: 16),
-            //       // Date Filter Row
-            //       Row(
-            //         children: [
-            //           Expanded(
-            //             child: InkWell(
-            //               borderRadius: BorderRadius.circular(12),
-            //               onTap: () async {
-            //                 final selectedDate = await showDatePicker(
-            //                   context: context,
-            //                   initialDate: controller.startDate.value,
-            //                   firstDate: DateTime(2000),
-            //                   lastDate: DateTime.now(),
-            //                 );
-            //                 if (selectedDate != null) {
-            //                   controller.filterByDate(
-            //                     selectedDate,
-            //                     controller.endDate.value,
-            //                   );
-            //                 }
-            //               },
-            //               child: Container(
-            //                 padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-            //                 decoration: BoxDecoration(
-            //                   color: Colors.grey[50],
-            //                   border: Border.all(
-            //                     color: Colors.grey[300]!,
-            //                     width: 1.5,
-            //                   ),
-            //                   borderRadius: BorderRadius.circular(12),
-            //                   boxShadow: [
-            //                     BoxShadow(
-            //                       color: Colors.black.withOpacity(0.05),
-            //                       blurRadius: 4,
-            //                       offset: const Offset(0, 2),
-            //                     ),
-            //                   ],
-            //                 ),
-            //                 child: Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                   children: [
-            //                     Text(
-            //                       DateFormat('MMM dd, yyyy').format(controller.startDate.value),
-            //                       style: TextStyle(
-            //                         fontSize: 14,
-            //                         fontWeight: FontWeight.w600,
-            //                         color: Colors.grey[800],
-            //                       ),
-            //                     ),
-            //                     Icon(Icons.calendar_month,
-            //                       size: 20,
-            //                       color: AppColors.primary,
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: const EdgeInsets.symmetric(horizontal: 12),
-            //             child: Text(
-            //               'to',
-            //               style: TextStyle(
-            //                 fontSize: 14,
-            //                 fontWeight: FontWeight.w600,
-            //                 color: Colors.grey[600],
-            //               ),
-            //             ),
-            //           ),
-            //           Expanded(
-            //             child: InkWell(
-            //               borderRadius: BorderRadius.circular(12),
-            //               onTap: () async {
-            //                 final selectedDate = await showDatePicker(
-            //                   context: context,
-            //                   initialDate: controller.endDate.value,
-            //                   firstDate: DateTime(2000),
-            //                   lastDate: DateTime.now(),
-            //                 );
-            //                 if (selectedDate != null) {
-            //                   controller.filterByDate(
-            //                     controller.startDate.value,
-            //                     selectedDate,
-            //                   );
-            //                 }
-            //               },
-            //               child: Container(
-            //                 padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-            //                 decoration: BoxDecoration(
-            //                   color: Colors.grey[50],
-            //                   border: Border.all(
-            //                     color: Colors.grey[300]!,
-            //                     width: 1.5,
-            //                   ),
-            //                   borderRadius: BorderRadius.circular(12),
-            //                   boxShadow: [
-            //                     BoxShadow(
-            //                       color: Colors.black.withOpacity(0.05),
-            //                       blurRadius: 4,
-            //                       offset: const Offset(0, 2),
-            //                     ),
-            //                   ],
-            //                 ),
-            //                 child: Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                   children: [
-            //                     Text(
-            //                       DateFormat('MMM dd, yyyy').format(controller.endDate.value),
-            //                       style: TextStyle(
-            //                         fontSize: 14,
-            //                         fontWeight: FontWeight.w600,
-            //                         color: Colors.grey[800],
-            //                       ),
-            //                     ),
-            //                     Icon(Icons.calendar_month,
-            //                       size: 20,
-            //                       color: AppColors.primary,
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //
-            //     ],
-            //   ),
-            // ),
-
-
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Row(
@@ -742,7 +521,7 @@ class OrderView extends GetView<OrderViewController> {
               // Action Buttons
               Row(
 
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [ 
                   const SizedBox(height: 16),
 
@@ -759,9 +538,9 @@ class OrderView extends GetView<OrderViewController> {
                     onPressed: () => _confirmDelete(order),
                   ),
 
-
                   if (order.trackingCode != null && order.trackingCode!.isNotEmpty)
                     ElevatedButton.icon(
+
                       icon: const Icon(Icons.track_changes, size: 18),
                       label: const Text("Track"),
                       style: ElevatedButton.styleFrom(
@@ -790,30 +569,6 @@ class OrderView extends GetView<OrderViewController> {
       ),
     );
   }
-
-  // Widget _buildDetailRow(String label, dynamic value, {TextStyle? textStyle}) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 6),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         SizedBox(
-  //           width: 120,
-  //           child: Text(
-  //             label,
-  //             style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: Text(
-  //             value.toString(),
-  //             style: textStyle ?? const TextStyle(),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildDetailRow(String label, dynamic value, {TextStyle? textStyle}) {
     return Container(
