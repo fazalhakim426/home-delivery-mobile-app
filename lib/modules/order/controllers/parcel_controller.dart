@@ -21,7 +21,7 @@ class ParcelController extends GetxController {
 
   final isLoading = false.obs;
 
-  final RxnString taxModality = RxnString('DDU');
+  final RxnString taxModality = RxnString('ddu');
   final RxnInt selectedServiceId = RxnInt();
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
 
@@ -41,24 +41,13 @@ class ParcelController extends GetxController {
         fetchShippingServices(),
         fetchShCodes(),
       ]);
-      // Set default service after loading
-      if (services.isNotEmpty) {
-        selectedServiceId.value = services.first.id;
-      }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load initial data: ${e.toString()}');
+      // Get.snackbar('Error', 'Failed to load initial data: ${e.toString()}');
     }
   }
 
   @override
   void onClose() {
-    // trackingIdController.dispose();
-    // customerReferenceController.dispose();
-    // weightController.dispose();
-    // shipmentValueController.dispose();
-    // lengthController.dispose();
-    // widthController.dispose();
-    // heightController.dispose();
     super.onClose();
   }
 
@@ -90,24 +79,24 @@ class ParcelController extends GetxController {
   }
 
   Future<void> fetchShippingServices() async {
-    isLoading.value = true;
+    // isLoading.value = true;
     try {
       final serviceList = await _orderRepository.getAllServices();
       services.assignAll(serviceList);
     } catch (e) {
-      print(e.toString());
-      Get.snackbar('Error', 'Failed to fetch services: ${e.toString()}');
+      // Get.snackbar('Error', 'Failed to fetch services: ${e.toString()}',
+      //   snackPosition: SnackPosition.BOTTOM,
+      //   backgroundColor: Get.theme.colorScheme.primary,
+      //   colorText: Get.theme.colorScheme.onPrimary);
     } finally {
-      isLoading.value = false;
+      // isLoading.value = false;
     }
   }
 
   Future<void> fetchShCodes() async {
-    isLoading.value = true;
+    // isLoading.value = true;
     try {
       final shCodesList = await _orderRepository.getAllShCodes();
-
-      // Check for duplicates
       final seen = <dynamic>{};
       final duplicates = <dynamic>{};
 
@@ -118,16 +107,15 @@ class ParcelController extends GetxController {
       }
 
       if (duplicates.isNotEmpty) {
-        print('Duplicate shCodes detected: $duplicates');
-        Get.snackbar('Warning', 'Duplicate shCodes detected: $duplicates');
+        // print('Duplicate shCodes detected: $duplicates');
       }
 
       shCodes.assignAll(shCodesList);
     } catch (e) {
-      print(e.toString());
-      Get.snackbar('Error', 'Failed to fetch shCodes: ${e.toString()}');
+      // print(e.toString());
+      // Get.snackbar('Error', 'Failed to fetch shCodes: ${e.toString()}');
     } finally {
-      isLoading.value = false;
+      // isLoading.value = false;
     }
   }
 }

@@ -53,11 +53,13 @@ class AuthController extends GetxController {
         user.value = await _authRepository.getCurrentUser();
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to check login status',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Failed to check login status',
+      //   snackPosition: SnackPosition.BOTTOM,
+      //   backgroundColor: Get.theme.colorScheme.primary,
+      //   colorText: Get.theme.colorScheme.onPrimary,
+      // );
     } finally {
       isLoading.value = false;
     }
@@ -70,6 +72,8 @@ class AuthController extends GetxController {
         'Error',
         'Email and password are required',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
       );
       return;
     }
@@ -88,6 +92,8 @@ class AuthController extends GetxController {
         'Error',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
       );
     } finally {
       isLoading.value = false;
@@ -103,6 +109,8 @@ class AuthController extends GetxController {
         'Error',
         'All fields are required',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
       );
       return;
     }
@@ -120,6 +128,8 @@ class AuthController extends GetxController {
         'Error',
         '${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
       );
     } finally {
       isLoading.value = false;
@@ -133,6 +143,8 @@ class AuthController extends GetxController {
         'Error',
         'Verification code is required',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
       );
       return;
     }
@@ -149,6 +161,8 @@ class AuthController extends GetxController {
           'Success',
           'Email verified successfully',
           snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.primary,
+          colorText: Get.theme.colorScheme.onPrimary,
         );
       }
     } catch (e) {
@@ -156,6 +170,8 @@ class AuthController extends GetxController {
         'Error',
         '${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
       );
     } finally {
       isLoading.value = false;
@@ -175,6 +191,8 @@ class AuthController extends GetxController {
         'Error',
         '${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
       );
     } finally {
       isLoading.value = false;

@@ -14,9 +14,6 @@ class OrderCreateView extends GetView<OrderCreateController> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
-    final isKeyboardOpen = bottomPadding > 0;
-
     return AppScaffold(
       body: Column(
         children: [
@@ -123,114 +120,6 @@ class OrderCreateView extends GetView<OrderCreateController> {
             ),
           ),
 
-          // Bottom action bar
-          // Container(
-          //   padding: EdgeInsets.only(
-          //     left: 24,
-          //     right: 24,
-          //     top: 16,
-          //     bottom:
-          //         isKeyboardOpen
-          //             ? 16
-          //             : 24 + MediaQuery.of(context).padding.bottom,
-          //   ),
-          //   decoration: BoxDecoration(
-          //     color: Colors.white,
-          //     boxShadow: [
-          //       BoxShadow(
-          //         color: Colors.grey.withOpacity(0.1),
-          //         blurRadius: 8,
-          //         offset: const Offset(0, -2),
-          //       ),
-          //     ],
-          //     borderRadius: const BorderRadius.vertical(
-          //       top: Radius.circular(16),
-          //     ),
-          //   ),
-          //   child: Obx(
-          //     () => Row(
-          //       children: [
-          //         // Back button (only visible after first step)
-          //         if (controller.currentStep.value > 0)
-          //           Expanded(
-          //             flex: 1,
-          //             child: OutlinedButton(
-          //               onPressed: controller.previousStep,
-          //               style:AppStyles.outlinedButtonStyle,
-          //               child: const Text(
-          //                 'Back',
-          //                 style: AppStyles.grayText1
-          //               ),
-          //             ),
-          //           ),
-          //
-          //         if (controller.currentStep.value > 0)
-          //           const SizedBox(width: 12),
-          //
-          //         // Cancel button
-          //         if (controller.currentStep.value == 0)
-          //           Expanded(
-          //             flex: 1,
-          //             child:OutlinedButton(
-          //               onPressed: () => Get.toNamed(Routes.DASHBOARD),
-          //               style: AppStyles.outlinedButtonStyle,
-          //               child: const Text(
-          //                 'CANCEL',
-          //                 style: AppStyles.grayText1
-          //               ),
-          //             ),
-          //           ),
-          //
-          //         if (controller.currentStep.value == 0)
-          //           const SizedBox(width: 12),
-          //
-          //         // Next/Create button
-          //         Expanded(
-          //           flex: controller.currentStep.value == 0 ? 2 : 1,
-          //           child: ElevatedButton(
-          //             onPressed: controller.isLoading.value
-          //                 ? null
-          //                 : controller.currentStep.value == 2
-          //                 ? () => controller.addOrder()
-          //                 : controller.nextStep,
-          //             style: ElevatedButton.styleFrom(
-          //               backgroundColor: AppColors.primary,
-          //               foregroundColor: Colors.white,
-          //               padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24), // Increased padding
-          //               shape: RoundedRectangleBorder(
-          //                 borderRadius: BorderRadius.circular(12), // More rounded corners
-          //               ),
-          //               elevation: 2, // Subtle shadow
-          //               shadowColor: AppColors.primary.withOpacity(0.3), // Matching shadow
-          //               minimumSize: const Size(double.infinity, 50), // Consistent minimum height
-          //             ),
-          //             child: Obx(() {
-          //               if (controller.isLoading.value) {
-          //                 return const SizedBox(
-          //                   width: 24,
-          //                   height: 24,
-          //                   child: CircularProgressIndicator(
-          //                     strokeWidth: 3, // Thicker loader
-          //                     color: Colors.white,
-          //                   ),
-          //                 );
-          //               }
-          //               return Text(
-          //                 controller.currentStep.value == 2 ? 'CREATE ORDER' : 'CONTINUE', // Uppercase
-          //                 style: const TextStyle(
-          //                   fontSize: 18, // Larger text
-          //                   fontWeight: FontWeight.w700, // Bolder
-          //                   letterSpacing: 0.5, // Better spacing
-          //                 ),
-          //               );
-          //             }),
-          //           ),
-          //
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
 
           SafeArea(
             child: Container(
@@ -322,7 +211,7 @@ class OrderCreateView extends GetView<OrderCreateController> {
                             );
                           }
                           return Text(
-                            controller.currentStep.value == 2 ? 'SUBMIT' : 'CONTINUE',
+                            controller.currentStep.value == 2 ? 'SUBMIT' : 'Next',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,

@@ -16,7 +16,7 @@ class BasicInfoForm extends GetView<OrderCreateController> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Section Header
-          _buildSectionHeader(context, 'Basic Information'),
+          _buildSectionHeader(context, controller.mode=='edit'?'Edit ${controller.order.warehouseNumber}':'Basic Information'),
           const SizedBox(height: 24),
 
           // Tracking ID Field

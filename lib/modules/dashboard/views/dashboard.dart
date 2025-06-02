@@ -82,7 +82,7 @@ class DashboardView extends StatelessWidget {
                   ] else
                     const Center(child: Text("No data available")),
                 ],
-              ),
+              )
             );
           }),
         ),

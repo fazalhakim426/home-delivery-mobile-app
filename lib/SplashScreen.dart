@@ -49,6 +49,7 @@ class SplashScreen extends StatelessWidget {
 
     if (authController.isLoggedIn.value) {
       Get.offNamed(Routes.DASHBOARD);
+      // Get.offNamed(Routes.DASHBOARD);
     } else {
       Get.offNamed(Routes.LOGIN);
     }
@@ -81,8 +82,8 @@ class SplashScreen extends StatelessWidget {
       "Message",
       message,
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red.shade600,
-      colorText: Colors.white,
+      backgroundColor: Get.theme.colorScheme.error,
+      colorText: Get.theme.colorScheme.onError,
       icon: Icon(Icons.error_outline, color: Colors.white),
       borderRadius: 12,
       margin: EdgeInsets.all(16),

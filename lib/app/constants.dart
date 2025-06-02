@@ -9,7 +9,7 @@ class Constants {
   static const String shcodes = 'shcodes';
   static const String countries = 'countries';
   static const String states = 'country/';
-  static const String parcels = 'parcels'; 
+  static const String parcels = 'parcels';
   static const String userToken = 'user_token';
   static const String userData = 'user_data';
 }

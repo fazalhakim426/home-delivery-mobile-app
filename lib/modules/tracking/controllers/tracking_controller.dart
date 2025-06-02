@@ -24,9 +24,13 @@ class TrackingController extends GetxController {
       isLoading.value = true;
       final result = await repository.getTracking(trackingCode);
       tracking.value = result;
+
     } catch (e) {
       print('Error in fetchTracking: $e');
-      Get.snackbar("Error", "Failed to load tracking data: $e");
+      Get.snackbar("Error", "Failed to load tracking data: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError);
     } finally {
       isLoading.value = false;
     }

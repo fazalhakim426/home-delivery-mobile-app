@@ -16,8 +16,7 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Sender Information Section
-              _buildSectionHeader(context, 'Sender Information'),
+              _buildSectionHeader(context, controller.mode=='edit'?'Edit ${controller.order.warehouseNumber}': 'Sender Information'),
               const SizedBox(height: 16),
 
               // Sender Form Fields
@@ -61,10 +60,9 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
               _buildTextFormField(
                 context: context,
                 controller: controller.senderController.websiteController,
-                label: 'Website*',
+                label: 'Website',
                 hintText: 'e.g., https://example.com',
-                fieldKey: 'sender.sender_website',
-                validator: OrderValidators.validateRequired,
+                fieldKey: 'sender.sender_website'
               ),
               const SizedBox(height: 12),
               _buildCountryDropdown(
@@ -190,7 +188,7 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
                 context: context,
                 selectedValue: controller.recipientController.selectedCountryId,
                 onChanged: (value) {
-                  if (value != null) {
+                  if (value != null && value != controller.recipientController.selectedCountryId.value) {
                     controller.recipientController.selectedCountryId.value = value;
                     controller.fetchCountryStats(value);
                     controller.clearFieldError("recipient.country_id");

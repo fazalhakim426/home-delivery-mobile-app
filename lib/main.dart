@@ -46,10 +46,13 @@ void main() async {
           children: [
             child!,
             Obx(() {
-              if (connectivity.isConnected.value) return const SizedBox();
+              // Only show message when service is initialized AND there's no connection
+              if (!connectivity.isInitialized.value || connectivity.isConnected.value) {
+                return const SizedBox();
+              }
 
               return Positioned(
-                top: 0, // Position below app bar
+                top: 0,
                 left: 0,
                 right: 0,
                 child: SafeArea(
@@ -57,8 +60,7 @@ void main() async {
                   child: Material(
                     elevation: 4,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
                         color: Colors.red[400],
                         gradient: LinearGradient(
@@ -69,8 +71,7 @@ void main() async {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.wifi_off,
-                              color: Colors.white, size: 24),
+                          const Icon(Icons.wifi_off, color: Colors.white, size: 24),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(

@@ -22,7 +22,8 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
           children: [
             // Shipping Details Header
             Text(
-              'Shipping Details',
+
+              controller.mode=='edit'?'${controller.order.warehouseNumber}':'Shipping Details',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.primary,
@@ -38,8 +39,7 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                   Obx(() {
                     return buildShippingServiceDropdown(
                       context: context,
-                      selectedServiceId: controller.parcelController
-                          .selectedServiceId,
+                      selectedServiceId: controller.parcelController.selectedServiceId,
                       services: controller.parcelController.services,
                       getFieldError: controller.getFieldError,
                       clearFieldError: controller.clearFieldError,
@@ -79,14 +79,14 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                       style: AppStyles.inputTextStyle,
                       items: const [
                         DropdownMenuItem(
-                          value: 'DDU',
+                          value: 'ddu',
                           child: Text(
                             'Delivered Duty Unpaid (DDU)',
                             style: AppStyles.dropdownItemStyle,
                           ),
                         ),
                         DropdownMenuItem(
-                          value: 'DDP',
+                          value: 'ddp',
                           child: Text(
                             'Delivered Duty Paid (DDP)',
                             style: AppStyles.dropdownItemStyle,
