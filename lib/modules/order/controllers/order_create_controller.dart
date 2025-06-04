@@ -278,13 +278,13 @@ class OrderCreateController extends GetxController {
   }
 
   Future<void> fetchCountries() async {
-    isLoading.value = true;
+    // isLoading.value = true;
     try {
       final countryList = await _orderRepository.fetchCountries();
       parcelController.countries.value = countryList;
     } catch (e) {
     } finally {
-      isLoading.value = false;
+      // isLoading.value = false;
     }
   }
 

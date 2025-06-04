@@ -10,7 +10,7 @@ class SenderController extends GetxController {
   final websiteController = TextEditingController();
 
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
-  final RxInt selectedCountryId = 0.obs;
+  final RxInt selectedCountryId = 250.obs;
   @override
   void onClose() {
     super.onClose();
