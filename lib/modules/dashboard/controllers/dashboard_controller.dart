@@ -70,7 +70,7 @@ class DashboardController extends GetxController {
       if (e is dio.DioException && e.response?.statusCode == 401) {
         Get.offAllNamed('/login');
       } else {
-        Get.snackbar('Network Error', 'Using cached data');
+        // Get.snackbar('Network Error', 'Using cached data');
       }
     } finally {
       isLoading.value = false;

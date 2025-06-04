@@ -9,7 +9,7 @@ class OrderViewBinding extends Bindings {
     Get.lazyPut<OrderRepository>(() => OrderRepository());
     Get.put<OrderViewController>(
       OrderViewController(orderRepository: Get.find()),
-      permanent: true, // Keep controller instance alive
+      permanent: false,
     );
   }
 }

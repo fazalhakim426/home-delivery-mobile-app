@@ -8,7 +8,7 @@ class OrderCreateBinding extends Bindings {
     Get.lazyPut<OrderRepository>(() => OrderRepository());
     Get.put<OrderCreateController>(
       OrderCreateController(orderRepository: Get.find()),
-      permanent: true, // Keep controller instance alive
+      permanent: false, // Keep controller instance alive
     );
   }
 }

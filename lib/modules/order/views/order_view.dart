@@ -8,8 +8,12 @@ import 'package:home_delivery_br/modules/order/controllers/order_view_controller
 import 'package:home_delivery_br/routes/app_pages.dart';
 
 import 'dart:async';
+
+import '../controllers/order_create_controller.dart';
+
 class OrderView extends GetView<OrderViewController> {
   const OrderView({super.key});
+
   Widget build(BuildContext context) {
     return AppScaffold(
       body: RefreshIndicator(
@@ -19,227 +23,6 @@ class OrderView extends GetView<OrderViewController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           // Header with improved styling
-            //           Container(
-            //             padding: const EdgeInsets.symmetric(vertical: 8),
-            //             child: Text(
-            //               'Your Recent Orders',
-            //               style: TextStyle(
-            //                 fontSize: 18,
-            //                 fontWeight: FontWeight.w600,
-            //                 color: Colors.grey[800],
-            //                 letterSpacing: 0.3,
-            //               ),
-            //             ),
-            //           ),
-            //
-            //           // Subtitle with better spacing
-            //           Padding(
-            //             padding: const EdgeInsets.only(bottom: 16),
-            //             child: Text(
-            //               'Below are your most recent activities',
-            //               style: TextStyle(
-            //                 fontSize: 14,
-            //                 color: Colors.grey[600],
-            //                 fontStyle: FontStyle.italic,
-            //               ),
-            //             ),
-            //           ),
-            //
-            //           // Enhanced search field
-            //           TextField(
-            //             decoration: InputDecoration(
-            //               hintText: 'Search by order ID, customer or date...',
-            //               hintStyle: TextStyle(
-            //                 color: Colors.grey[500],
-            //                 fontSize: 14,
-            //               ),
-            //               prefixIcon: Icon(
-            //                 Icons.search,
-            //                 color: Colors.grey[600],
-            //               ),
-            //               filled: true,
-            //               fillColor: Colors.grey[50],
-            //               border: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(
-            //                   color: Colors.grey[300]!,
-            //                   width: 1.5,
-            //                 ),
-            //               ),
-            //               enabledBorder: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(
-            //                   color: Colors.grey[300]!,
-            //                   width: 1.5,
-            //                 ),
-            //               ),
-            //               focusedBorder: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: BorderSide(
-            //                   color: AppColors.primary,
-            //                   width: 1.5,
-            //                 ),
-            //               ),
-            //               contentPadding: const EdgeInsets.symmetric(
-            //                 vertical: 16,
-            //                 horizontal: 16,
-            //               ),
-            //             ),
-            //             style: TextStyle(
-            //               fontSize: 14,
-            //               color: Colors.grey[800],
-            //               fontWeight: FontWeight.w500,
-            //             ),
-            //             onChanged: (value) {
-            //               debounce(
-            //                     () => controller.searchOrders(value),
-            //                 const Duration(milliseconds: 500),
-            //               );
-            //             },
-            //           ),
-            //         ],
-            //       ),
-            //
-            //       const SizedBox(height: 16),
-            //       // Date Filter Row
-            //       Row(
-            //         children: [
-            //           Expanded(
-            //             child: InkWell(
-            //               borderRadius: BorderRadius.circular(12),
-            //               onTap: () async {
-            //                 final selectedDate = await showDatePicker(
-            //                   context: context,
-            //                   initialDate: controller.startDate.value,
-            //                   firstDate: DateTime(2000),
-            //                   lastDate: DateTime.now(),
-            //                 );
-            //                 if (selectedDate != null) {
-            //                   controller.filterByDate(
-            //                     selectedDate,
-            //                     controller.endDate.value,
-            //                   );
-            //                 }
-            //               },
-            //               child: Container(
-            //                 padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-            //                 decoration: BoxDecoration(
-            //                   color: Colors.grey[50],
-            //                   border: Border.all(
-            //                     color: Colors.grey[300]!,
-            //                     width: 1.5,
-            //                   ),
-            //                   borderRadius: BorderRadius.circular(12),
-            //                   boxShadow: [
-            //                     BoxShadow(
-            //                       color: Colors.black.withOpacity(0.05),
-            //                       blurRadius: 4,
-            //                       offset: const Offset(0, 2),
-            //                     ),
-            //                   ],
-            //                 ),
-            //                 child: Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                   children: [
-            //                     Text(
-            //                       DateFormat('MMM dd, yyyy').format(controller.startDate.value),
-            //                       style: TextStyle(
-            //                         fontSize: 14,
-            //                         fontWeight: FontWeight.w600,
-            //                         color: Colors.grey[800],
-            //                       ),
-            //                     ),
-            //                     Icon(Icons.calendar_month,
-            //                       size: 20,
-            //                       color: AppColors.primary,
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: const EdgeInsets.symmetric(horizontal: 12),
-            //             child: Text(
-            //               'to',
-            //               style: TextStyle(
-            //                 fontSize: 14,
-            //                 fontWeight: FontWeight.w600,
-            //                 color: Colors.grey[600],
-            //               ),
-            //             ),
-            //           ),
-            //           Expanded(
-            //             child: InkWell(
-            //               borderRadius: BorderRadius.circular(12),
-            //               onTap: () async {
-            //                 final selectedDate = await showDatePicker(
-            //                   context: context,
-            //                   initialDate: controller.endDate.value,
-            //                   firstDate: DateTime(2000),
-            //                   lastDate: DateTime.now(),
-            //                 );
-            //                 if (selectedDate != null) {
-            //                   controller.filterByDate(
-            //                     controller.startDate.value,
-            //                     selectedDate,
-            //                   );
-            //                 }
-            //               },
-            //               child: Container(
-            //                 padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-            //                 decoration: BoxDecoration(
-            //                   color: Colors.grey[50],
-            //                   border: Border.all(
-            //                     color: Colors.grey[300]!,
-            //                     width: 1.5,
-            //                   ),
-            //                   borderRadius: BorderRadius.circular(12),
-            //                   boxShadow: [
-            //                     BoxShadow(
-            //                       color: Colors.black.withOpacity(0.05),
-            //                       blurRadius: 4,
-            //                       offset: const Offset(0, 2),
-            //                     ),
-            //                   ],
-            //                 ),
-            //                 child: Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                   children: [
-            //                     Text(
-            //                       DateFormat('MMM dd, yyyy').format(controller.endDate.value),
-            //                       style: TextStyle(
-            //                         fontSize: 14,
-            //                         fontWeight: FontWeight.w600,
-            //                         color: Colors.grey[800],
-            //                       ),
-            //                     ),
-            //                     Icon(Icons.calendar_month,
-            //                       size: 20,
-            //                       color: AppColors.primary,
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //
-            //     ],
-            //   ),
-            // ),
-
-
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Row(
@@ -254,11 +37,15 @@ class OrderView extends GetView<OrderViewController> {
                     ),
                   ),
                   IconButton(
-                    icon: Obx(() => Icon(
-                      controller.isFilterVisible.value ? Icons.filter_alt : Icons.filter_alt_outlined,
-                      color: AppColors.primary,
-                      size: 28,
-                    )),
+                    icon: Obx(
+                      () => Icon(
+                        controller.isFilterVisible.value
+                            ? Icons.filter_alt
+                            : Icons.filter_alt_outlined,
+                        color: AppColors.primary,
+                        size: 28,
+                      ),
+                    ),
                     onPressed: controller.toggleFilterVisibility,
                   ),
                 ],
@@ -266,164 +53,192 @@ class OrderView extends GetView<OrderViewController> {
             ),
 
             // Collapsible filter section
-            Obx(() => AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: controller.isFilterVisible.value
-                  ? Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Search field
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search by order ID, customer or date...',
-                        hintStyle: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 14,
-                        ),
-                        // prefixIcon: Icon(
-                        //   Icons.search,
-                        //   color: Colors.grey[600],
-                        // ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: Colors.grey[300]!,
-                            width: 1.5,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 16,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        debounce(
-                              () => controller.searchOrders(value),
-                          const Duration(milliseconds: 500),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Date filter row
-                    Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () async {
-                              final selectedDate = await showDatePicker(
-                                context: context,
-                                initialDate: controller.startDate.value,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime.now(),
-                              );
-                              if (selectedDate != null) {
-                                controller.filterByDate(
-                                  selectedDate,
-                                  controller.endDate.value,
-                                );
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[50],
-                                border: Border.all(
-                                  color: Colors.grey[300]!,
-                                  width: 1.5,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    DateFormat('MMM dd, yyyy').format(controller.startDate.value),
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey[800],
+            Obx(
+              () => AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child:
+                    controller.isFilterVisible.value
+                        ? Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Search field
+                              TextField(
+                                decoration: InputDecoration(
+                                  hintText:
+                                      'Search by order ID, customer or date...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 14,
+                                  ),
+                                  // prefixIcon: Icon(
+                                  //   Icons.search,
+                                  //   color: Colors.grey[600],
+                                  // ),
+                                  filled: true,
+                                  fillColor: Colors.grey[50],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1.5,
                                     ),
                                   ),
-                                  Icon(Icons.calendar_month,
-                                    size: 20,
-                                    color: AppColors.primary,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 16,
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  debounce(
+                                    () => controller.searchOrders(value),
+                                    const Duration(milliseconds: 500),
+                                  );
+                                },
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Date filter row
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () async {
+                                        final selectedDate =
+                                            await showDatePicker(
+                                              context: context,
+                                              initialDate:
+                                                  controller.startDate.value,
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime.now(),
+                                            );
+                                        if (selectedDate != null) {
+                                          controller.filterByDate(
+                                            selectedDate,
+                                            controller.endDate.value,
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 14,
+                                          horizontal: 16,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[50],
+                                          border: Border.all(
+                                            color: Colors.grey[300]!,
+                                            width: 1.5,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              DateFormat('MMM dd, yyyy').format(
+                                                controller.startDate.value,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey[800],
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.calendar_month,
+                                              size: 20,
+                                              color: AppColors.primary,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    child: Text(
+                                      'to',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () async {
+                                        final selectedDate =
+                                            await showDatePicker(
+                                              context: context,
+                                              initialDate:
+                                                  controller.endDate.value,
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime.now(),
+                                            );
+                                        if (selectedDate != null) {
+                                          controller.filterByDate(
+                                            controller.startDate.value,
+                                            selectedDate,
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 14,
+                                          horizontal: 16,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[50],
+                                          border: Border.all(
+                                            color: Colors.grey[300]!,
+                                            width: 1.5,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              DateFormat('MMM dd, yyyy').format(
+                                                controller.endDate.value,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey[800],
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.calendar_month,
+                                              size: 20,
+                                              color: AppColors.primary,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            'to',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () async {
-                              final selectedDate = await showDatePicker(
-                                context: context,
-                                initialDate: controller.endDate.value,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime.now(),
-                              );
-                              if (selectedDate != null) {
-                                controller.filterByDate(
-                                  controller.startDate.value,
-                                  selectedDate,
-                                );
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[50],
-                                border: Border.all(
-                                  color: Colors.grey[300]!,
-                                  width: 1.5,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    DateFormat('MMM dd, yyyy').format(controller.endDate.value),
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
-                                  Icon(Icons.calendar_month,
-                                    size: 20,
-                                    color: AppColors.primary,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-                  : const SizedBox.shrink(),
-            )),
+                        )
+                        : const SizedBox.shrink(),
+              ),
+            ),
 
             // Order List Section
             Expanded(
@@ -443,7 +258,10 @@ class OrderView extends GetView<OrderViewController> {
                           controller.searchQuery.value.isEmpty
                               ? 'No orders found in selected period'
                               : 'No orders match your search',
-                          style: const TextStyle(fontSize: 18, color: Colors.grey),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                          ),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton.icon(
@@ -457,7 +275,9 @@ class OrderView extends GetView<OrderViewController> {
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 24),
+                              vertical: 16,
+                              horizontal: 24,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -472,7 +292,8 @@ class OrderView extends GetView<OrderViewController> {
 
                 return NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+                    if (scrollInfo.metrics.pixels ==
+                            scrollInfo.metrics.maxScrollExtent &&
                         controller.hasMore &&
                         !controller.isLoadMore.value) {
                       controller.fetchOrders(loadMore: true);
@@ -481,8 +302,10 @@ class OrderView extends GetView<OrderViewController> {
                   },
                   child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: 80), // Space for FABs
-                    itemCount: controller.orders.length + (controller.hasMore ? 1 : 0),
+                    padding: const EdgeInsets.only(bottom: 80),
+                    // Space for FABs
+                    itemCount:
+                        controller.orders.length + (controller.hasMore ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index >= controller.orders.length) {
                         return const Padding(
@@ -493,7 +316,10 @@ class OrderView extends GetView<OrderViewController> {
 
                       final order = controller.orders[index];
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         child: _buildOrderItem(order),
                       );
                     },
@@ -504,7 +330,7 @@ class OrderView extends GetView<OrderViewController> {
           ],
         ),
       ),
-     );
+    );
   }
 
   void debounce(VoidCallback callback, Duration duration) {
@@ -514,6 +340,7 @@ class OrderView extends GetView<OrderViewController> {
     }
     timer = Timer(duration, callback);
   }
+
   Widget _buildOrderItem(Order order) {
     return InkWell(
       onTap: () => _showOrderDetails(order),
@@ -532,15 +359,11 @@ class OrderView extends GetView<OrderViewController> {
               children: [
                 Text(
                   "Order #${order.warehouseNumber}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   "\$${order.total.toStringAsFixed(2)}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -558,15 +381,24 @@ class OrderView extends GetView<OrderViewController> {
                   style: const TextStyle(color: Colors.grey),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: order.status=='Shipped' ? Colors.green[50] : Colors.orange[50],
+                    color:
+                        order.status == 'Shipped'
+                            ? Colors.green[50]
+                            : Colors.orange[50],
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     order.status,
                     style: TextStyle(
-                      color: order.status=='Shipped'  ? Colors.green : Colors.orange,
+                      color:
+                          order.status == 'Shipped'
+                              ? Colors.green
+                              : Colors.orange,
                     ),
                   ),
                 ),
@@ -630,22 +462,61 @@ class OrderView extends GetView<OrderViewController> {
               const SizedBox(height: 16),
 
               // Status Badge
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: order.status=='Shipped' ? Colors.green[50] : Colors.orange[50],
+                  color:
+                      order.status == 'Shipped'
+                          ? Colors.green[50]
+                          : Colors.orange[50],
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(order.status,
+                child: Text(
+                  order.status,
                   style: TextStyle(
-                    color: order.status == 'Shipped'? Colors.green :
-                    order.status == 'Cancelled'? Colors.red :
-                    order.status=='Refunded' ? Colors.purple : Colors.orange,
+                    color:
+                        order.status == 'Shipped'
+                            ? Colors.green
+                            : order.status == 'Cancelled'
+                            ? Colors.red
+                            : order.status == 'Refunded'
+                            ? Colors.purple
+                            : Colors.orange,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+            Obx(() => ElevatedButton.icon(
+              icon: controller.isPrinting.value
+                  ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: Colors.blue,
+                ),
+              )
+                  : const Icon(Icons.label, size: 22),
+              label: Text(controller.isPrinting.value ? "Printing..." : "Print Label"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[50],
+                foregroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: controller.isPrinting.value
+                  ? null
+                  : () => controller.printLabelOrder(order.id!),
+            ))
+
+          ]),
               const Divider(),
 
               // Order Summary Section
@@ -656,8 +527,14 @@ class OrderView extends GetView<OrderViewController> {
               const SizedBox(height: 8),
               _buildDetailRow("Service:", order.shippingServiceName),
               _buildDetailRow("Carrier:", order.carrier ?? "Not specified"),
-              _buildDetailRow("Tracking ID:", order.trackingCode ?? "Not available"),
-              _buildDetailRow("Reference:", order.customerReference ?? "Not provided"),
+              _buildDetailRow(
+                "Tracking ID:",
+                order.trackingCode ?? "Not available",
+              ),
+              _buildDetailRow(
+                "Reference:",
+                order.customerReference ?? "Not provided",
+              ),
               _buildDetailRow("Merchant:", order.merchant ?? "Not specified"),
               const SizedBox(height: 16),
 
@@ -667,10 +544,19 @@ class OrderView extends GetView<OrderViewController> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
-              _buildDetailRow("Weight:", "${order.weight} ${order.measurementUnit?.split('/').first ?? 'kg.'}"),
+              _buildDetailRow(
+                "Weight:",
+                "${order.weight} ${order.measurementUnit?.split('/').first ?? 'kg.'}",
+              ),
               if (order.volumetricWeight != null)
-                _buildDetailRow("Vol. Weight:", "${order.volumetricWeight!.toStringAsFixed(2)} kg"),
-              _buildDetailRow("Dimensions:", "${order.length} x ${order.width} x ${order.height} cm"),
+                _buildDetailRow(
+                  "Vol. Weight:",
+                  "${order.volumetricWeight!.toStringAsFixed(2)} kg",
+                ),
+              _buildDetailRow(
+                "Dimensions:",
+                "${order.length} x ${order.width} x ${order.height} cm",
+              ),
               _buildDetailRow("Items:", "${order.products.length} products"),
               const SizedBox(height: 16),
 
@@ -680,15 +566,36 @@ class OrderView extends GetView<OrderViewController> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
-              _buildDetailRow("Order Value:", "\$${order.orderValue.toStringAsFixed(2)}"),
-              _buildDetailRow("Shipping:", "\$${order.shippingValue?.toStringAsFixed(2) ?? '0.00'}"),
+              _buildDetailRow(
+                "Order Value:",
+                "\$${order.orderValue.toStringAsFixed(2)}",
+              ),
+              _buildDetailRow(
+                "Shipping:",
+                "\$${order.shippingValue?.toStringAsFixed(2) ?? '0.00'}",
+              ),
               if (order.discount > 0)
-                _buildDetailRow("Discount:", "-\$${order.discount.toStringAsFixed(2)}"),
-              _buildDetailRow("Tax & Duty:", "\$${order.taxAndDuty.toStringAsFixed(2)}"),
-              _buildDetailRow("Fee for Tax:", "\$${order.feeForTaxAndDuty.toStringAsFixed(2)}"),
+                _buildDetailRow(
+                  "Discount:",
+                  "-\$${order.discount.toStringAsFixed(2)}",
+                ),
+              _buildDetailRow(
+                "Tax & Duty:",
+                "\$${order.taxAndDuty.toStringAsFixed(2)}",
+              ),
+              _buildDetailRow(
+                "Fee for Tax:",
+                "\$${order.feeForTaxAndDuty.toStringAsFixed(2)}",
+              ),
               const Divider(),
-              _buildDetailRow("Gross Total:", "\$${order.grossTotal.toStringAsFixed(2)}",
-                  textStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.green[700])),
+              _buildDetailRow(
+                "Gross Total:",
+                "\$${order.grossTotal.toStringAsFixed(2)}",
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green[700],
+                ),
+              ),
               const SizedBox(height: 16),
 
               // Recipient Section
@@ -697,14 +604,22 @@ class OrderView extends GetView<OrderViewController> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
-              _buildDetailRow("Name:", "${order.recipient.firstName} ${order.recipient.lastName}"),
+              _buildDetailRow(
+                "Name:",
+                "${order.recipient.firstName} ${order.recipient.lastName}",
+              ),
               _buildDetailRow("Email:", order.recipient.email),
               _buildDetailRow("Phone:", order.recipient.phone),
-              _buildDetailRow("Address:",
-                  "${order.recipient.address}, ${order.recipient.address2}\n"
-                      "${order.recipient.city}, ${order.recipient.stateIsoCode}\n"
-                      "${order.recipient.zipcode}, ${order.recipient.countryIsoCode}"),
-              _buildDetailRow("Tax ID:", order.recipient.taxId ?? "Not provided"),
+              _buildDetailRow(
+                "Address:",
+                "${order.recipient.address}, ${order.recipient.address2}\n"
+                    "${order.recipient.city}, ${order.recipient.stateIsoCode}\n"
+                    "${order.recipient.zipcode}, ${order.recipient.countryIsoCode}",
+              ),
+              _buildDetailRow(
+                "Tax ID:",
+                order.recipient.taxId ?? "Not provided",
+              ),
               const SizedBox(height: 16),
 
               // Sender Section
@@ -713,7 +628,10 @@ class OrderView extends GetView<OrderViewController> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
-              _buildDetailRow("Name:", "${order.sender.firstName} ${order.sender.lastName}"),
+              _buildDetailRow(
+                "Name:",
+                "${order.sender.firstName} ${order.sender.lastName}",
+              ),
               _buildDetailRow("Email:", order.sender.email),
               _buildDetailRow("Tax ID:", order.sender.taxId ?? "Not provided"),
               const SizedBox(height: 16),
@@ -724,27 +642,31 @@ class OrderView extends GetView<OrderViewController> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
-              ...order.products.map((product) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildDetailRow("Description:", product.description),
-                  _buildDetailRow("Quantity:", product.quantity),
-                  _buildDetailRow("Value:", "\$${product.value}"),
-                  _buildDetailRow("HS Code:", product.shCode),
-                  if (product.isBattery == "1" || product.isPerfume == "1")
-                    _buildDetailRow("Special:",
+              ...order.products.map(
+                (product) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailRow("Description:", product.description),
+                    _buildDetailRow("Quantity:", product.quantity),
+                    _buildDetailRow("Value:", "\$${product.value}"),
+                    _buildDetailRow("HS Code:", product.shCode),
+                    if (product.isBattery == "1" || product.isPerfume == "1")
+                      _buildDetailRow(
+                        "Special:",
                         "${product.isBattery == "1" ? 'Contains Battery' : ''}"
-                            "${product.isPerfume == "1" ? 'Contains Perfume' : ''}"),
-                  const Divider(),
-                ],
-              )),
+                            "${product.isPerfume == "1" ? 'Contains Perfume' : ''}",
+                      ),
+                    const Divider(),
+                  ],
+                ),
+              ),
               const SizedBox(height: 16),
               // Action Buttons
               Row(
-
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [ 
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   const SizedBox(height: 16),
+
 
                   ElevatedButton.icon(
                     icon: const Icon(Icons.delete, size: 22),
@@ -759,7 +681,6 @@ class OrderView extends GetView<OrderViewController> {
                     onPressed: () => _confirmDelete(order),
                   ),
 
-
                   if (order.trackingCode != null && order.trackingCode!.isNotEmpty)
                     ElevatedButton.icon(
                       icon: const Icon(Icons.track_changes, size: 18),
@@ -773,12 +694,33 @@ class OrderView extends GetView<OrderViewController> {
                       ),
                       onPressed: () {
                         Get.back();
-                        Get.toNamed(Routes.TRACKINGS, arguments: order.trackingCode);
+                        Get.toNamed(
+                          Routes.TRACKINGS,
+                          arguments: order.trackingCode,
+                        );
+                      },
+                    )
+                  else
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.edit, size: 18),
+                      label: const Text("Update Order"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange[50],
+                        foregroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.delete<OrderCreateController>();
+                        Get.back();
+                        Get.toNamed(
+                          Routes.CREATE_ORDER,
+                          arguments: {'order': order, 'mode': 'edit'},
+                        );
                       },
                     ),
-
                 ],
-
               ),
 
               const SizedBox(height: 16),
@@ -790,30 +732,6 @@ class OrderView extends GetView<OrderViewController> {
       ),
     );
   }
-
-  // Widget _buildDetailRow(String label, dynamic value, {TextStyle? textStyle}) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 6),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         SizedBox(
-  //           width: 120,
-  //           child: Text(
-  //             label,
-  //             style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: Text(
-  //             value.toString(),
-  //             style: textStyle ?? const TextStyle(),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildDetailRow(String label, dynamic value, {TextStyle? textStyle}) {
     return Container(
@@ -852,19 +770,18 @@ class OrderView extends GetView<OrderViewController> {
                 padding: const EdgeInsets.only(left: 8),
                 decoration: BoxDecoration(
                   border: Border(
-                    left: BorderSide(
-                      color: Colors.grey[300]!,
-                      width: 1,
-                    ),
+                    left: BorderSide(color: Colors.grey[300]!, width: 1),
                   ),
                 ),
                 child: Text(
                   value.toString(),
-                  style: textStyle ?? TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[800],
-                  ),
+                  style:
+                      textStyle ??
+                      TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[800],
+                      ),
                 ),
               ),
             ),
@@ -881,19 +798,31 @@ class OrderView extends GetView<OrderViewController> {
         title: const Text('Delete Order'),
         content: const Text('Are you sure you want to delete this order?'),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
               controller.deleteOrder(order.id!);
             },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+  void _confirmOrderPrintLabel(Order order) {
+    Get.back();
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Print label'),
+        content: const Text('Are you sure you want to print the label?'),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              controller.printLabelOrder(order.id!);
+            },
+            child: const Text('Print', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

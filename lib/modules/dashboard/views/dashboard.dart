@@ -82,7 +82,7 @@ class DashboardView extends StatelessWidget {
                   ] else
                     const Center(child: Text("No data available")),
                 ],
-              ),
+              )
             );
           }),
         ),
@@ -197,13 +197,13 @@ class DashboardView extends StatelessWidget {
                 buildOrderCard(
                   title: "This Year Orders",
                   total: dashboard.currentYearTotal,
-                  completed: int.parse(dashboard.currentYearConfirm),
+                  completed: dashboard.currentYearConfirm,
                   bgColor: Colors.orange.shade400,
                 ),
                 buildOrderCard(
                   title: "Overall Orders",
                   total: dashboard.totalOrders,
-                  completed: int.parse(dashboard.totalCompleteOrders),
+                  completed:dashboard.totalCompleteOrders,
                   bgColor: Colors.green.shade600,
                 ),
               ],

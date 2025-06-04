@@ -1,4 +1,6 @@
+import 'package:home_delivery_br/data/models/CountryModel.dart';
 
+import 'CountryStateModel.dart';
 class Recipient {
   final String? stateIsoCode;
   final String countryIsoCode;
@@ -14,9 +16,12 @@ class Recipient {
   final String? taxId;
   final String? zipcode;
 
+  final Country? country;
+  final CountryState? state;
   Recipient({
     required this.stateIsoCode,
     required this.countryIsoCode,
+
     required this.firstName,
     required this.lastName,
     required this.email,
@@ -28,6 +33,8 @@ class Recipient {
     required this.accountType,
     required this.taxId,
     required this.zipcode,
+    this.country,
+    this.state,
   });
 
   factory Recipient.fromJson(Map<String, dynamic> json) {
@@ -45,25 +52,30 @@ class Recipient {
       accountType: json['account_type'] ?? '',
       taxId: json['tax_id'] ?? '',
       zipcode: json['zipcode'] ?? '',
+      state: json['state'] != null ? CountryState.fromJson(json['state']) : null,
+      country: json['country'] != null ? Country.fromJson(json['country']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'state_iso_code': stateIsoCode,
-      'country_iso_code': countryIsoCode,
-      'first_name': firstName,
-      'last_name': lastName,
-      'email': email,
-      'phone': phone,
-      'city': city,
-      'street_no': streetNo,
-      'address': address,
-      'address2': address2,
-      'account_type': accountType,
-      'tax_id': taxId,
-      'zipcode': zipcode,
+      'state_iso_code': stateIsoCode ?? '',
+      'country_iso_code': countryIsoCode ?? '',
+      'first_name': firstName ?? '',
+      'last_name': lastName ?? '',
+      'email': email ?? '',
+      'phone': phone ?? '',
+      'city': city ?? '',
+      'street_no': streetNo ?? '',
+      'address': address ?? '',
+      'address2': address2 ?? '',
+      'account_type': accountType ?? '',
+      'tax_id': taxId ?? '',
+      'zipcode': zipcode ?? '',
+      'state': state?.toJson(),
+      'country': country?.toJson(),
     };
   }
+
 }
 

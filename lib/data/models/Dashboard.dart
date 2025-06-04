@@ -1,12 +1,12 @@
 class Dashboard {
   final int totalOrders;
-  final String totalCompleteOrders;
+  final int totalCompleteOrders;
   final int currentMonthTotal;
   final int currentMonthConfirm;
   final int currentDayTotal;
   final int currentDayConfirm;
   final int currentYearTotal;
-  final String currentYearConfirm;
+  final int currentYearConfirm;
   final String monthName;
   final List<int> totalShippedCount;
   final List<int> totalOrderCount;

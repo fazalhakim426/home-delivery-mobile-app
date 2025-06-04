@@ -6,6 +6,7 @@ import 'package:home_delivery_br/data/repositories/order_repository.dart';
 import 'package:home_delivery_br/data/services/form_persistence_service.dart';
 import 'sender_controller.dart';
 import 'recipient_controller.dart';
+import 'package:home_delivery_br/routes/app_pages.dart';
 import 'parcel_controller.dart';
 import 'product_controller.dart';
 
@@ -18,8 +19,10 @@ class OrderCreateController extends GetxController {
   late final RecipientController recipientController;
   late final ParcelController parcelController;
   late final ProductController productController;
+  bool submitted = false;
 
-  OrderCreateController({required OrderRepository orderRepository}) : _orderRepository = orderRepository {
+  OrderCreateController({required OrderRepository orderRepository})
+    : _orderRepository = orderRepository {
     senderController = Get.put(SenderController());
     recipientController = Get.put(RecipientController());
     parcelController = Get.put(ParcelController());
@@ -27,8 +30,47 @@ class OrderCreateController extends GetxController {
     _setupControllerListeners();
   }
 
+  Map<String, dynamic>? args;
+  String mode = 'create';
+  late Order order; // 👈 Declare your order model here
 
-  // Step management
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCountries();
+    _loadData(passedArgs: Get.arguments);
+    final selectedCountryId = recipientController.selectedCountryId.value;
+    if (selectedCountryId != 0) {
+      fetchCountryStats(selectedCountryId);
+    }
+  }
+
+  void _loadData({Map<String, dynamic>? passedArgs}) {
+    if (passedArgs != null) {
+      args = passedArgs;
+    }
+
+    if (args == null) {
+      return;
+    }
+
+    mode = args!['mode'] ?? 'create';
+
+    if (mode == 'edit') {
+      final rawOrder = args!['order'];
+      if (rawOrder is Order) {
+        order = rawOrder;
+      } else if (rawOrder is Map<String, dynamic>) {
+        order = Order.fromJson(rawOrder);
+      } else {
+        return;
+      }
+      _loadUpdateData(order);
+    } else {
+      _loadSavedFormData();
+    }
+  }
+
   final currentStep = 0.obs;
   final basicInfoFormKey = GlobalKey<FormState>();
   final parcelDetailsFormKey = GlobalKey<FormState>();
@@ -62,7 +104,6 @@ class OrderCreateController extends GetxController {
     recipientController.phoneController.addListener(_debouncedSaveForm);
   }
 
-
   void _removeListeners() {
     parcelController.trackingIdController.removeListener(_debouncedSaveForm);
     parcelController.customerReferenceController.removeListener(
@@ -90,24 +131,66 @@ class OrderCreateController extends GetxController {
   }
 
   String? getFieldError(String fieldKey) {
-    if(this.fieldErrors.containsKey(fieldKey) &&
-        this.fieldErrors[fieldKey]!.isNotEmpty){
-      return this.fieldErrors[fieldKey];
-    }
-    return null;
+    if (!submitted) return null;
+    return fieldErrors[fieldKey];
   }
+
   void clearFieldError(String fieldPath) {
-    update();
     if (fieldErrors.containsKey(fieldPath)) {
       fieldErrors.remove(fieldPath);
+      update();
     }
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    _loadSavedFormData();
-    fetchCountries();
+  void onReady() {
+    super.onReady();
+    _loadData(passedArgs: Get.arguments);
+  }
+
+  void _loadUpdateData(order) {
+    if (order != null) {
+      parcelController.trackingIdController.text =
+          order.customerReference.toString();
+      parcelController.weightController.text = order.weight.toStringAsFixed(2);
+      parcelController.shipmentValueController.text = order.shippingValue.toStringAsFixed(2);
+      parcelController.lengthController.text = order.length.toStringAsFixed(2);
+      parcelController.widthController.text = order.width.toStringAsFixed(2);
+      parcelController.heightController.text = order.height.toStringAsFixed(2);
+
+      senderController.firstNameController.text = order.sender.firstName?.toString() ?? '';
+      senderController.lastNameController.text = order.sender.lastName?.toString() ?? '';
+      senderController.emailController.text = order.sender.email?.toString() ?? '';
+      senderController.taxIdController.text = order.sender.taxId?.toString() ?? '';
+
+      senderController.selectedCountryId.value = order.sender.country?.id ?? 250;
+      senderController.websiteController.text = order.sender.sender_website?.toString() ?? '';
+
+      //recipient
+      recipientController.firstNameController.text = order.recipient.firstName?.toString() ?? '';
+      recipientController.lastNameController.text = order.recipient.lastName?.toString() ?? '';
+      recipientController.emailController.text = order.recipient.email?.toString() ?? '';
+      recipientController.phoneController.text = order.recipient.phone?.toString() ?? '';
+      recipientController.taxIdController.text = order.recipient.taxId?.toString() ?? '';
+      recipientController.streetNoController.text = order.recipient.streetNo?.toString() ?? '';
+      recipientController.addressController.text = order.recipient.address?.toString() ?? '';
+      recipientController.address2Controller.text = order.recipient.address2?.toString() ?? '';
+      recipientController.accountTypeController.text = order.recipient.accountType?.toString() ?? '';
+      recipientController.zipCodeController.text = order.recipient.zipcode?.toString() ?? '';
+      recipientController.selectedStateId.value = order.recipient.state?.id ?? 526;
+      recipientController.cityController.text = order.recipient.city?.toString() ?? '';
+      recipientController.selectedCountryId.value = order.recipient?.country?.id ?? 30;
+
+      //parcel
+      parcelController.selectedServiceId.value = order.service.id;
+      parcelController.taxModality.value = order.taxModality;
+      // foreach(order.products as product in order.products)
+      //
+      // }
+      productController.loadProductsFromOrder(order.products);
+
+
+    }
   }
 
   void _loadSavedFormData() {
@@ -195,31 +278,37 @@ class OrderCreateController extends GetxController {
   }
 
   Future<void> fetchCountries() async {
-    isLoading.value = true;
+    // isLoading.value = true;
     try {
       final countryList = await _orderRepository.fetchCountries();
       parcelController.countries.value = countryList;
     } catch (e) {
-//       print(e.toString());
-//       Get.snackbar('Error', 'Failed to fetch countreis: ${e.toString()}');
     } finally {
-      isLoading.value = false;
+      // isLoading.value = false;
     }
   }
+
   Future<void> fetchCountryStats(id) async {
     isLoading.value = true;
     try {
       final countryStateList = await _orderRepository.getStateByCountry(id);
       parcelController.recipientStates.assignAll(countryStateList);
     } catch (e) {
-//       print(e.toString());toString
-//       Get.snackbar('Error', 'Failed to fetch country state: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
   }
 
   Future<void> addOrder() async {
+    if(mode=='edit') {
+      updateOrder();
+    }
+    else {
+      saveOrder();
+    }
+  }
+
+  Future<void> saveOrder() async {
     isLoading.value = true;
     try {
       final parcel = parcelController.toJson();
@@ -234,32 +323,96 @@ class OrderCreateController extends GetxController {
 
       if (response['success'] == true) {
         Get.back();
-        Get.snackbar('Success', 'Order added successfully');
+        Get.snackbar('Success', 'Order added successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.theme.colorScheme.primary,
+            colorText: Get.theme.colorScheme.onPrimary);
+        clearForm();
+        Get.offAllNamed(Routes.ORDERS);
       } else {
-        if (response['errors'] != null && response['errors'] is Map<String, String>) {
+        if (response['errors'] != null &&
+            response['errors'] is Map<String, String>) {
+          fieldErrors.assignAll(response['errors']);
+        }
+        Get.snackbar(
+          'Failed',
+          response['message'] ?? 'Failed to add order.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.theme.colorScheme.primary,
+            colorText: Get.theme.colorScheme.onPrimary,
+          isDismissible: true,
+          duration: const Duration(seconds: 5),
+          mainButton: TextButton(
+            onPressed: () {
+              if (Get.isSnackbarOpen) Get.back();
+            },
+            child: const Text('CLOSE', style: TextStyle(color: Colors.white)),
+          ),
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Invalid data',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.primary,
+        colorText: Get.theme.colorScheme.onPrimary,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateOrder() async {
+    isLoading.value = true;
+    try {
+      final parcel = parcelController.toJson();
+      parcel['merchant'] = senderController.firstNameController.text;
+      final updateRequest = {
+        "parcel": parcel,
+        "sender": senderController.toJson(),
+        "recipient": recipientController.toJson(),
+        "products": productController.toJson(),
+      };
+      final response = await _orderRepository.updateOrder(updateRequest,order);
+
+      if (response['success'] == true) {
+        Get.back();
+        Get.snackbar('Success', 'Order update successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.primary,
+          colorText: Get.theme.colorScheme.onPrimary);
+        clearForm();
+        Get.offAllNamed(Routes.ORDERS);
+      } else {
+        if (response['errors'] != null &&
+            response['errors'] is Map<String, String>) {
           fieldErrors.assignAll(response['errors']);
         }
         Get.snackbar(
           'Failed',
           response['message'] ?? 'Failed to add order.',
           snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.primary,
+          colorText: Get.theme.colorScheme.onPrimary,
           isDismissible: true,
-          duration: const Duration(seconds: 5), // Optional: controls how long it stays
+          duration: const Duration(seconds: 5),
           mainButton: TextButton(
             onPressed: () {
-              if (Get.isSnackbarOpen) Get.back(); // Closes the snackbar
+              if (Get.isSnackbarOpen) Get.back();
             },
-            child: const Text(
-              'CLOSE',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text('CLOSE', style: TextStyle(color: Colors.white)),
           ),
         );
       }
-
     } catch (e) {
-      print(e.toString());
-      Get.snackbar('Invalid data', e.toString(),snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Invalid data',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.primary,
+        colorText: Get.theme.colorScheme.onPrimary,
+      );
     } finally {
       isLoading.value = false;
     }

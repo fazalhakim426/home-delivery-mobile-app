@@ -72,7 +72,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   _buildDrawerItem(
                     icon: Icons.shopping_cart,
-                    title: 'My Orders',
+                    title: 'Orders',
                     route: Routes.ORDERS,
                   ),
                   _buildDrawerItem(

@@ -13,6 +13,7 @@ class Order {
   final DateTime? createdAt;
   final String? trackingCode;
   final Service service;
+  final String? taxModality;
   final String? merchant;
   final String? carrier;
   final String? customerReference;
@@ -68,11 +69,12 @@ class Order {
     required this.feeForTaxAndDuty,
     required this.recipient,
     required this.products,
+    required this.taxModality
   });
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'] as int?,
-      title: json['customer_reference'] ?? '', // Use customer_reference as title?
+      title: json['customer_reference'] ?? '',
       description: json['shipping_service_name'] ?? '',
       status: json['order_status'] ,
       createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at']) : null,
@@ -83,19 +85,11 @@ class Order {
       customerReference: json['customer_reference'],
       measurementUnit: json['measurement_unit'],
       weight: double.tryParse(json['weight']?.toString() ?? '0') ?? 0,
-      volumetricWeight: json['Volumetric_weight'] != null
-          ? double.tryParse(json['Volumetric_weight'].toString())
-          : null,
-      length: json['length'] != null
-          ? double.tryParse(json['length'].toString())
-          : null,
-      width: json['width'] != null
-          ? double.tryParse(json['width'].toString())
-          : null,
-      height: json['height'] != null
-          ? double.tryParse(json['height'].toString())
-          : null,
-      orderDate: DateTime.parse(json['order_date']), // Ensure this is non-null
+      volumetricWeight: json['Volumetric_weight'] != null ? double.tryParse(json['Volumetric_weight'].toString()) : null,
+      length: json['length'] != null ? double.tryParse(json['length'].toString()) : null,
+      width: json['width'] != null ? double.tryParse(json['width'].toString()) : null,
+      height: json['height'] != null ? double.tryParse(json['height'].toString()) : null,
+      orderDate: DateTime.parse(json['order_date']),
       sender: Sender.fromJson(json['sender'] ?? {}),
       warehouseNumber: json['warehouse_number'],
       orderValue: double.tryParse(json['order_value']?.toString() ?? '0') ?? 0,
@@ -111,6 +105,7 @@ class Order {
       products: (json['products'] as List<dynamic>? ?? [])
           .map((p) => Product.fromJson(p))
           .toList(),
+      taxModality:json['tax_modality']??'ddu',
     );
   }
   Map<String, dynamic> toJson() {
@@ -145,6 +140,7 @@ class Order {
       'fee_for_tax_and_duty': feeForTaxAndDuty,
       'recipient': recipient.toJson(),
       'products': products.map((product) => product.toJson()).toList(),
+      'tax_modality': taxModality,
     };
   }
 
@@ -210,6 +206,45 @@ class Order {
       feeForTaxAndDuty: feeForTaxAndDuty ?? this.feeForTaxAndDuty,
       recipient: recipient ?? this.recipient,
       products: products ?? this.products,
+      taxModality: this.taxModality
     );
+  }
+  @override
+  String toString() {
+    return '''
+Order(
+  id: $id,
+  products: ${products.map((p) => p.toJson()).toList()}
+  title: $title,
+  taxModality: $taxModality,
+  description: $description,
+  status: $status,
+  createdAt: $createdAt,
+  trackingCode: $trackingCode,
+  service: ${service.toJson()},
+  merchant: $merchant,
+  carrier: $carrier,
+  customerReference: $customerReference,
+  measurementUnit: $measurementUnit,
+  weight: $weight,
+  volumetricWeight: $volumetricWeight,
+  length: $length,
+  width: $width,
+  height: $height,
+  orderDate: $orderDate,
+  sender: ${sender.toJson()},
+  warehouseNumber: $warehouseNumber,
+  orderValue: $orderValue,
+  shippingServiceName: $shippingServiceName,
+  shippingValue: $shippingValue,
+  prohibitedGoods: $prohibitedGoods,
+  total: $total,
+  discount: $discount,
+  grossTotal: $grossTotal,
+  taxAndDuty: $taxAndDuty,
+  feeForTaxAndDuty: $feeForTaxAndDuty,
+  recipient: ${recipient.toJson()},
+)
+''';
   }
 }

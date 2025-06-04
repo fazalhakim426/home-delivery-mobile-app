@@ -10,12 +10,13 @@ class BasicInfoForm extends GetView<OrderCreateController> {
   Widget build(BuildContext context) {
     return Form(
       key: controller.basicInfoFormKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.disabled,
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Section Header
-          _buildSectionHeader(context, 'Basic Information'),
+          _buildSectionHeader(context, controller.mode=='edit'?'Edit ${controller.order.warehouseNumber}':'Basic Information'),
           const SizedBox(height: 24),
 
           // Tracking ID Field
@@ -37,7 +38,7 @@ class BasicInfoForm extends GetView<OrderCreateController> {
                   textController: controller.parcelController.weightController,
                   label: 'Weight (kg)*',
                   fieldKey: 'parcel.weight',
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                   validator: OrderValidators.validateNumber,
                 ),
               ),
