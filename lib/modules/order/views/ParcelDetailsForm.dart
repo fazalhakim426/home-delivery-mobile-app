@@ -7,6 +7,8 @@ import 'package:home_delivery_br/modules/order/controllers/order_create_controll
 import 'package:home_delivery_br/modules/order/controllers/validators/order_validators.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
+import '../controllers/parcel_controller.dart';
+
 class ParcelDetailsForm extends GetView<OrderCreateController> {
   @override
   Widget build(BuildContext context) {
@@ -22,8 +24,9 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
           children: [
             // Shipping Details Header
             Text(
-
-              controller.mode=='edit'?'${controller.order.warehouseNumber}':'Shipping Details',
+              controller.mode == 'edit'
+                  ? '${controller.order.warehouseNumber}'
+                  : 'Shipping Details',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.primary,
@@ -39,16 +42,15 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                   Obx(() {
                     return buildShippingServiceDropdown(
                       context: context,
-                      selectedServiceId: controller.parcelController.selectedServiceId,
+                      selectedServiceId:
+                          controller.parcelController.selectedServiceId,
                       services: controller.parcelController.services,
                       getFieldError: controller.getFieldError,
                       clearFieldError: controller.clearFieldError,
-                      colorScheme: Theme
-                          .of(context)
-                          .colorScheme,
+                      colorScheme: Theme.of(context).colorScheme,
+                      parcelController: controller.parcelController,
                     );
                   }),
-
 
                   const SizedBox(height: 40),
 
@@ -95,9 +97,9 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                       ],
                       validator:
                           (value) =>
-                      value == null
-                          ? 'Please select tax modality'
-                          : null,
+                              value == null
+                                  ? 'Please select tax modality'
+                                  : null,
                     );
                   }),
                 ],
@@ -126,9 +128,9 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                         : 'No products added yet',
                     textAlign: TextAlign.center,
                     style:
-                    productsError != null
-                        ? AppStyles.errorTextStyle
-                        : AppStyles.hintTextStyle,
+                        productsError != null
+                            ? AppStyles.errorTextStyle
+                            : AppStyles.hintTextStyle,
                   ),
                 );
               }
@@ -171,10 +173,7 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: Theme
-              .of(Get.context!)
-              .colorScheme
-              .outlineVariant,
+          color: Theme.of(Get.context!).colorScheme.outlineVariant,
           width: 1,
         ),
       ),
@@ -189,6 +188,7 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                 index: index,
                 getFieldError: controller.getFieldError,
                 clearFieldError: controller.clearFieldError,
+                parcelController: controller.parcelController,
               );
             }),
             const SizedBox(height: 16),
@@ -213,7 +213,7 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
               style: AppStyles.inputTextStyle,
               onChanged:
                   (_) =>
-                  controller.clearFieldError('products.$index.description'),
+                      controller.clearFieldError('products.$index.description'),
               validator: OrderValidators.validateRequired,
             ),
             const SizedBox(height: 16),
@@ -241,11 +241,9 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                     style: AppStyles.inputTextStyle,
                     keyboardType: TextInputType.number,
                     onChanged:
-                        (_) =>
-                        controller.clearFieldError(
+                        (_) => controller.clearFieldError(
                           'products.$index.quantity',
                         ),
-                    validator: OrderValidators.validateNumber,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -270,7 +268,7 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                     keyboardType: TextInputType.number,
                     onChanged:
                         (_) =>
-                        controller.clearFieldError('products.$index.value'),
+                            controller.clearFieldError('products.$index.value'),
                     validator: OrderValidators.validateNumber,
                   ),
                 ),
@@ -284,52 +282,40 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
               runSpacing: 8,
               children: [
                 Obx(
-                      () =>
-                      FilterChip(
-                        label: const Text(
-                          "Battery",
-                          style: AppStyles.chipTextStyle,
-                        ),
-                        selected: product.isBattery.value,
-                        selectedColor:
-                        Theme
-                            .of(Get.context!)
-                            .colorScheme
-                            .primaryContainer,
-                        onSelected: (val) => product.isBattery.value = val,
-                      ),
+                  () => FilterChip(
+                    label: const Text(
+                      "Battery",
+                      style: AppStyles.chipTextStyle,
+                    ),
+                    selected: product.isBattery.value,
+                    selectedColor:
+                        Theme.of(Get.context!).colorScheme.primaryContainer,
+                    onSelected: (val) => product.isBattery.value = val,
+                  ),
                 ),
                 Obx(
-                      () =>
-                      FilterChip(
-                        label: const Text(
-                          "Perfume",
-                          style: AppStyles.chipTextStyle,
-                        ),
-                        selected: product.isPerfume.value,
-                        selectedColor:
-                        Theme
-                            .of(Get.context!)
-                            .colorScheme
-                            .primaryContainer,
-                        onSelected: (val) => product.isPerfume.value = val,
-                      ),
+                  () => FilterChip(
+                    label: const Text(
+                      "Perfume",
+                      style: AppStyles.chipTextStyle,
+                    ),
+                    selected: product.isPerfume.value,
+                    selectedColor:
+                        Theme.of(Get.context!).colorScheme.primaryContainer,
+                    onSelected: (val) => product.isPerfume.value = val,
+                  ),
                 ),
                 Obx(
-                      () =>
-                      FilterChip(
-                        label: const Text(
-                          "Flammable",
-                          style: AppStyles.chipTextStyle,
-                        ),
-                        selected: product.isFlameable.value,
-                        selectedColor:
-                        Theme
-                            .of(Get.context!)
-                            .colorScheme
-                            .primaryContainer,
-                        onSelected: (val) => product.isFlameable.value = val,
-                      ),
+                  () => FilterChip(
+                    label: const Text(
+                      "Flammable",
+                      style: AppStyles.chipTextStyle,
+                    ),
+                    selected: product.isFlameable.value,
+                    selectedColor:
+                        Theme.of(Get.context!).colorScheme.primaryContainer,
+                    onSelected: (val) => product.isFlameable.value = val,
+                  ),
                 ),
               ],
             ),
@@ -342,10 +328,7 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                 onPressed:
                     () => controller.productController.removeProduct(index),
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme
-                      .of(Get.context!)
-                      .colorScheme
-                      .error,
+                  foregroundColor: Theme.of(Get.context!).colorScheme.error,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 8,
@@ -373,17 +356,13 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: Theme
-              .of(Get.context!)
-              .colorScheme
-              .outlineVariant,
+          color: Theme.of(Get.context!).colorScheme.outlineVariant,
           width: 1,
         ),
       ),
       child: Padding(padding: const EdgeInsets.all(16), child: child),
     );
   }
-
 
   Widget buildShippingServiceDropdown({
     required RxnInt selectedServiceId,
@@ -392,139 +371,231 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
     required void Function(String key) clearFieldError,
     required ColorScheme colorScheme,
     required BuildContext context,
+    required ParcelController parcelController, // Add this parameter
   }) {
     final errorText = getFieldError("parcel.service_id");
 
-    return DropdownSearch<Service>(
-      selectedItem: services.firstWhere(
-            (service) => service.id == selectedServiceId.value,
-        orElse: () =>
-        services.isNotEmpty ? services.first : Service(
-            id: 0, name: 'No services'),
-      ),
-      items: services,
-      itemAsString: (service) => service.name,
-      onChanged: (Service? value) {
-        if (value != null) {
-          selectedServiceId.value = value.id;
-          clearFieldError("parcel.service_id");
-        }
-      },
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          labelText: 'Shipping Service',
-          labelStyle: AppStyles.inputLabelStyle,
-          prefixIcon: const Icon(Icons.local_shipping),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: colorScheme.outline),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: colorScheme.outline),
-          ),
-          errorText: errorText,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
-        ),
-      ),
-      popupProps: PopupProps.modalBottomSheet(
-        showSearchBox: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            labelText: 'Search service',
-            prefixIcon: const Icon(Icons.search),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+    return FormField<int>(
+      validator:
+          (value) =>
+              value == null || value == 0 ? 'Please select a service' : null,
+      initialValue:
+          selectedServiceId.value == 0 ? null : selectedServiceId.value,
+      builder: (state) {
+        return GestureDetector(
+          onTap: () async {
+            if (services.isEmpty) {
+              await parcelController.fetchShippingServices();
+              if (parcelController.services.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Failed to load shipping services. Please check your internet connection.',
+                    ),
+                  ),
+                );
+                return;
+              }
+            }
+            // Proceed with showing the dropdown
+            final selectedService = await showModalBottomSheet<Service>(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            labelText: 'Search service',
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            // Implement search functionality if needed
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: parcelController.services.length,
+                          itemBuilder: (context, index) {
+                            final service = parcelController.services[index];
+                            return ListTile(
+                              title: Text(service.name),
+                              onTap: () {
+                                Navigator.pop(context, service);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+
+            if (selectedService != null) {
+              selectedServiceId.value = selectedService.id;
+              clearFieldError("parcel.service_id");
+              state.didChange(selectedService.id);
+            }
+          },
+          child: InputDecorator(
+            decoration: InputDecoration(
+              labelText: 'Shipping Service',
+              labelStyle: AppStyles.inputLabelStyle,
+              prefixIcon: const Icon(Icons.local_shipping),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              errorText: errorText ?? state.errorText,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+            ),
+            child: Text(
+              services
+                  .firstWhere(
+                    (service) => service.id == selectedServiceId.value,
+                    orElse:
+                        () => Service(id: 0, name: 'Select shipping service'),
+                  )
+                  .name,
             ),
           ),
-        ),
-        modalBottomSheetProps: ModalBottomSheetProps(
-          isScrollControlled: true,
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery
-                .of(context)
-                .size
-                .height * 0.6,
-            minHeight: MediaQuery
-                .of(context)
-                .size
-                .height * 0.6,
-          ),
-        ),
-      ),
-      validator: (value) =>
-      value == null ? 'Please select a service' : null,
+        );
+      },
     );
   }
+
   Widget buildShCodeDropdown({
     required RxnInt selectedShCode,
     required List<ShCode> shCodes,
     required int index,
     required String? Function(String key) getFieldError,
     required void Function(String key) clearFieldError,
+    required ParcelController parcelController, // Add this parameter
   }) {
     final errorText = getFieldError('products.$index.sh_code');
     final colorScheme = Theme.of(Get.context!).colorScheme;
 
-    return DropdownSearch<ShCode>(
-      selectedItem: shCodes.firstWhere(
-            (shCode) => shCode.code == selectedShCode.value,
-        orElse: () => shCodes.isNotEmpty
-            ? shCodes.first
-            : ShCode(code: -1, description: 'No SH codes'),
-      ),
-      items: shCodes,
-      itemAsString: (shCode) => shCode.description,
-      onChanged: (ShCode? value) {
-        if (value != null) {
-          selectedShCode.value = value.code;
-          clearFieldError('products.$index.sh_code');
-        }
-      },
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          labelText: 'SH Code',
-          labelStyle: AppStyles.inputLabelStyle,
-          prefixIcon: const Icon(Icons.code),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: colorScheme.outline),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: colorScheme.outline),
-          ),
-          errorText: errorText,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
-        ),
-      ),
-      popupProps: PopupProps.modalBottomSheet(
-        showSearchBox: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            labelText: 'Search SH code',
-            prefixIcon: const Icon(Icons.search),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+    return FormField<int>(
+      validator:
+          (value) =>
+              value == null || value == -1 ? 'Please select an SH code' : null,
+      initialValue: selectedShCode.value == -1 ? null : selectedShCode.value,
+      builder: (state) {
+        return GestureDetector(
+          onTap: () async {
+            if (shCodes.isEmpty) {
+              await parcelController
+                  .fetchShCodes(); // Assuming you have this method
+              if (parcelController.shCodes.isEmpty) {
+                ScaffoldMessenger.of(Get.context!).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Failed to load SH codes. Please check your internet connection.',
+                    ),
+                  ),
+                );
+                return;
+              }
+            }
+
+            // Proceed with showing the dropdown
+            final selectedCode = await showModalBottomSheet<ShCode>(
+              context: Get.context!,
+              isScrollControlled: true,
+              builder: (context) {
+                return SizedBox(
+                  height: Get.height * 0.6,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            labelText: 'Search SH code',
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            // Implement search functionality if needed
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: parcelController.shCodes.length,
+                          itemBuilder: (context, index) {
+                            final code = parcelController.shCodes[index];
+                            return ListTile(
+                              title: Text(code.description),
+                              onTap: () {
+                                Navigator.pop(context, code);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+
+            if (selectedCode != null) {
+              selectedShCode.value = selectedCode.code;
+              clearFieldError('products.$index.sh_code');
+              state.didChange(selectedCode.code);
+            }
+          },
+          child: InputDecorator(
+            decoration: InputDecoration(
+              labelText: 'SH Code',
+              labelStyle: AppStyles.inputLabelStyle,
+              prefixIcon: const Icon(Icons.code),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              errorText: errorText ?? state.errorText,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+            ),
+            child: Text(
+              shCodes
+                  .firstWhere(
+                    (code) => code.code == selectedShCode.value,
+                    orElse:
+                        () => ShCode(code: -1, description: 'Select SH code'),
+                  )
+                  .description,
             ),
           ),
-        ),
-        modalBottomSheetProps: ModalBottomSheetProps(
-          isScrollControlled: true,
-          constraints: BoxConstraints(
-            maxHeight: Get.height * 0.6,
-            minHeight: Get.height * 0.6,
-          ),
-          barrierColor: Colors.black.withOpacity(0.5),
-        ),
-      ),
-      validator: (value) => value == null ? 'Please select an SH code' : null,
+        );
+      },
     );
   }
 }

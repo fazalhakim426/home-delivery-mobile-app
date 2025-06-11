@@ -94,6 +94,13 @@ class ApiProvider extends GetxService {
     } catch (e) {
       rethrow;
     }
+  }  // POST request
+  Future<dio.Response> put(String url, {dynamic data}) async {
+    try {
+      return await _dio.put(url, data: data);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<dio.Response> postDio(String url, {dynamic data}) async {
@@ -105,7 +112,7 @@ class ApiProvider extends GetxService {
   }
 
   // PUT request
-  Future<dio.Response> put(String url, {dynamic data}) async {
+  Future<dio.Response> putDio(String url, {dynamic data}) async {
     try {
       return await _dio.put(url, data: data);
     } on dio.DioException catch (e) {

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:home_delivery_br/data/models/order_model.dart';
 import 'package:home_delivery_br/data/repositories/order_repository.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:home_delivery_br/routes/app_pages.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderViewController extends GetxController {
@@ -34,7 +35,6 @@ class OrderViewController extends GetxController {
     super.onInit();
     scrollController.addListener(_handleScroll);
   }
-
 
   void _handleScroll() {
     if (scrollController.position.userScrollDirection ==
@@ -83,10 +83,13 @@ class OrderViewController extends GetxController {
       if (e is dio.DioException && e.response?.statusCode == 401) {
         Get.offAllNamed('/login');
       } else {
-        Get.snackbar('Error', e.toString(),
+        Get.snackbar(
+          'Error',
+          e.toString(),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Get.theme.colorScheme.error,
-          colorText: Get.theme.colorScheme.onError);
+          colorText: Get.theme.colorScheme.onError,
+        );
       }
     } finally {
       isLoading.value = false;
@@ -108,50 +111,80 @@ class OrderViewController extends GetxController {
   Future<void> deleteOrder(int id) async {
     isLoading.value = true;
     try {
-      final success = await _orderRepository.deleteOrder(id);
-      if (success) {
-        orders.removeWhere((order) => order.id == id);
-        Get.snackbar('Success', 'Order deleted successfully',
+      final response = await _orderRepository.deleteOrder(id);
+      if (response['status'] == true) {
+        Get.snackbar('success',response['message'],
           snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Get.theme.colorScheme.primary,
-            colorText: Get.theme.colorScheme.onPrimary);
+          backgroundColor: Get.theme.colorScheme.primary,
+          colorText: Get.theme.colorScheme.onPrimary,
+          duration: const Duration(seconds: 2),
+        );
         fetchOrders();
-      }
-    } catch (e) {
-      Get.snackbar('Error', e.toString() ,
+      } else {
+        Get.snackbar(
+          'Failed',
+          response['message'] ?? 'Failed to add order.',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Get.theme.colorScheme.error,
-          colorText: Get.theme.colorScheme.onError);
+          colorText: Get.theme.colorScheme.onError,
+          isDismissible: true,
+          duration: const Duration(seconds: 5),
+          mainButton: TextButton(
+            onPressed: () {
+              if (Get.isSnackbarOpen) Get.back();
+            },
+            child: const Text('CLOSE', style: TextStyle(color: Colors.white)),
+          ),
+        );
+        if(response['message']=='Order not found'){
+          Get.offAllNamed(Routes.ORDERS);
+        }
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Invalid data',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
+        e.toString(),
+      );
     } finally {
-      isLoading.value = false;
+      isPrinting.value = false;
     }
   }
+
   Future<void> printLabelOrder(int id) async {
     isPrinting.value = true;
     try {
-
       final response = await _orderRepository.printLabel(id);
       if (response['success'] == true) {
         Get.back();
-        Get.snackbar('success', response['message'],
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Get.theme.colorScheme.primary,
-            colorText: Get.theme.colorScheme.onPrimary);
+        Get.snackbar(
+          'success',
+          response['message'],
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.primary,
+          colorText: Get.theme.colorScheme.onPrimary,
+        );
 
         final pdfUrl = response['data']['url'];
         if (await canLaunchUrl(Uri.parse(pdfUrl))) {
-          await launchUrl(Uri.parse(pdfUrl), mode: LaunchMode.externalApplication);
+          await launchUrl(
+            Uri.parse(pdfUrl),
+            mode: LaunchMode.externalApplication,
+          );
         } else {
-          Get.snackbar('Error', 'Could not open PDF',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Get.theme.colorScheme.error,
-              colorText: Get.theme.colorScheme.onError);
+          Get.snackbar(
+            'Error',
+            'Could not open PDF',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.theme.colorScheme.error,
+            colorText: Get.theme.colorScheme.onError,
+          );
         }
       } else {
-
         if (response['errors'] != null &&
-            response['errors'] is Map<String, String>) {
-        }
+            response['errors'] is Map<String, String>) {}
         Get.snackbar(
           'Server Error',
           response['message'] ?? 'Failed to print label.',
@@ -179,9 +212,6 @@ class OrderViewController extends GetxController {
       isPrinting.value = false;
     }
   }
-
-
-
 
   @override
   void onClose() {

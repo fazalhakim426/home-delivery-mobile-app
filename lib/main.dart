@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart'; // Add this import
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_delivery_br/app/app_colors.dart';
@@ -8,6 +9,7 @@ import 'package:home_delivery_br/data/services/form_persistence_service.dart';
 import 'package:home_delivery_br/modules/auth/bindings/auth_binding.dart';
 import 'package:home_delivery_br/modules/auth/controllers/auth_controller.dart';
 import 'package:home_delivery_br/routes/app_pages.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -42,55 +44,47 @@ void main() async {
       defaultTransition: Transition.fade,
       builder: (context, child) {
         final connectivity = Get.find<ConnectivityService>();
-        return Stack(
-          children: [
-            child!,
-            Obx(() {
-              // Only show message when service is initialized AND there's no connection
-              if (!connectivity.isInitialized.value || connectivity.isConnected.value) {
-                return const SizedBox();
-              }
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: connectivity.isConnected.value
+              ? SystemUiOverlayStyle.dark // Default style when connected
+              : SystemUiOverlayStyle.light, // Light style (white icons) when disconnected
+          child: Stack(
+            children: [
+              child!,
+              Obx(() {
+                if (!connectivity.isInitialized.value || connectivity.isConnected.value) {
+                  return const SizedBox();
+                }
 
-              return Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: SafeArea(
-                  bottom: false,
-                  child: Material(
-                    elevation: 4,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.red[400],
-                        gradient: LinearGradient(
-                          colors: [Colors.red[600]!, Colors.red[400]!],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.wifi_off, color: Colors.white, size: 24),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'No internet connection',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                return Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).padding.top,
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top > 30 ? 6 : 2),
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.wifi_off, color: Colors.white, size: 14),
+                        SizedBox(width: 4),
+                        Text(
+                          'No internet',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              );
-            }),
-          ],
+                );
+              }),
+            ],
+          ),
         );
       },
     ),

@@ -25,19 +25,6 @@ class RecipientController extends GetxController {
 
   @override
   void onClose() {
-    // firstNameController.dispose();
-    // lastNameController.dispose();
-    // emailController.dispose();
-    // phoneController.dispose();
-    // taxIdController.dispose();
-    // cityController.dispose();
-    // streetNoController.dispose();
-    // addressController.dispose();
-    // address2Controller.dispose();
-    // accountTypeController.dispose();
-    // zipCodeController.dispose();
-    // stateIdController.dispose();
-    // countryIdController.dispose();
     super.onClose();
   }
 

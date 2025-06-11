@@ -7,8 +7,6 @@ class TrackingRepository {
 
   Future<Tracking> getTracking(String trackingCode) async {
     final response = await _apiProvider.get('order/tracking/$trackingCode');
-    print('tracking data');
-    print(response);
     if (response.statusCode == 200) {
       return Tracking.fromJson(response.data);
     } else {

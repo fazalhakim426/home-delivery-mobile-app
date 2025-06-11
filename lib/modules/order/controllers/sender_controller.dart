@@ -7,10 +7,16 @@ class SenderController extends GetxController {
   final emailController = TextEditingController();
   final taxIdController = TextEditingController();
   final countryIdController = TextEditingController();
+  final stateIdController = TextEditingController();
   final websiteController = TextEditingController();
+  final zipCodeController = TextEditingController();
+  final addressController = TextEditingController();
+  final phoneController = TextEditingController();
+  final cityController = TextEditingController();
 
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
   final RxInt selectedCountryId = 250.obs;
+  final RxnInt selectedStateId = RxnInt();
   @override
   void onClose() {
     super.onClose();
@@ -22,7 +28,12 @@ class SenderController extends GetxController {
     emailController.clear();
     taxIdController.clear();
     countryIdController.clear();
+    stateIdController.clear();
     websiteController.clear();
+    zipCodeController.clear();
+    addressController.clear();
+    phoneController.clear();
+    cityController.clear();
     fieldErrors.clear();
   }
 
@@ -33,7 +44,12 @@ class SenderController extends GetxController {
       "sender_email": emailController.text,
       "sender_taxId": taxIdController.text,
       "sender_country_id": selectedCountryId.value,
+      "sender_state_id": selectedStateId.value,
       "sender_website": websiteController.text,
+      "sender_zipcode": zipCodeController.text,
+      "sender_address": addressController.text,
+      "sender_phone": phoneController.text,
+      "sender_city": cityController.text,
     };
   }
 }

@@ -7,8 +7,11 @@ class Sender {
   final String? lastName;
   final String? email;
   final String? taxId;
-  final String? sender_zipcode;
-  final String? sender_website;
+  final String? phone;
+  final String? zipcode;
+  final String? website;
+  final String? city;
+  final String? address;
   final Country? country;
   final CountryState? state;
 
@@ -17,8 +20,11 @@ class Sender {
     required this.lastName,
     required this.email,
     this.taxId,
-    this.sender_zipcode,
-    this.sender_website,
+    this.phone,
+    this.address,
+    this.zipcode,
+    this.website,
+    this.city,
     this.country,
     this.state,
   });
@@ -29,8 +35,11 @@ class Sender {
       lastName: json['sender_last_name'] ?? '',
       email: json['sender_email'] ?? '',
       taxId: json['sender_taxId'] ?? '',
-      sender_website: json['sender_website'] ?? '',
-      sender_zipcode: json['sender_zipcode'] ?? '',
+      website: json['sender_website'] ?? '',
+      zipcode: json['sender_zipcode'] ?? '',
+      address: json['sender_address'] ?? '',
+      phone: json['sender_phone'] ?? '',
+      city: json['sender_city'] ?? '',
       state: json['state'] != null ? CountryState.fromJson(json['state']) : null,
       country: json['country'] != null ? Country.fromJson(json['country']) : null,
     );
@@ -42,8 +51,11 @@ class Sender {
       'sender_last_name': lastName ?? '',
       'sender_email': email ?? '',
       'sender_taxId': taxId ?? '',
-      'sender_website': sender_website ?? '',
-      'sender_zipcode': sender_zipcode ?? '',
+      'sender_website': website ?? '',
+      'sender_address': address ?? '',
+      'sender_phone': phone ?? '',
+      'sender_city': city ?? '',
+      'sender_zipcode': zipcode ?? '',
       'state': state?.toJson(),  // Will be null if state is null
       'country': country?.toJson(),  // Will be null if country is null
     };

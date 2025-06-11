@@ -18,6 +18,7 @@ class ParcelController extends GetxController {
   final heightController = TextEditingController();
 
   final List<CountryState> recipientStates = [];
+  final List<CountryState> senderStates = [];
 
   final isLoading = false.obs;
 
