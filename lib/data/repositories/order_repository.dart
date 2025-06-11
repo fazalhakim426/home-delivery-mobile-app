@@ -157,7 +157,7 @@ class OrderRepository {
 
       return response.data;
     } on DioException catch (e) {
-      if (e.response?.statusCode == 422) {
+     if (e.response?.statusCode == 422) {
         final errors = e.response?.data['errors'] ?? {};
         final formattedErrors = <String, String>{};
 
@@ -181,17 +181,7 @@ class OrderRepository {
       return {"success": false, "message": "Unexpected error: ${e.toString()}"};
     }
   }
-
-  // Delete order
-  Future<bool> deleteOrder(int id) async {
-    try {
-      await _apiProvider.delete('${Constants.orders}/$id');
-      return true;
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
+  //print label
   Future<Map<String, dynamic>> printLabel(int id) async {
     try {
       final response = await _apiProvider.get('parcel/$id/cn23');
@@ -205,10 +195,8 @@ class OrderRepository {
           formattedErrors[key] = (value as List).join(', ');
         });
 
-        // Combine all error messages into a single string for the message
         final combinedErrorMessage = formattedErrors.values.join(' | ');
 
-        // Return a consistent failure format with combined message
         return {
           "success": false,
           "message": "Validation error: $combinedErrorMessage",
@@ -221,7 +209,34 @@ class OrderRepository {
       return {"success": false, "message": "Unexpected error: ${e.toString()}"};
     }
   }
+  // Delete order
+  Future<Map<String, dynamic>> deleteOrder(int id) async {
+    try {
+      final response = await _apiProvider.delete('${Constants.orders}/$id');
+      return response.data;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 422) {
+        final errors = e.response?.data['errors'] ?? {};
+        final formattedErrors = <String, String>{};
 
+        errors.forEach((key, value) {
+          formattedErrors[key] = (value as List).join(', ');
+        });
+
+        final combinedErrorMessage = formattedErrors.values.join(' | ');
+
+        return {
+          "success": false,
+          "message": "Validation error: $combinedErrorMessage",
+          "errors": formattedErrors,
+        };
+      }
+
+      return {"success": false, "message": "Unexpected error: ${e.message}"};
+    } catch (e) {
+      return {"success": false, "message": "Unexpected error: ${e.toString()}"};
+    }
+  }
   // Toggle order completion
   Future<Order> toggleOrderCompletion(Order order) async {
     try {
@@ -244,8 +259,6 @@ class OrderRepository {
     try {
       final response = await _apiProvider.get(Constants.services);
       final data = response.data['data'];
-      print('${Constants.services} output');
-      print(data);
       List<Service> services =
           (data as List)
               .map((json) => Service.fromJson(json as Map<String, dynamic>))
@@ -261,8 +274,6 @@ class OrderRepository {
     try {
       final response = await _apiProvider.get(Constants.shcodes);
       final data = response.data;
-      print('${Constants.shcodes} output');
-      print(data);
       List<ShCode> shcodes =
           (data as List)
               .map((json) => ShCode.fromJson(json as Map<String, dynamic>))

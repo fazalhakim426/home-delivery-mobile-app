@@ -386,19 +386,13 @@ class OrderView extends GetView<OrderViewController> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        order.status == 'Shipped'
-                            ? Colors.green[50]
-                            : Colors.orange[50],
+                    color: __getOrderDecorationStatusColor(order.status),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     order.status,
                     style: TextStyle(
-                      color:
-                          order.status == 'Shipped'
-                              ? Colors.green
-                              : Colors.orange,
+                      color: __getOrderStatusColor(order.status),
                     ),
                   ),
                 ),
@@ -462,61 +456,59 @@ class OrderView extends GetView<OrderViewController> {
               const SizedBox(height: 16),
 
               // Status Badge
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      order.status == 'Shipped'
-                          ? Colors.green[50]
-                          : Colors.orange[50],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  order.status,
-                  style: TextStyle(
-                    color:
-                        order.status == 'Shipped'
-                            ? Colors.green
-                            : order.status == 'Cancelled'
-                            ? Colors.red
-                            : order.status == 'Refunded'
-                            ? Colors.purple
-                            : Colors.orange,
-                    fontWeight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: __getOrderDecorationStatusColor(order.status),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      order.status,
+                      style: TextStyle(
+                        color: __getOrderStatusColor(order.status),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
+                  Obx(
+                    () => ElevatedButton.icon(
+                      icon:
+                          controller.isPrinting.value
+                              ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.blue,
+                                ),
+                              )
+                              : const Icon(Icons.label, size: 22),
+                      label: Text(
+                        controller.isPrinting.value
+                            ? "Printing..."
+                            : "Print Label",
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[50],
+                        foregroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed:
+                          controller.isPrinting.value
+                              ? null
+                              : () => controller.printLabelOrder(order.id!),
+                    ),
+                  ),
+                ],
               ),
-            Obx(() => ElevatedButton.icon(
-              icon: controller.isPrinting.value
-                  ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: Colors.blue,
-                ),
-              )
-                  : const Icon(Icons.label, size: 22),
-              label: Text(controller.isPrinting.value ? "Printing..." : "Print Label"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[50],
-                foregroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: controller.isPrinting.value
-                  ? null
-                  : () => controller.printLabelOrder(order.id!),
-            ))
-
-          ]),
               const Divider(),
 
               // Order Summary Section
@@ -662,12 +654,10 @@ class OrderView extends GetView<OrderViewController> {
               ),
               const SizedBox(height: 16),
               // Action Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
                 children: [
-                  const SizedBox(height: 16),
-
-
                   ElevatedButton.icon(
                     icon: const Icon(Icons.delete, size: 22),
                     label: const Text("Delete order"),
@@ -680,8 +670,8 @@ class OrderView extends GetView<OrderViewController> {
                     ),
                     onPressed: () => _confirmDelete(order),
                   ),
-
-                  if (order.trackingCode != null && order.trackingCode!.isNotEmpty)
+                  if (order.trackingCode != null &&
+                      order.trackingCode!.isNotEmpty)
                     ElevatedButton.icon(
                       icon: const Icon(Icons.track_changes, size: 18),
                       label: const Text("Track"),
@@ -699,8 +689,8 @@ class OrderView extends GetView<OrderViewController> {
                           arguments: order.trackingCode,
                         );
                       },
-                    )
-                  else
+                    ),
+                  if (order.status == 'Order Posted')
                     ElevatedButton.icon(
                       icon: const Icon(Icons.edit, size: 18),
                       label: const Text("Update Order"),
@@ -722,7 +712,6 @@ class OrderView extends GetView<OrderViewController> {
                     ),
                 ],
               ),
-
               const SizedBox(height: 16),
               const SizedBox(height: 16),
               const Divider(),
@@ -810,6 +799,7 @@ class OrderView extends GetView<OrderViewController> {
       ),
     );
   }
+
   void _confirmOrderPrintLabel(Order order) {
     Get.back();
     Get.dialog(
@@ -827,5 +817,65 @@ class OrderView extends GetView<OrderViewController> {
         ],
       ),
     );
+  }
+
+  Color __getOrderDecorationStatusColor(String status) {
+    switch (status) {
+      case 'Order Posted':
+        return Colors.blue[50]!;
+      case 'Needs Processing':
+        return Colors.orange[50]!;
+      case 'Cancelled':
+      case 'Rejected':
+        return Colors.red[50]!;
+      case 'Released':
+        return Colors.indigo[50]!;
+      case 'Refunded':
+        return Colors.purple[50]!;
+      case 'Payment Pending':
+        return Colors.yellow[50]!;
+      case 'Payment Done':
+        return Colors.green[100]!;
+      case 'Driver Received':
+        return Colors.teal[50]!;
+      case 'Arrived at Warehouse':
+        return Colors.deepPurple[50]!;
+      case 'Inside Container':
+        return Colors.cyan[50]!;
+      case 'Shipped':
+        return Colors.green[50]!;
+      default:
+        return Colors.grey[200]!; // Default/unknown
+    }
+  }
+
+  Color __getOrderStatusColor(String status) {
+    switch (status) {
+      case 'Order Posted':
+        return Colors.blue;
+      case 'Needs Processing':
+        return Colors.orange;
+      case 'Cancelled':
+      case 'Rejected':
+        return Colors.red;
+      case 'Released':
+        return Colors.indigo;
+      case 'Refunded':
+        return Colors.purple;
+      case 'Payment Pending':
+        return Colors.yellow;
+      case 'Payment Done':
+        return Colors.green;
+      case 'Driver Received':
+        return Colors.teal;
+      case 'Arrived at Warehouse':
+        return Colors.deepPurple;
+      case 'Inside Container':
+        return Colors.cyan;
+      case 'Shipped':
+        return Colors.green;
+      default:
+        return Colors.grey; // Default/unknown
+    }
   }
 }

@@ -245,7 +245,6 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
                         controller.clearFieldError(
                           'products.$index.quantity',
                         ),
-                    validator: OrderValidators.validateNumber,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -393,71 +392,70 @@ class ParcelDetailsForm extends GetView<OrderCreateController> {
     required ColorScheme colorScheme,
     required BuildContext context,
   }) {
-    final errorText = getFieldError("parcel.service_id");
+      final errorText = getFieldError("parcel.service_id");
 
-    return DropdownSearch<Service>(
-      selectedItem: services.firstWhere(
-            (service) => service.id == selectedServiceId.value,
-        orElse: () =>
-        services.isNotEmpty ? services.first : Service(
-            id: 0, name: 'No services'),
-      ),
-      items: services,
-      itemAsString: (service) => service.name,
-      onChanged: (Service? value) {
-        if (value != null) {
-          selectedServiceId.value = value.id;
-          clearFieldError("parcel.service_id");
-        }
-      },
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          labelText: 'Shipping Service',
-          labelStyle: AppStyles.inputLabelStyle,
-          prefixIcon: const Icon(Icons.local_shipping),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: colorScheme.outline),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: colorScheme.outline),
-          ),
-          errorText: errorText,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
+      return DropdownSearch<Service>(
+        key: ValueKey(selectedServiceId.value),
+        selectedItem: services.firstWhere(
+              (service) => service.id == selectedServiceId.value,
+          orElse: () => Service(id: 0, name: 'No services'),
         ),
-      ),
-      popupProps: PopupProps.modalBottomSheet(
-        showSearchBox: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            labelText: 'Search service',
-            prefixIcon: const Icon(Icons.search),
+        items: services,
+        itemAsString: (service) => service.name,
+        onChanged: (Service? value) {
+          if (value != null) {
+            selectedServiceId.value = value.id;
+            clearFieldError("parcel.service_id");
+          }
+        },
+        dropdownDecoratorProps: DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            labelText: 'Shipping Service',
+            labelStyle: AppStyles.inputLabelStyle,
+            prefixIcon: const Icon(Icons.local_shipping),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.outline),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.outline),
+            ),
+            errorText: errorText,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
             ),
           ),
         ),
-        modalBottomSheetProps: ModalBottomSheetProps(
-          isScrollControlled: true,
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery
-                .of(context)
-                .size
-                .height * 0.6,
-            minHeight: MediaQuery
-                .of(context)
-                .size
-                .height * 0.6,
+        popupProps: PopupProps.modalBottomSheet(
+          showSearchBox: true,
+          searchFieldProps: TextFieldProps(
+            decoration: InputDecoration(
+              labelText: 'Search service',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+          modalBottomSheetProps: ModalBottomSheetProps(
+            isScrollControlled: true,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.6,
+              minHeight: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.6,
+            ),
           ),
         ),
-      ),
-      validator: (value) =>
-      value == null ? 'Please select a service' : null,
-    );
+        validator: (value) =>
+        value == null ? 'Please select a service' : null,
+      );
   }
   Widget buildShCodeDropdown({
     required RxnInt selectedShCode,

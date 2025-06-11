@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:home_delivery_br/data/models/order_model.dart';
 import 'package:home_delivery_br/data/repositories/order_repository.dart';
 import 'package:home_delivery_br/data/services/form_persistence_service.dart';
+import 'package:home_delivery_br/modules/order/controllers/validators/order_validators.dart';
 import 'sender_controller.dart';
 import 'recipient_controller.dart';
 import 'package:home_delivery_br/routes/app_pages.dart';
@@ -43,14 +44,20 @@ class OrderCreateController extends GetxController {
     if (selectedCountryId != 0) {
       fetchCountryStats(selectedCountryId);
     }
+    final selectedSenderCountryId = senderController.selectedCountryId.value;
+    if (selectedSenderCountryId != 0) {
+      fetchSenderCountryStats(selectedSenderCountryId);
+    }
   }
 
   void _loadData({Map<String, dynamic>? passedArgs}) {
+
     if (passedArgs != null) {
       args = passedArgs;
     }
 
     if (args == null) {
+      _loadSavedFormData();
       return;
     }
 
@@ -163,8 +170,12 @@ class OrderCreateController extends GetxController {
       senderController.emailController.text = order.sender.email?.toString() ?? '';
       senderController.taxIdController.text = order.sender.taxId?.toString() ?? '';
 
-      senderController.selectedCountryId.value = order.sender.country?.id ?? 250;
-      senderController.websiteController.text = order.sender.sender_website?.toString() ?? '';
+      senderController.websiteController.text = order.sender.website?.toString() ?? '';
+      senderController.zipCodeController.text = order.sender.zipcode?.toString() ?? '';
+      senderController.addressController.text = order.sender.address?.toString() ?? '';
+      senderController.phoneController.text = order.sender.phone?.toString() ?? '';
+      senderController.selectedCountryId.value = order.sender.country?.id ?? 0;
+      senderController.selectedStateId.value = order.sender.state?.id ?? 0;
 
       //recipient
       recipientController.firstNameController.text = order.recipient.firstName?.toString() ?? '';
@@ -177,16 +188,13 @@ class OrderCreateController extends GetxController {
       recipientController.address2Controller.text = order.recipient.address2?.toString() ?? '';
       recipientController.accountTypeController.text = order.recipient.accountType?.toString() ?? '';
       recipientController.zipCodeController.text = order.recipient.zipcode?.toString() ?? '';
-      recipientController.selectedStateId.value = order.recipient.state?.id ?? 526;
+      recipientController.selectedStateId.value = order.recipient.state?.id ?? 0;
       recipientController.cityController.text = order.recipient.city?.toString() ?? '';
-      recipientController.selectedCountryId.value = order.recipient?.country?.id ?? 30;
+      recipientController.selectedCountryId.value = order.recipient?.country?.id ?? 0;
 
       //parcel
       parcelController.selectedServiceId.value = order.service.id;
       parcelController.taxModality.value = order.taxModality;
-      // foreach(order.products as product in order.products)
-      //
-      // }
       productController.loadProductsFromOrder(order.products);
 
 
@@ -282,8 +290,8 @@ class OrderCreateController extends GetxController {
     try {
       final countryList = await _orderRepository.fetchCountries();
       parcelController.countries.value = countryList;
-    } catch (e) {
-    } finally {
+    } catch (e) {}
+    finally {
       // isLoading.value = false;
     }
   }
@@ -293,6 +301,15 @@ class OrderCreateController extends GetxController {
     try {
       final countryStateList = await _orderRepository.getStateByCountry(id);
       parcelController.recipientStates.assignAll(countryStateList);
+    } catch(e){} finally {
+      isLoading.value = false;
+    }
+  }
+  Future<void> fetchSenderCountryStats(id) async {
+    isLoading.value = true;
+    try {
+      final countryStateList = await _orderRepository.getStateByCountry(id);
+      parcelController.senderStates.assignAll(countryStateList);
     } catch (e) {
     } finally {
       isLoading.value = false;
@@ -310,6 +327,7 @@ class OrderCreateController extends GetxController {
 
   Future<void> saveOrder() async {
     isLoading.value = true;
+    submitted =true;
     try {
       final parcel = parcelController.toJson();
       parcel['merchant'] = senderController.firstNameController.text;
@@ -337,9 +355,9 @@ class OrderCreateController extends GetxController {
         Get.snackbar(
           'Failed',
           response['message'] ?? 'Failed to add order.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Get.theme.colorScheme.primary,
-            colorText: Get.theme.colorScheme.onPrimary,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.error,
+          colorText: Get.theme.colorScheme.onError,
           isDismissible: true,
           duration: const Duration(seconds: 5),
           mainButton: TextButton(
@@ -363,25 +381,26 @@ class OrderCreateController extends GetxController {
     }
   }
 
+
   Future<void> updateOrder() async {
     isLoading.value = true;
+    submitted =true;
     try {
-      final parcel = parcelController.toJson();
-      parcel['merchant'] = senderController.firstNameController.text;
-      final updateRequest = {
-        "parcel": parcel,
-        "sender": senderController.toJson(),
-        "recipient": recipientController.toJson(),
-        "products": productController.toJson(),
-      };
-      final response = await _orderRepository.updateOrder(updateRequest,order);
-
+          final parcel = parcelController.toJson();
+          parcel['merchant'] = senderController.firstNameController.text;
+          final updateRequest = {
+            "parcel": parcel,
+            "sender": senderController.toJson(),
+            "recipient": recipientController.toJson(),
+            "products": productController.toJson(),
+          };
+          final response = await _orderRepository.updateOrder(updateRequest,order);
       if (response['success'] == true) {
         Get.back();
-        Get.snackbar('Success', 'Order update successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Get.theme.colorScheme.primary,
-          colorText: Get.theme.colorScheme.onPrimary);
+        Get.snackbar('Success', 'Order updated successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.theme.colorScheme.primary,
+            colorText: Get.theme.colorScheme.onPrimary);
         clearForm();
         Get.offAllNamed(Routes.ORDERS);
       } else {
@@ -393,8 +412,8 @@ class OrderCreateController extends GetxController {
           'Failed',
           response['message'] ?? 'Failed to add order.',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Get.theme.colorScheme.primary,
-          colorText: Get.theme.colorScheme.onPrimary,
+          backgroundColor: Get.theme.colorScheme.error,
+          colorText: Get.theme.colorScheme.onError,
           isDismissible: true,
           duration: const Duration(seconds: 5),
           mainButton: TextButton(
@@ -417,6 +436,61 @@ class OrderCreateController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // Future<void> updateOrder() async {
+  //   isLoading.value = true;
+  //   submitted =true;
+  //   try {
+  //     final parcel = parcelController.toJson();
+  //     parcel['merchant'] = senderController.firstNameController.text;
+  //     final updateRequest = {
+  //       "parcel": parcel,
+  //       "sender": senderController.toJson(),
+  //       "recipient": recipientController.toJson(),
+  //       "products": productController.toJson(),
+  //     };
+  //     final response = await _orderRepository.updateOrder(updateRequest,order);
+  //
+  //     if (response['success'] == true) {
+  //       Get.back();
+  //       Get.snackbar('Success', 'Order update successfully',
+  //           snackPosition: SnackPosition.BOTTOM,
+  //           backgroundColor: Get.theme.colorScheme.primary,
+  //           colorText: Get.theme.colorScheme.onPrimary);
+  //       clearForm();
+  //       Get.offAllNamed(Routes.ORDERS);
+  //     } else {
+  //       if (response['errors'] != null && response['errors'] is Map<String, String>) {
+  //         fieldErrors.assignAll(response['errors']);
+  //       }
+  //       Get.snackbar(
+  //         'Failed',
+  //         response['message'] ?? 'Failed to add order.',
+  //           snackPosition: SnackPosition.BOTTOM,
+  //           backgroundColor: Get.theme.colorScheme.error,
+  //           colorText: Get.theme.colorScheme.onError,
+  //         isDismissible: true,
+  //         duration: const Duration(seconds: 5),
+  //         mainButton: TextButton(
+  //           onPressed: () {
+  //             if (Get.isSnackbarOpen) Get.back();
+  //           },
+  //           child: const Text('CLOSE', style: TextStyle(color: Colors.white)),
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     Get.snackbar(
+  //       'Invalid data',
+  //       e.toString(),
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Get.theme.colorScheme.primary,
+  //       colorText: Get.theme.colorScheme.onPrimary,
+  //     );
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   @override
   void onClose() {

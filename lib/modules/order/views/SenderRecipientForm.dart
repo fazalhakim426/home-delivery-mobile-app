@@ -47,13 +47,49 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
                 keyboardType: TextInputType.emailAddress,
                 validator: OrderValidators.validateEmail,
               ),
+
               const SizedBox(height: 12),
               _buildTextFormField(
                 context: context,
                 controller: controller.senderController.taxIdController,
                 label: 'Tax ID*',
-                hintText: 'e.g., 32786897807',
+                hintText: 'e.g., 73489158172',
                 fieldKey: 'sender.tax_id',
+                validator: OrderValidators.validateRequired,
+              ),
+              const SizedBox(height: 12),
+              _buildTextFormField(
+                context: context,
+                controller: controller.senderController.phoneController,
+                label: 'Phone*',
+                hintText: 'e.g., +15551233421',
+                fieldKey: 'sender.phone',
+                keyboardType: TextInputType.phone,
+                validator: OrderValidators.onlyValidatePhone,
+              ),
+              const SizedBox(height: 12),
+              _buildTextFormField(
+                context: context,
+                controller: controller.senderController.cityController,
+                label: 'City',
+                hintText: 'e.g., Brasilia',
+                fieldKey: 'sender.city',
+              ),
+              const SizedBox(height: 12),
+              _buildTextFormField(
+                context: context,
+                controller: controller.senderController.addressController,
+                label: 'Address',
+                hintText: 'e.g., Brasilia',
+                fieldKey: 'sender.city',
+              ),
+              const SizedBox(height: 12),
+              _buildTextFormField(
+                context: context,
+                controller: controller.senderController.zipCodeController,
+                label: 'Zipcode*',
+                hintText: 'e.g., 71680389',
+                fieldKey: 'sender.zipcode',
                 validator: OrderValidators.validateRequired,
               ),
               const SizedBox(height: 12),
@@ -69,8 +105,9 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
                 context: context,
                 selectedValue: controller.senderController.selectedCountryId,
                 onChanged: (value) {
-                  if (value != null) {
+                  if (value != null && value != controller.senderController.selectedCountryId.value) {
                     controller.senderController.selectedCountryId.value = value;
+                    controller.fetchSenderCountryStats(value);
                     controller.clearFieldError("sender.country_id");
                   }
                 },
@@ -83,6 +120,9 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
                   return null;
                 },
               ),
+
+              const SizedBox(height: 12),
+              _buildSenderStateDropdown(context),
 
 
               // Recipient Information Section
@@ -420,8 +460,7 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
       },
     );
   }
-
-
+ 
   Widget _buildAccountTypeDropdown(BuildContext context) {
     return Obx(() {
       final errorText = controller.getFieldError('recipient.account_type');
@@ -487,6 +526,66 @@ class SenderRecipientForm extends GetView<OrderCreateController> {
             if (value != null) {
               controller.recipientController.selectedStateId.value = value;
               controller.clearFieldError("recipient.state_id");
+            }
+          },
+        ),
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: 'State*',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12, vertical: 10),
+            errorText: errorText,
+            errorMaxLines: 2,
+            suffixIcon: isLoading
+                ? const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+                : const Icon(Icons.arrow_drop_down),
+          ),
+          child: Text(
+            isValidSelection
+                ? states.firstWhere(
+                    (s) => s.id == selectedValue,
+                orElse: () => CountryState(id: 0, name: '',code: '')).name
+                : 'Select state',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: isValidSelection
+                  ? null
+                  : Theme.of(context).hintColor,
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+
+  Widget _buildSenderStateDropdown(BuildContext context) {
+    return Obx(() {
+      final errorText = controller.getFieldError("sender.state_id");
+      final states = controller.parcelController.senderStates;
+      final selectedValue = controller.senderController.selectedStateId.value;
+      final isLoading = controller.isLoading.value;
+
+      // Determine if the selected value is valid
+      final isValidSelection = selectedValue != 0 && states.any((state) => state.id == selectedValue);
+
+      return GestureDetector(
+        onTap: isLoading || states.isEmpty
+            ? null
+            : () => _showSearchableStateDialog(
+          context: context,
+          countryStates: states, // Changed parameter name
+          selectedValue: selectedValue ?? 0, // Handle null case
+          isLoading: isLoading,
+          onChanged: (value) {
+            if (value != null) {
+              controller.senderController.selectedStateId.value = value;
+              controller.clearFieldError("sender.state_id");
             }
           },
         ),

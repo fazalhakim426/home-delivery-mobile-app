@@ -38,6 +38,27 @@ class OrderValidators {
     }
     return null;
   }
+  // Phone Number Validator (new)
+  static String? onlyValidatePhone(String? value, {bool isRequired = true}) {
+    if (value == null || value.isEmpty) {
+      return  null;
+    }
+
+    // Remove all non-digit characters
+    final digitsOnly = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Basic validation - adjust these rules as needed
+    if (digitsOnly.length < 8) {
+      return 'Phone number too short';
+    }
+    if (digitsOnly.length > 15) {
+      return 'Phone number too long';
+    }
+    if (!GetUtils.isPhoneNumber(value)) {  // Using GetX's built-in check
+      return 'Please enter a valid phone number';
+    }
+    return null;
+  }
 
   static String? validateNumber(String? value) {
 
